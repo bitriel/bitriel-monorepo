@@ -9,7 +9,16 @@
         "dev": "turbo run dev",
         "build": "turbo run build",
         "clean": "turbo run clean && rm -rf node_modules",
-        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
+        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
+        "mobile:start": "yarn workspace @bitriel/mobile start",
+        "mobile:ios": "yarn workspace @bitriel/mobile ios",
+        "mobile:android": "yarn workspace @bitriel/mobile android",
+        "mobile:web": "yarn workspace @bitriel/mobile web",
+        "mobile:build:ios": "yarn workspace @bitriel/mobile build-ios",
+        "mobile:build:android": "yarn workspace @bitriel/mobile build-android",
+        "mobile:build:all": "yarn workspace @bitriel/mobile build-all",
+        "mobile:deploy:ios": "yarn workspace @bitriel/mobile deploy-ios",
+        "mobile:deploy:android": "yarn workspace @bitriel/mobile deploy-android"
     },
     "devDependencies": {
         "prettier": "^3.1.1",
