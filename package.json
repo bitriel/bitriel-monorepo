@@ -1,24 +1,25 @@
 {
-  "name": "bitriel",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
-  },
-  "devDependencies": {
-    "prettier": "^3.5.3",
-    "turbo": "^2.5.4",
-    "typescript": "5.8.2"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "packageManager": "yarn@4.6.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+    "name": "bitriel",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "turbo run dev",
+        "build": "turbo run build",
+        "clean": "turbo run clean && rm -rf node_modules",
+        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
+    },
+    "devDependencies": {
+        "prettier": "^3.1.1",
+        "turbo": "2.5.0"
+    },
+    "packageManager": "yarn@1.22.19",
+    "engines": {
+        "node": ">=18"
+    },
+    "dependencies": {
+        "@babel/plugin-transform-class-static-block": "^7.27.1"
+    }
 }

@@ -1,0 +1,12 @@
+/src
+/node_modules
+/example
+
+.env
+.DS_Store
+
+tsconfig.json
+tsup.config.ts
+
+__tests__
+*.test.ts
