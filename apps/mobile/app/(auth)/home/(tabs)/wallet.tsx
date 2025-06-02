@@ -16,134 +16,140 @@ import { SUPPORTED_NETWORKS, TokenBalance } from "@bitriel/wallet-sdk";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 export default function WalletScreen() {
-  const { mnemonicParam, isDualWallet } = useLocalSearchParams<{ mnemonicParam: string; isDualWallet: string }>();
-  const { initializeWallet, currentNetwork, connectToNetwork, walletState } = useWalletStore();
-  const { walletType, setWalletType } = useWalletTypeStore();
+    const { mnemonicParam, isDualWallet } = useLocalSearchParams<{ mnemonicParam: string; isDualWallet: string }>();
+    const { initializeWallet, currentNetwork, connectToNetwork, walletState } = useWalletStore();
+    const { walletType, setWalletType } = useWalletTypeStore();
 
-  const bottomSheetSwitchNetworkRef = useRef<BottomSheet>(null);
-  const bottomSheetTopTokenRef = useRef<BottomSheet>(null);
-  const bottomSheetTokenListRef = useRef<BottomSheet>(null);
+    const bottomSheetSwitchNetworkRef = useRef<BottomSheet>(null);
+    const bottomSheetTopTokenRef = useRef<BottomSheet>(null);
+    const bottomSheetTokenListRef = useRef<BottomSheet>(null);
 
-  // Prepare token data for non-custodial wallet
-  const allTokens: TokenBalance[] = walletState
-    ? [
-        {
-          token: {
-            symbol: currentNetwork?.nativeCurrency.symbol || "",
-            decimals: currentNetwork?.nativeCurrency.decimals || 18,
-            logoURI: currentNetwork?.nativeCurrency.logoURI,
-            name: currentNetwork?.nativeCurrency.name || "Native Token",
-            address: "0x0"
-          },
-          balance: walletState.balances.native,
-          formatted: walletState.balances.native
-        },
-        ...walletState.balances.tokens
-      ]
-    : [];
+    // Prepare token data for non-custodial wallet
+    const allTokens: TokenBalance[] = walletState
+        ? [
+              {
+                  token: {
+                      symbol: currentNetwork?.nativeCurrency.symbol || "",
+                      decimals: currentNetwork?.nativeCurrency.decimals || 18,
+                      logoURI: currentNetwork?.nativeCurrency.logoURI,
+                      name: currentNetwork?.nativeCurrency.name || "Native Token",
+                      address: "0x0",
+                  },
+                  balance: walletState.balances.native,
+                  formatted: walletState.balances.native,
+              },
+              ...walletState.balances.tokens,
+          ]
+        : [];
 
-  const handleOpenSwitchNetworkSheet = () => {
-    bottomSheetSwitchNetworkRef.current?.expand();
-  };
-
-  const handleCloseSwitchNetworkSheet = () => {
-    bottomSheetSwitchNetworkRef.current?.close();
-  };
-
-  const handleOpenTopTokenModal = () => {
-    bottomSheetTopTokenRef.current?.expand();
-  };
-
-  const handleCloseTopTokenModal = () => {
-    bottomSheetTopTokenRef.current?.close();
-  };
-
-  const handleOpenTokenListSheet = () => {
-    bottomSheetTokenListRef.current?.expand();
-  };
-
-  const handleCloseTokenListSheet = () => {
-    bottomSheetTokenListRef.current?.close();
-  };
-
-  // Initialize wallet and network when mnemonic is available and wallet type is non-custodial
-  useEffect(() => {
-    const initializeWalletAndNetwork = async () => {
-      if (walletType === "non-custodial" && mnemonicParam) {
-        try {
-          // Get last used network first
-          const lastNetwork = await ExpoSecureStoreAdapter.getItem("last_network");
-
-          // Initialize wallet
-          await initializeWallet(mnemonicParam);
-
-          // Connect to last used network after initialization
-          if (lastNetwork) {
-            const network = SUPPORTED_NETWORKS.find((n) => n.chainId.toString() === lastNetwork);
-            if (network) {
-              await connectToNetwork(network.chainId.toString());
-            }
-          }
-        } catch (error) {
-          console.error("Error initializing wallet and network:", error);
-        }
-      }
+    const handleOpenSwitchNetworkSheet = () => {
+        bottomSheetSwitchNetworkRef.current?.expand();
     };
 
-    initializeWalletAndNetwork();
-  }, [walletType, mnemonicParam]);
+    const handleCloseSwitchNetworkSheet = () => {
+        bottomSheetSwitchNetworkRef.current?.close();
+    };
 
-  // Handle dual wallet mode
-  useEffect(() => {
-    if (isDualWallet === "true") {
-      // Set initial wallet type to non-custodial
-      setWalletType("non-custodial");
-    }
-  }, [isDualWallet]);
+    const handleOpenTopTokenModal = () => {
+        bottomSheetTopTokenRef.current?.expand();
+    };
 
-  const handleOpenBottomSheet = {
-    handleOpenTopTokenModal,
-    handleOpenTokenListSheet
-  };
+    const handleCloseTopTokenModal = () => {
+        bottomSheetTopTokenRef.current?.close();
+    };
 
-  const handleCloseBottomSheet = {
-    handleCloseTopTokenModal,
-    handleCloseTokenListSheet
-  };
+    const handleOpenTokenListSheet = () => {
+        bottomSheetTokenListRef.current?.expand();
+    };
 
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className="flex-1 bg-offWhite">
-        <Header.Default
-          walletType={walletType}
-          handleOpenBottomSheet={handleOpenSwitchNetworkSheet}
-          selectedNetworkLabel={currentNetwork?.name || null}
-          selectedNetworkImage={currentNetwork?.logo || null}
-          networkChainName={currentNetwork?.name || null}
-          networkChainImage={currentNetwork?.logo || null}
-        />
+    const handleCloseTokenListSheet = () => {
+        bottomSheetTokenListRef.current?.close();
+    };
 
-        {walletType === "custodial" ? (
-          <>
-            <CustodialWallet />
-          </>
-        ) : (
-          <>
-            <NonCustodialWallet handleOpenBottomSheet={handleOpenBottomSheet} handleCloseBottomSheet={handleCloseBottomSheet} />
-          </>
-        )}
+    // Initialize wallet and network when mnemonic is available and wallet type is non-custodial
+    useEffect(() => {
+        const initializeWalletAndNetwork = async () => {
+            if (walletType === "non-custodial" && mnemonicParam) {
+                try {
+                    // Get last used network first
+                    const lastNetwork = await ExpoSecureStoreAdapter.getItem("last_network");
 
-        <ChangeNetworkBottomSheet ref={bottomSheetSwitchNetworkRef} handleCloseBottomSheet={handleCloseSwitchNetworkSheet} />
+                    // Initialize wallet
+                    await initializeWallet(mnemonicParam);
 
-        <TopTokensBottomSheet ref={bottomSheetTopTokenRef} handleCloseBottomSheet={handleCloseTopTokenModal} />
+                    // Connect to last used network after initialization
+                    if (lastNetwork) {
+                        const network = SUPPORTED_NETWORKS.find(n => n.chainId.toString() === lastNetwork);
+                        if (network) {
+                            await connectToNetwork(network.chainId.toString());
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error initializing wallet and network:", error);
+                }
+            }
+        };
 
-        <TokenListBottomSheet
-          ref={bottomSheetTokenListRef}
-          networkName={currentNetwork?.name!}
-          handleCloseBottomSheet={handleCloseTokenListSheet}
-          tokens={allTokens}
-        />
-      </SafeAreaView>
-    </GestureHandlerRootView>
-  );
+        initializeWalletAndNetwork();
+    }, [walletType, mnemonicParam]);
+
+    // Handle dual wallet mode
+    useEffect(() => {
+        if (isDualWallet === "true") {
+            // Set initial wallet type to non-custodial
+            setWalletType("non-custodial");
+        }
+    }, [isDualWallet]);
+
+    const handleOpenBottomSheet = {
+        handleOpenTopTokenModal,
+        handleOpenTokenListSheet,
+    };
+
+    const handleCloseBottomSheet = {
+        handleCloseTopTokenModal,
+        handleCloseTokenListSheet,
+    };
+
+    return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <SafeAreaView className="flex-1 bg-offWhite">
+                <Header.Default
+                    walletType={walletType}
+                    handleOpenBottomSheet={handleOpenSwitchNetworkSheet}
+                    selectedNetworkLabel={currentNetwork?.name || null}
+                    selectedNetworkImage={currentNetwork?.logo || null}
+                    networkChainName={currentNetwork?.name || null}
+                    networkChainImage={currentNetwork?.logo || null}
+                />
+
+                {walletType === "custodial" ? (
+                    <>
+                        <CustodialWallet />
+                    </>
+                ) : (
+                    <>
+                        <NonCustodialWallet
+                            handleOpenBottomSheet={handleOpenBottomSheet}
+                            handleCloseBottomSheet={handleCloseBottomSheet}
+                        />
+                    </>
+                )}
+
+                <ChangeNetworkBottomSheet
+                    ref={bottomSheetSwitchNetworkRef}
+                    handleCloseBottomSheet={handleCloseSwitchNetworkSheet}
+                />
+
+                <TopTokensBottomSheet ref={bottomSheetTopTokenRef} handleCloseBottomSheet={handleCloseTopTokenModal} />
+
+                <TokenListBottomSheet
+                    ref={bottomSheetTokenListRef}
+                    networkName={currentNetwork?.name!}
+                    handleCloseBottomSheet={handleCloseTokenListSheet}
+                    tokens={allTokens}
+                />
+            </SafeAreaView>
+        </GestureHandlerRootView>
+    );
 }

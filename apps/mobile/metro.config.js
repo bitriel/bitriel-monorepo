@@ -8,7 +8,7 @@ const defaultConfig = getDefaultConfig(__dirname);
 
 // Apply NativeWind and Reanimated configurations
 const combinedConfig = withNativeWind(defaultConfig, {
-  input: "./global.css" // Adjust the path to your global styles if needed
+    input: "./global.css", // Adjust the path to your global styles if needed
 });
 
 // Wrap the configuration with Reanimated

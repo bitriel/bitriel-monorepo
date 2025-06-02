@@ -5,168 +5,171 @@ import { apiClient } from "../api/client";
 import { useWalletTypeStore } from "./useWalletTypeStore";
 
 interface CustodialAuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-  token: string | null;
-  isLoading: boolean;
-  error: string | null;
-  initialize: () => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  clearError: () => void;
-  fetchCurrentUser: () => Promise<void>;
+    isAuthenticated: boolean;
+    user: User | null;
+    token: string | null;
+    isLoading: boolean;
+    error: string | null;
+    initialize: () => Promise<void>;
+    login: (email: string, password: string) => Promise<void>;
+    register: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
+    clearError: () => void;
+    fetchCurrentUser: () => Promise<void>;
 }
 
 export const useCustodialAuthStore = create<CustodialAuthState>((set, get) => ({
-  isAuthenticated: false,
-  user: null,
-  token: null,
-  isLoading: false,
-  error: null,
+    isAuthenticated: false,
+    user: null,
+    token: null,
+    isLoading: false,
+    error: null,
 
-  fetchCurrentUser: async () => {
-    try {
-      const user = await authApi.getCurrentUser();
-      await ExpoSecureStoreAdapter.setItem("custodial_user", JSON.stringify(user));
-      await ExpoSecureStoreAdapter.setItem("wallet_mnemonic", user.privateKey);
+    fetchCurrentUser: async () => {
+        try {
+            const user = await authApi.getCurrentUser();
+            await ExpoSecureStoreAdapter.setItem("custodial_user", JSON.stringify(user));
+            await ExpoSecureStoreAdapter.setItem("wallet_mnemonic", user.privateKey);
 
-      set({ user, isAuthenticated: true });
-    } catch (error: any) {
-      console.error("Error fetching current user:", error);
-      throw new Error(error.response?.data?.message || "Failed to fetch user data");
-    }
-  },
-
-  initialize: async () => {
-    try {
-      const [token, userStr] = await Promise.all([
-        ExpoSecureStoreAdapter.getItem("custodial_token"),
-        ExpoSecureStoreAdapter.getItem("custodial_user")
-      ]);
-
-      if (token) {
-        apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-        // If we have a token but no user data, fetch the current user
-        if (!userStr) {
-          const { fetchCurrentUser } = get();
-          await fetchCurrentUser();
-        } else {
-          const user = JSON.parse(userStr);
-          set({ isAuthenticated: true, token, user });
+            set({ user, isAuthenticated: true });
+        } catch (error: any) {
+            console.error("Error fetching current user:", error);
+            throw new Error(error.response?.data?.message || "Failed to fetch user data");
         }
-      }
-    } catch (error) {
-      console.error("Initialization error:", error);
-      set({ error: "Failed to initialize authentication state" });
-    }
-  },
+    },
 
-  login: async (email: string, password: string) => {
-    const { isLoading } = get();
-    if (isLoading) return;
+    initialize: async () => {
+        try {
+            const [token, userStr] = await Promise.all([
+                ExpoSecureStoreAdapter.getItem("custodial_token"),
+                ExpoSecureStoreAdapter.getItem("custodial_user"),
+            ]);
 
-    set({ isLoading: true, error: null });
-    try {
-      const response = await authApi.login({ email, password });
+            if (token) {
+                apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-      // Set the token in API client first
-      apiClient.defaults.headers.common["Authorization"] = `Bearer ${response.token}`;
+                // If we have a token but no user data, fetch the current user
+                if (!userStr) {
+                    const { fetchCurrentUser } = get();
+                    await fetchCurrentUser();
+                } else {
+                    const user = JSON.parse(userStr);
+                    set({ isAuthenticated: true, token, user });
+                }
+            }
+        } catch (error) {
+            console.error("Initialization error:", error);
+            set({ error: "Failed to initialize authentication state" });
+        }
+    },
 
-      // Store the token and user data
-      await Promise.all([
-        ExpoSecureStoreAdapter.setItem("custodial_token", response.token),
-        ExpoSecureStoreAdapter.setItem("custodial_user", JSON.stringify(response.user))
-      ]);
+    login: async (email: string, password: string) => {
+        const { isLoading } = get();
+        if (isLoading) return;
 
-      // Set wallet type to custodial
-      const { setWalletType } = useWalletTypeStore.getState();
-      await setWalletType("custodial");
+        set({ isLoading: true, error: null });
+        try {
+            const response = await authApi.login({ email, password });
 
-      // Fetch the latest user data to ensure we have the most up-to-date information
-      const { fetchCurrentUser } = get();
-      await fetchCurrentUser();
+            // Set the token in API client first
+            apiClient.defaults.headers.common["Authorization"] = `Bearer ${response.token}`;
 
-      set({
-        isAuthenticated: true,
-        token: response.token,
-        isLoading: false
-      });
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
-      set({ error: errorMessage, isLoading: false });
-      throw new Error(errorMessage);
-    }
-  },
+            // Store the token and user data
+            await Promise.all([
+                ExpoSecureStoreAdapter.setItem("custodial_token", response.token),
+                ExpoSecureStoreAdapter.setItem("custodial_user", JSON.stringify(response.user)),
+            ]);
 
-  register: async (email: string, password: string) => {
-    const { isLoading } = get();
-    if (isLoading) return;
+            // Set wallet type to custodial
+            const { setWalletType } = useWalletTypeStore.getState();
+            await setWalletType("custodial");
 
-    set({ isLoading: true, error: null });
-    try {
-      const response = await authApi.register({
-        name: email.split("@")[0],
-        email,
-        password
-      });
+            // Fetch the latest user data to ensure we have the most up-to-date information
+            const { fetchCurrentUser } = get();
+            await fetchCurrentUser();
 
-      // Set the token in API client first
-      apiClient.defaults.headers.common["Authorization"] = `Bearer ${response.token}`;
+            set({
+                isAuthenticated: true,
+                token: response.token,
+                isLoading: false,
+            });
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
+            set({ error: errorMessage, isLoading: false });
+            throw new Error(errorMessage);
+        }
+    },
 
-      // Store the token and user data
-      await Promise.all([
-        ExpoSecureStoreAdapter.setItem("custodial_token", response.token),
-        ExpoSecureStoreAdapter.setItem("custodial_user", JSON.stringify(response.user))
-      ]);
+    register: async (email: string, password: string) => {
+        const { isLoading } = get();
+        if (isLoading) return;
 
-      // Set wallet type to custodial
-      const { setWalletType } = useWalletTypeStore.getState();
-      await setWalletType("custodial");
+        set({ isLoading: true, error: null });
+        try {
+            const response = await authApi.register({
+                name: email.split("@")[0],
+                email,
+                password,
+            });
 
-      // Fetch the latest user data to ensure we have the most up-to-date information
-      const { fetchCurrentUser } = get();
-      await fetchCurrentUser();
+            // Set the token in API client first
+            apiClient.defaults.headers.common["Authorization"] = `Bearer ${response.token}`;
 
-      set({
-        isAuthenticated: true,
-        token: response.token,
-        isLoading: false
-      });
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
-      set({ error: errorMessage, isLoading: false });
-      throw new Error(errorMessage);
-    }
-  },
+            // Store the token and user data
+            await Promise.all([
+                ExpoSecureStoreAdapter.setItem("custodial_token", response.token),
+                ExpoSecureStoreAdapter.setItem("custodial_user", JSON.stringify(response.user)),
+            ]);
 
-  logout: async () => {
-    const { isLoading } = get();
-    if (isLoading) return;
+            // Set wallet type to custodial
+            const { setWalletType } = useWalletTypeStore.getState();
+            await setWalletType("custodial");
 
-    set({ isLoading: true, error: null });
-    try {
-      delete apiClient.defaults.headers.common["Authorization"];
+            // Fetch the latest user data to ensure we have the most up-to-date information
+            const { fetchCurrentUser } = get();
+            await fetchCurrentUser();
 
-      // Clear wallet type
-      const { clear: clearWalletType } = useWalletTypeStore.getState();
-      await clearWalletType();
+            set({
+                isAuthenticated: true,
+                token: response.token,
+                isLoading: false,
+            });
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
+            set({ error: errorMessage, isLoading: false });
+            throw new Error(errorMessage);
+        }
+    },
 
-      await Promise.all([ExpoSecureStoreAdapter.removeItem("custodial_token"), ExpoSecureStoreAdapter.removeItem("custodial_user")]);
+    logout: async () => {
+        const { isLoading } = get();
+        if (isLoading) return;
 
-      set({
-        isAuthenticated: false,
-        user: null,
-        token: null,
-        isLoading: false
-      });
-    } catch (error) {
-      const errorMessage = "Failed to logout. Please try again.";
-      set({ error: errorMessage, isLoading: false });
-      throw new Error(errorMessage);
-    }
-  },
+        set({ isLoading: true, error: null });
+        try {
+            delete apiClient.defaults.headers.common["Authorization"];
 
-  clearError: () => set({ error: null })
+            // Clear wallet type
+            const { clear: clearWalletType } = useWalletTypeStore.getState();
+            await clearWalletType();
+
+            await Promise.all([
+                ExpoSecureStoreAdapter.removeItem("custodial_token"),
+                ExpoSecureStoreAdapter.removeItem("custodial_user"),
+            ]);
+
+            set({
+                isAuthenticated: false,
+                user: null,
+                token: null,
+                isLoading: false,
+            });
+        } catch (error) {
+            const errorMessage = "Failed to logout. Please try again.";
+            set({ error: errorMessage, isLoading: false });
+            throw new Error(errorMessage);
+        }
+    },
+
+    clearError: () => set({ error: null }),
 }));

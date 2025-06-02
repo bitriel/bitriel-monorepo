@@ -1,3 +1,3 @@
 export default {
-  headerShown: false
+    headerShown: false,
 };

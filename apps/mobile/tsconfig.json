@@ -1,15 +1,15 @@
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "paths": {
-      "~/*": ["./*"],
-      "~Assets/*": ["./assets/*"]
+    "extends": "expo/tsconfig.base",
+    "compilerOptions": {
+        "strict": true,
+        "paths": {
+            "~/*": ["./*"],
+            "~Assets/*": ["./assets/*"]
+        },
+        "jsx": "react-native",
+        "checkJs": false,
+        "moduleSuffixes": [".ios", ".android", ".native", ""]
     },
-    "jsx": "react-native",
-    "checkJs": false,
-    "moduleSuffixes": [".ios", ".android", ".native", ""]
-  },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"],
-  "exclude": ["node_modules"]
+    "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"],
+    "exclude": ["node_modules"]
 }

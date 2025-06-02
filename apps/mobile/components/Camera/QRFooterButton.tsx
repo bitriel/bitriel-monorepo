@@ -14,44 +14,44 @@ const slop = 40;
 const hitSlop = { top: slop, bottom: slop, right: slop, left: slop };
 
 export default function QRFooterButton({
-  onPress,
-  isActive = false,
-  iconName,
-  iconSize = 36
+    onPress,
+    isActive = false,
+    iconName,
+    iconSize = 36,
 }: {
-  onPress: () => void;
-  isActive?: boolean;
-  iconName: React.ComponentProps<typeof Ionicons>["name"];
-  iconSize?: number;
+    onPress: () => void;
+    isActive?: boolean;
+    iconName: React.ComponentProps<typeof Ionicons>["name"];
+    iconSize?: number;
 }) {
-  const tint = isActive ? "default" : "dark";
-  const iconColor = isActive ? Colors.yellow : "#ffffff";
+    const tint = isActive ? "default" : "dark";
+    const iconColor = isActive ? Colors.yellow : "#ffffff";
 
-  const onPressIn = React.useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  }, []);
+    const onPressIn = React.useCallback(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }, []);
 
-  const onPressButton = React.useCallback(() => {
-    onPress();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  }, [onPress]);
+    const onPressButton = React.useCallback(() => {
+        onPress();
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }, [onPress]);
 
-  return (
-    <TouchableBounce hitSlop={hitSlop} onPressIn={onPressIn} onPress={onPressButton}>
-      <BlurView intensity={100} style={styles.container} tint={tint}>
-        <Ionicons name={iconName} size={iconSize} color={iconColor} />
-      </BlurView>
-    </TouchableBounce>
-  );
+    return (
+        <TouchableBounce hitSlop={hitSlop} onPressIn={onPressIn} onPress={onPressButton}>
+            <BlurView intensity={100} style={styles.container} tint={tint}>
+                <Ionicons name={iconName} size={iconSize} color={iconColor} />
+            </BlurView>
+        </TouchableBounce>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: size,
-    height: size,
-    overflow: "hidden",
-    borderRadius: size / 2,
-    justifyContent: "center",
-    alignItems: "center"
-  }
+    container: {
+        width: size,
+        height: size,
+        overflow: "hidden",
+        borderRadius: size / 2,
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
