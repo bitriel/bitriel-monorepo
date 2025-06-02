@@ -1,1 +1,1 @@
-export * from './genericAbi';
+export * from "./genericAbi";

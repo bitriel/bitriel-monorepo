@@ -1,8 +1,8 @@
-import { mnemonicGenerate, mnemonicValidate } from '@polkadot/util-crypto';
+import { mnemonicGenerate, mnemonicValidate } from "@polkadot/util-crypto";
 
 export interface MnemonicOptions {
-  wordCount?: 12 | 15 | 18 | 21 | 24; // Standard BIP39 word counts
-  strength?: 128 | 160 | 192 | 224 | 256; // Corresponding entropy strength in bits
+    wordCount?: 12 | 15 | 18 | 21 | 24; // Standard BIP39 word counts
+    strength?: 128 | 160 | 192 | 224 | 256; // Corresponding entropy strength in bits
 }
 
 /**
@@ -11,31 +11,31 @@ export interface MnemonicOptions {
  * @returns Generated mnemonic phrase
  */
 export function generateMnemonic(options: MnemonicOptions = {}): string {
-  const {
-    wordCount = 12,
-    strength = 128, // 12 words = 128 bits of entropy
-  } = options;
+    const {
+        wordCount = 12,
+        strength = 128, // 12 words = 128 bits of entropy
+    } = options;
 
-  // Validate word count
-  if (![12, 15, 18, 21, 24].includes(wordCount)) {
-    throw new Error('Invalid word count. Must be 12, 15, 18, 21, or 24');
-  }
+    // Validate word count
+    if (![12, 15, 18, 21, 24].includes(wordCount)) {
+        throw new Error("Invalid word count. Must be 12, 15, 18, 21, or 24");
+    }
 
-  // Validate strength
-  if (![128, 160, 192, 224, 256].includes(strength)) {
-    throw new Error('Invalid strength. Must be 128, 160, 192, 224, or 256');
-  }
+    // Validate strength
+    if (![128, 160, 192, 224, 256].includes(strength)) {
+        throw new Error("Invalid strength. Must be 128, 160, 192, 224, or 256");
+    }
 
-  // Ensure strength matches word count
-  const expectedStrength = (wordCount / 3) * 32;
-  if (strength !== expectedStrength) {
-    throw new Error(
-      `Strength ${strength} does not match word count ${wordCount}. Expected strength: ${expectedStrength}`
-    );
-  }
+    // Ensure strength matches word count
+    const expectedStrength = (wordCount / 3) * 32;
+    if (strength !== expectedStrength) {
+        throw new Error(
+            `Strength ${strength} does not match word count ${wordCount}. Expected strength: ${expectedStrength}`
+        );
+    }
 
-  // Generate mnemonic using Polkadot's implementation
-  return mnemonicGenerate(wordCount);
+    // Generate mnemonic using Polkadot's implementation
+    return mnemonicGenerate(wordCount);
 }
 
 /**
@@ -44,12 +44,12 @@ export function generateMnemonic(options: MnemonicOptions = {}): string {
  * @returns true if valid, false otherwise
  */
 export function validateMnemonic(mnemonic: string): boolean {
-  try {
-    // Use Polkadot's mnemonic validation
-    return mnemonicValidate(mnemonic);
-  } catch {
-    return false;
-  }
+    try {
+        // Use Polkadot's mnemonic validation
+        return mnemonicValidate(mnemonic);
+    } catch {
+        return false;
+    }
 }
 
 /**
@@ -58,7 +58,7 @@ export function validateMnemonic(mnemonic: string): boolean {
  * @returns The number of words in the mnemonic
  */
 export function getMnemonicWordCount(mnemonic: string): number {
-  return mnemonic.trim().split(/\s+/).length;
+    return mnemonic.trim().split(/\s+/).length;
 }
 
 /**
@@ -67,8 +67,8 @@ export function getMnemonicWordCount(mnemonic: string): number {
  * @returns The entropy strength in bits
  */
 export function getMnemonicStrength(mnemonic: string): number {
-  const wordCount = getMnemonicWordCount(mnemonic);
-  return (wordCount / 3) * 32;
+    const wordCount = getMnemonicWordCount(mnemonic);
+    return (wordCount / 3) * 32;
 }
 
 /**
@@ -77,10 +77,10 @@ export function getMnemonicStrength(mnemonic: string): number {
  * @returns Formatted mnemonic with proper spacing and line breaks
  */
 export function formatMnemonic(mnemonic: string): string {
-  const words = mnemonic.trim().split(/\s+/);
-  const lines = [];
-  for (let i = 0; i < words.length; i += 4) {
-    lines.push(words.slice(i, i + 4).join(' '));
-  }
-  return lines.join('\n');
+    const words = mnemonic.trim().split(/\s+/);
+    const lines = [];
+    for (let i = 0; i < words.length; i += 4) {
+        lines.push(words.slice(i, i + 4).join(" "));
+    }
+    return lines.join("\n");
 }

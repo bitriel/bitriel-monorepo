@@ -67,16 +67,11 @@ async function main() {
 
         // Test invalid word count
         try {
-            console.log(
-                "Attempting to generate mnemonic with invalid word count (13):"
-            );
+            console.log("Attempting to generate mnemonic with invalid word count (13):");
             generateMnemonic({ wordCount: 13 as any, strength: 128 });
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.log(
-                    "✓ Expected error for invalid word count:",
-                    error.message
-                );
+                console.log("✓ Expected error for invalid word count:", error.message);
             } else {
                 console.log("✗ Unexpected error type:", error);
             }
@@ -84,16 +79,11 @@ async function main() {
 
         // Test invalid strength
         try {
-            console.log(
-                "\nAttempting to generate mnemonic with invalid strength (129):"
-            );
+            console.log("\nAttempting to generate mnemonic with invalid strength (129):");
             generateMnemonic({ wordCount: 12, strength: 129 as any });
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.log(
-                    "✓ Expected error for invalid strength:",
-                    error.message
-                );
+                console.log("✓ Expected error for invalid strength:", error.message);
             } else {
                 console.log("✗ Unexpected error type:", error);
             }
@@ -101,16 +91,11 @@ async function main() {
 
         // Test mismatched strength and word count
         try {
-            console.log(
-                "\nAttempting to generate mnemonic with mismatched strength (256) and word count (12):"
-            );
+            console.log("\nAttempting to generate mnemonic with mismatched strength (256) and word count (12):");
             generateMnemonic({ wordCount: 12, strength: 256 });
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.log(
-                    "✓ Expected error for mismatched strength:",
-                    error.message
-                );
+                console.log("✓ Expected error for mismatched strength:", error.message);
             } else {
                 console.log("✗ Unexpected error type:", error);
             }

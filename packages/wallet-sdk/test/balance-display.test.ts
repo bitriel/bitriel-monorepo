@@ -12,9 +12,7 @@ async function testBalanceDisplay() {
     try {
         // Test Substrate Chain (Selendra)
         console.log("\n=== Testing Balance Display on Selendra Network ===");
-        const selendraNetwork = SUBSTRATE_NETWORKS.find(
-            (n) => n.name === "Selendra"
-        );
+        const selendraNetwork = SUBSTRATE_NETWORKS.find(n => n.name === "Selendra");
         if (selendraNetwork) {
             console.log("Connecting to Selendra network...");
             await sdk.connect(selendraNetwork.chainId.toString());
@@ -25,16 +23,8 @@ async function testBalanceDisplay() {
 
             // Display formatted balance information
             console.log("\nDetailed Balance Information:");
-            console.log(
-                "Total Balance:",
-                detailedBalance.formatted.total,
-                selendraNetwork.nativeCurrency.symbol
-            );
-            console.log(
-                "Locked Balance:",
-                detailedBalance.formatted.locked,
-                selendraNetwork.nativeCurrency.symbol
-            );
+            console.log("Total Balance:", detailedBalance.formatted.total, selendraNetwork.nativeCurrency.symbol);
+            console.log("Locked Balance:", detailedBalance.formatted.locked, selendraNetwork.nativeCurrency.symbol);
             console.log(
                 "Transferable Balance:",
                 detailedBalance.formatted.transferable,
@@ -73,9 +63,7 @@ async function testBalanceDisplay() {
 
         // Test EVM Chain
         console.log("\n=== Testing Balance Display on EVM Network ===");
-        const evmNetwork = EVM_NETWORKS.find(
-            (n) => n.name === "Selendra Mainnet"
-        );
+        const evmNetwork = EVM_NETWORKS.find(n => n.name === "Selendra Mainnet");
         if (evmNetwork) {
             console.log("Connecting to EVM network...");
             await sdk.connect(evmNetwork.chainId.toString());
@@ -86,16 +74,8 @@ async function testBalanceDisplay() {
 
             // Display formatted balance information
             console.log("\nDetailed Balance Information:");
-            console.log(
-                "Total Balance:",
-                detailedBalance.formatted.total,
-                evmNetwork.nativeCurrency.symbol
-            );
-            console.log(
-                "Locked Balance:",
-                detailedBalance.formatted.locked,
-                evmNetwork.nativeCurrency.symbol
-            );
+            console.log("Total Balance:", detailedBalance.formatted.total, evmNetwork.nativeCurrency.symbol);
+            console.log("Locked Balance:", detailedBalance.formatted.locked, evmNetwork.nativeCurrency.symbol);
             console.log(
                 "Transferable Balance:",
                 detailedBalance.formatted.transferable,
@@ -104,14 +84,8 @@ async function testBalanceDisplay() {
 
             // Verify EVM balance properties
             console.log("\nVerifying EVM balance properties...");
-            console.log(
-                "Locked balance should be 0:",
-                detailedBalance.locked === "0"
-            );
-            console.log(
-                "Transferable should equal total:",
-                detailedBalance.transferable === detailedBalance.total
-            );
+            console.log("Locked balance should be 0:", detailedBalance.locked === "0");
+            console.log("Transferable should equal total:", detailedBalance.transferable === detailedBalance.total);
 
             // Disconnect from EVM
             await sdk.disconnect();

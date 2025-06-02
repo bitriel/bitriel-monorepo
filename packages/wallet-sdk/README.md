@@ -8,9 +8,9 @@ A powerful TypeScript SDK for interacting with multiple blockchain networks, inc
 ## Features
 
 - 🌐 Multi-chain support:
-  - Selendra Network
-  - Polkadot Ecosystem
-  - Ethereum EVM Chains
+    - Selendra Network
+    - Polkadot Ecosystem
+    - Ethereum EVM Chains
 - 💼 Unified wallet interface
 - 💰 Token management (ERC-20, native tokens)
 - 🔐 Secure account management
@@ -35,7 +35,7 @@ yarn add @bitriel/wallet-sdk
 ## Quick Start
 
 ```typescript
-import { BitrielWalletSDK } from '@bitriel/wallet-sdk';
+import { BitrielWalletSDK } from "@bitriel/wallet-sdk";
 
 // Initialize the SDK
 const sdk = new BitrielWalletSDK();
@@ -44,19 +44,19 @@ const sdk = new BitrielWalletSDK();
 const networks = sdk.getSupportedNetworks();
 
 // Connect to a network (e.g., Selendra Mainnet)
-await sdk.connect('selendra');
+await sdk.connect("selendra");
 
 // Get wallet state
 const walletState = await sdk.getWalletState();
 
 // Send a transaction
 const txHash = await sdk.sendTransaction({
-  to: '0x...',
-  value: '1000000000000000000', // 1 SEL
+    to: "0x...",
+    value: "1000000000000000000", // 1 SEL
 });
 
 // Sign a message
-const signature = await sdk.signMessage('Hello, World!');
+const signature = await sdk.signMessage("Hello, World!");
 
 // Disconnect
 await sdk.disconnect();
@@ -95,55 +95,55 @@ new BitrielWalletSDK(options?: SDKOptions)
 
 - `connect(networkId: string): Promise<void>`
 
-  - Connects to the specified network
-  - Throws an error if the network is not supported
-  - Returns a promise that resolves when connected
+    - Connects to the specified network
+    - Throws an error if the network is not supported
+    - Returns a promise that resolves when connected
 
 - `disconnect(): Promise<void>`
-  - Disconnects from the current network
-  - Cleans up resources and connections
+    - Disconnects from the current network
+    - Cleans up resources and connections
 
 ##### Wallet Operations
 
 - `getWalletState(): Promise<WalletState>`
 
-  - Returns the current wallet state including:
-    - Address
-    - Network
-    - Balances (native and tokens)
-    - Connection status
+    - Returns the current wallet state including:
+        - Address
+        - Network
+        - Balances (native and tokens)
+        - Connection status
 
 - `sendTransaction(tx: TransactionRequest): Promise<string>`
 
-  - Sends a transaction and returns the transaction hash
-  - Supports both EVM and Polkadot transaction formats
-  - Handles gas estimation and fee calculation
+    - Sends a transaction and returns the transaction hash
+    - Supports both EVM and Polkadot transaction formats
+    - Handles gas estimation and fee calculation
 
 - `signMessage(message: string): Promise<string>`
-  - Signs a message using the current account
-  - Returns the signature in the appropriate format for the network
+    - Signs a message using the current account
+    - Returns the signature in the appropriate format for the network
 
 ##### Network Management
 
 - `getSupportedNetworks(): NetworkConfig[]`
 
-  - Returns a list of all supported networks
-  - Includes network details and configuration
+    - Returns a list of all supported networks
+    - Includes network details and configuration
 
 - `getCurrentNetwork(): NetworkConfig | null`
-  - Returns the currently connected network
-  - Returns null if not connected
+    - Returns the currently connected network
+    - Returns null if not connected
 
 ##### Token Operations
 
 - `getTokenBalance(tokenAddress: string): Promise<string>`
 
-  - Returns the balance of a specific token
-  - Supports both ERC-20 and native tokens
+    - Returns the balance of a specific token
+    - Supports both ERC-20 and native tokens
 
 - `getTokenInfo(tokenAddress: string): Promise<TokenInfo>`
-  - Returns detailed information about a token
-  - Includes decimals, symbol, and name
+    - Returns detailed information about a token
+    - Includes decimals, symbol, and name
 
 ## Development Setup
 
@@ -187,20 +187,20 @@ The SDK includes comprehensive tests:
 
 1. **Connection Failures**
 
-   - Ensure you have a stable internet connection
-   - Check if the network is supported
-   - Verify network configuration
+    - Ensure you have a stable internet connection
+    - Check if the network is supported
+    - Verify network configuration
 
 2. **Transaction Failures**
 
-   - Check sufficient balance
-   - Verify gas/fee settings
-   - Ensure correct network selection
+    - Check sufficient balance
+    - Verify gas/fee settings
+    - Ensure correct network selection
 
 3. **Token Operations**
-   - Verify token contract address
-   - Check token decimals
-   - Ensure token is supported on the network
+    - Verify token contract address
+    - Check token decimals
+    - Ensure token is supported on the network
 
 ## Contributing
 

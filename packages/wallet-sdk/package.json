@@ -1,54 +1,54 @@
 {
-  "name": "@bitriel/wallet-sdk",
-  "version": "1.1.17",
-  "description": "This is bitriel Wallet SDK",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "homepage": "http://selendra.org",
-  "repository": {
-    "url": "git+https://github.com/bitriel/wallet-sdk.git"
-  },
-  "scripts": {
-    "build": "tsup",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:execute": "ts-node test/wallet-sdk-excecute.test.ts",
-    "test:mnemonic": "ts-node test/mnemonic.test.ts",
-    "test:token-formatters": "ts-node test/tokenFormatters.test.ts",
-    "lint": "eslint . --max-warnings 0",
-    "format": "prettier --ignore-path ../../.prettierignore --config ../../prettier.config.js --write ."
-  },
-  "keywords": [
-    "bitriel",
-    "selendra",
-    "sdk"
-  ],
-  "author": "samallen",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/jest": "^29.5.14",
-    "eslint-plugin-prettier": "5.2.6",
-    "jest": "^29.7.0",
-    "prettier": "^3.5.3",
-    "ts-jest": "^29.2.6",
-    "ts-node": "^10.9.2",
-    "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
-  },
-  "dependencies": {
-    "@covalenthq/client-sdk": "^1.0.2",
-    "@polkadot/api": "^15.7.2",
-    "@polkadot/keyring": "^13.4.3",
-    "@polkadot/types": "^15.7.2",
-    "@polkadot/util": "^13.4.3",
-    "@polkadot/util-crypto": "^13.4.3",
-    "ethers": "^6.12.1"
-  },
-  "exports": {
+    "name": "@bitriel/wallet-sdk",
+    "version": "1.1.17",
+    "description": "This is bitriel Wallet SDK",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.js"
-  }
+    "homepage": "http://selendra.org",
+    "repository": {
+        "url": "git+https://github.com/bitriel/wallet-sdk.git"
+    },
+    "scripts": {
+        "build": "tsup",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage",
+        "test:execute": "ts-node test/wallet-sdk-excecute.test.ts",
+        "test:mnemonic": "ts-node test/mnemonic.test.ts",
+        "test:token-formatters": "ts-node test/tokenFormatters.test.ts",
+        "lint": "eslint . --max-warnings 0",
+        "format": "prettier --ignore-path ../../.prettierignore --config ../../prettier.config.js --write ."
+    },
+    "keywords": [
+        "bitriel",
+        "selendra",
+        "sdk"
+    ],
+    "author": "samallen",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/jest": "^29.5.14",
+        "eslint-plugin-prettier": "5.2.6",
+        "jest": "^29.7.0",
+        "prettier": "^3.5.3",
+        "ts-jest": "^29.2.6",
+        "ts-node": "^10.9.2",
+        "tsup": "^8.0.2",
+        "typescript": "^5.4.5"
+    },
+    "dependencies": {
+        "@covalenthq/client-sdk": "^1.0.2",
+        "@polkadot/api": "^15.7.2",
+        "@polkadot/keyring": "^13.4.3",
+        "@polkadot/types": "^15.7.2",
+        "@polkadot/util": "^13.4.3",
+        "@polkadot/util-crypto": "^13.4.3",
+        "ethers": "^6.12.1"
+    },
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+    }
 }
