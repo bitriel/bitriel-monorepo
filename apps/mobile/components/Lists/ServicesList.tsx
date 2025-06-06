@@ -29,9 +29,9 @@ const ServicesList: React.FC<Props> = ({ list }) => {
                     onPress={() => handleServicePress(item.route)}
                 >
                     <View className="bg-offWhite w-16 h-16 justify-center items-center rounded-2xl mb-3">
-                        <FontAwesome5 name={item.icon} size={30} color={Colors.darkBlue} />
+                        <FontAwesome5 name={item.icon} size={30} color={Colors.secondary} />
                     </View>
-                    <Text className="text-center text-xs text-darkBlue font-SpaceGroteskRegular capitalize">
+                    <Text className="text-center text-xs text-secondary font-SpaceGroteskRegular capitalize">
                         {item.name}
                     </Text>
                 </TouchableOpacity>

@@ -140,19 +140,19 @@ const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
             onClose={handleBottomSheetClose}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
-            handleIndicatorStyle={{ backgroundColor: Colors.darkBlue }}
+            handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
             backgroundStyle={{ backgroundColor: "white" }}
         >
             <View className="flex-row items-center justify-between px-4 py-2 border-b border-gray-100">
                 <TouchableOpacity onPress={handleBottomSheetClose}>
-                    <MaterialIcons name="close" size={24} color={Colors.darkBlue} />
+                    <MaterialIcons name="close" size={24} color={Colors.secondary} />
                 </TouchableOpacity>
                 <Text className="text-xl font-SpaceGroteskBold text-gray-900">Send</Text>
                 <View style={{ width: 24 }} />
             </View>
             <View className="px-4 py-2">
                 <View className="flex-row items-center bg-gray-100 rounded-lg px-3 py-2">
-                    <MaterialIcons name="search" size={20} color={Colors.darkBlue} />
+                    <MaterialIcons name="search" size={20} color={Colors.secondary} />
                     <TextInput
                         className="flex-1 ml-2 text-gray-900 font-SpaceGroteskRegular"
                         placeholder="Search by network or token"
@@ -162,7 +162,7 @@ const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
                     />
                     {searchQuery.length > 0 && (
                         <TouchableOpacity onPress={() => setSearchQuery("")}>
-                            <MaterialIcons name="close" size={20} color={Colors.darkBlue} />
+                            <MaterialIcons name="close" size={20} color={Colors.secondary} />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -173,7 +173,7 @@ const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
                         <View key={network}>
                             <View className="flex-row items-center px-4 py-3">
                                 <View className="w-8 h-8 rounded-lg bg-gray-100 justify-center items-center mr-2">
-                                    <MaterialIcons name="token" size={20} color={Colors.darkBlue} />
+                                    <MaterialIcons name="token" size={20} color={Colors.secondary} />
                                 </View>
                                 <Text className="text-gray-500 text-base font-SpaceGroteskMedium uppercase">
                                     {network}
@@ -189,7 +189,7 @@ const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
                             <MaterialIcons
                                 name={searchQuery.length > 0 ? "search" : "public"}
                                 size={48}
-                                color={Colors.darkBlue}
+                                color={Colors.secondary}
                             />
                         </View>
                         <Text className="text-lg text-gray-400 font-SpaceGroteskMedium text-center mb-2">

@@ -75,7 +75,7 @@
 //       onClose={handleBottomSheetClose}
 //       onChange={(idx) => setIsShowing(idx > -1)}
 //       backdropComponent={renderBackdrop}
-//       handleIndicatorStyle={{ backgroundColor: Colors.darkBlue }}
+//       handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
 //       backgroundStyle={{ backgroundColor: Colors.white }}>
 //       <View>
 //         <View className="mx-3 items-start">
@@ -86,7 +86,7 @@
 //             style={{
 //               width: "100%",
 //               borderWidth: 1,
-//               borderColor: Colors.yellow,
+//               borderColor: Colors.primary,
 //               marginBottom: 4,
 //               padding: 12,
 //               borderRadius: 8
@@ -99,8 +99,8 @@
 //         </View>
 
 //         <SafeAreaView>
-//           <TouchableOpacity className="bg-yellow mx-3 p-3 rounded-xl" onPress={handleAddToken}>
-//             <Text className="text-base text-center text-darkBlue font-SpaceGroteskBold">Import</Text>
+//           <TouchableOpacity className="bg-primary mx-3 p-3 rounded-xl" onPress={handleAddToken}>
+//             <Text className="text-base text-center text-secondary font-SpaceGroteskBold">Import</Text>
 //           </TouchableOpacity>
 //         </SafeAreaView>
 //       </View>

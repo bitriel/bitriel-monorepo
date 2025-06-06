@@ -1,0 +1,22 @@
+<svg width="100%" height="100%" viewBox="0 0 400 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lineGradient" x1="0" y1="0" x2="400" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00F0FF"/>
+      <stop offset="0.5" stop-color="#7B61FF"/>
+      <stop offset="1" stop-color="#FF6BDF"/>
+    </linearGradient>
+    <radialGradient id="circleGradient" cx="0.5" cy="0.5" r="0.5" fx="0.5" fy="0.5">
+      <stop offset="0%" stop-color="#7B61FF" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="0.2"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="800" fill="#111217"/>
+  <!-- Top left gradient circle -->
+  <circle cx="0" cy="0" r="80" fill="url(#circleGradient)"/>
+  <!-- Flowing gradient lines -->
+  <path d="M-20 200 Q 100 300 400 100" stroke="url(#lineGradient)" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M-20 400 Q 200 600 420 300" stroke="url(#lineGradient)" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M-20 700 Q 200 800 420 600" stroke="url(#lineGradient)" stroke-width="2" fill="none" opacity="0.7"/>
+  <!-- Subtle extra line -->
+  <path d="M-20 600 Q 100 700 400 500" stroke="url(#lineGradient)" stroke-width="1" fill="none" opacity="0.3"/>
+</svg>

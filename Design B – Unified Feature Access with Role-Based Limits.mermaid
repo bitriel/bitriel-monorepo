@@ -1,0 +1,39 @@
+flowchart TD
+    A1[App Entry] --> B1{Choose Mode}
+    B1 --> C1[Non-Custodial Mode]
+    B1 --> C2[Custodial Mode]
+
+    %% Wallet Initialization
+    C1 --> D1[Init Local Wallet EVM/Substrate]
+    C2 --> D2[Sign In & Init Custodial Wallet]
+
+    %% Feature Access Layer
+    D1 --> F1[Feature Access Layer]
+    D2 --> F1[Feature Access Layer]
+
+    %% Core Features
+    F1 --> G1[Send Token]
+    F1 --> G2[View NFTs]
+    F1 --> G3[Cross-chain Swap]
+    F1 --> G4[Transaction History]
+    F1 --> G5[Backup & Recovery]
+
+    %% Send Token Flow
+    G1 --> H1{Wallet Type?}
+    H1 --> I1[Sign & Send via Local Wallet]
+    H1 --> I2[Send to Backend Signer]
+
+    %% Cross-chain Swap Flow
+    G3 --> J1{Feature Available?}
+    J1 --> K1[Allowed]
+    J1 --> K2[Restricted in Custodial Mode]
+
+    %% Security Layer
+    D1 --> S1[Encrypted Key in SecureStore]
+    D2 --> S2[Key Vault AWS KMS]
+
+    %% Analytics
+    F1 --> L1[Log Usage Events]
+
+
+%% Design B Insight: Centralized feature logic with dynamic routing based on mode. Reduces development duplication and allows modular restrictions. This is inspired by SubWallet and Nova Wallet, where some features are conditionally enabled based on wallet type.

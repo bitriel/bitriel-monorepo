@@ -83,10 +83,10 @@ const shareQRCode = async (qrRef: React.RefObject<View>, address: string, amount
 const HeaderWarnMsg = ({ networkName }: { networkName: string }) => {
     return (
         <View>
-            <View className="bg-yellow/10 p-3 justify-between flex-row items-center rounded-xl">
+            <View className="bg-primary/10 p-3 justify-between flex-row items-center rounded-xl">
                 <View className="flex-row">
-                    <Iconify icon="solar:danger-circle-line-duotone" size={18} color={Colors.darkBlue} />
-                    <Text className="text-darkBlue break-all w-11/12 ml-1 font-SpaceGroteskMedium bottom-[2px]">
+                    <Iconify icon="solar:danger-circle-line-duotone" size={18} color={Colors.secondary} />
+                    <Text className="text-secondary break-all w-11/12 ml-1 font-SpaceGroteskMedium bottom-[2px]">
                         Only send {networkName} network to this address. Other assets will be lost forever.
                     </Text>
                 </View>
@@ -183,7 +183,11 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
                                         animateText(0);
                                     }}
                                 >
-                                    <Iconify icon="solar:close-circle-line-duotone" size={20} color={Colors.darkBlue} />
+                                    <Iconify
+                                        icon="solar:close-circle-line-duotone"
+                                        size={20}
+                                        color={Colors.secondary}
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </Animated.View>
@@ -203,7 +207,7 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
             <View className="flex-row justify-center gap-8">
                 <View className="items-center">
                     <TouchableOpacity
-                        className="bg-yellow justify-center items-center w-12 h-12 rounded-3xl mx-1"
+                        className="bg-primary justify-center items-center w-12 h-12 rounded-3xl mx-1"
                         onPress={() => {
                             copyAddress(address!);
                         }}
@@ -215,7 +219,7 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
                 </View>
 
                 {/* <View className="items-center">
-          <TouchableOpacity className="bg-yellow justify-center items-center w-12 h-12 rounded-3xl mx-1" onPress={() => setVisible(true)}>
+          <TouchableOpacity className="bg-primary justify-center items-center w-12 h-12 rounded-3xl mx-1" onPress={() => setVisible(true)}>
             <Iconify icon="solar:hashtag-bold" color={Colors.white} size={22} />
           </TouchableOpacity>
 
@@ -224,7 +228,7 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
 
                 <View className="items-center">
                     <TouchableOpacity
-                        className="bg-yellow justify-center items-center w-12 h-12 rounded-3xl mx-1"
+                        className="bg-primary justify-center items-center w-12 h-12 rounded-3xl mx-1"
                         onPress={() => shareQRCode(qrRef, address!, amount, symbol)}
                     >
                         <Iconify icon="solar:square-share-line-bold" color={Colors.white} size={22} />
@@ -260,10 +264,10 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
                             </View>
 
                             <TouchableOpacity
-                                className="bg-yellow p-3 rounded-lg"
+                                className="bg-primary p-3 rounded-lg"
                                 onPress={() => handleConfirmAmount(amount)}
                             >
-                                <Text className="text-center text-darkBlue font-SpaceGroteskBold">CONFIRM</Text>
+                                <Text className="text-center text-secondary font-SpaceGroteskBold">CONFIRM</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

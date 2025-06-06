@@ -12,7 +12,7 @@ const PublicLayout = () => {
             }}
         >
             <Stack.Screen
-                name="welcome"
+                name="welcome/index"
                 options={{
                     headerShown: false,
                     animation: "slide_from_bottom",
@@ -24,6 +24,24 @@ const PublicLayout = () => {
                 options={{
                     title: "Create Mnemonic",
                     headerShown: true,
+                    animation: "slide_from_right",
+                }}
+            />
+
+            <Stack.Screen
+                name="custodial/setup"
+                options={{
+                    title: "Setup Custodial",
+                    headerShown: false,
+                    animation: "slide_from_right",
+                }}
+            />
+
+            <Stack.Screen
+                name="restore/index"
+                options={{
+                    title: "Restore",
+                    headerShown: false,
                     animation: "slide_from_right",
                 }}
             />

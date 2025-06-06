@@ -38,7 +38,7 @@ const MainHeader: React.FC<Props> = ({
         ]}
     >
         <TouchableOpacity onPress={() => router.push({ pathname: "/(auth)/home/settings" })}>
-            <Iconify icon="solar:settings-line-duotone" size={28} color={Colors.darkBlue} />
+            <Iconify icon="solar:settings-line-duotone" size={28} color={Colors.secondary} />
         </TouchableOpacity>
 
         {walletType === "non-custodial" && (
@@ -47,7 +47,7 @@ const MainHeader: React.FC<Props> = ({
                     handleOpenBottomSheet();
                 }}
             >
-                <View className="flex-1 flex-row items-center border-yellow border-2 px-2 m-2 rounded-full">
+                <View className="flex-1 flex-row items-center border-primary border-2 px-2 m-2 rounded-full">
                     {networkChainImage && ( // Display network image if available
                         <Image
                             source={{ uri: selectedNetworkImage || networkChainImage }}
@@ -69,7 +69,7 @@ const MainHeader: React.FC<Props> = ({
             <TouchableOpacity
                 onPress={() => router.push({ pathname: "/(auth)/home/qrScanner", params: { from: "home" } })}
             >
-                <Iconify icon="solar:scanner-line-duotone" size={28} color={Colors.darkBlue} />
+                <Iconify icon="solar:scanner-line-duotone" size={28} color={Colors.secondary} />
             </TouchableOpacity>
         </>
     </View>

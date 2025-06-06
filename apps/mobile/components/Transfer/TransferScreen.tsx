@@ -201,7 +201,7 @@ export const TransferScreen: React.FC<TransferScreenProps> = ({
             <ThemedView style={styles.container}>
                 <View className="flex-row items-center px-4 py-3 border-b border-gray-100">
                     <TouchableOpacity onPress={() => router.back()}>
-                        <Iconify icon="solar:arrow-left-linear" size={24} color={Colors.darkBlue} />
+                        <Iconify icon="solar:arrow-left-linear" size={24} color={Colors.secondary} />
                     </TouchableOpacity>
                     <Text className="ml-4 text-xl font-SpaceGroteskBold text-gray-900">
                         Send {isCustodial ? tokenSymbol : tokenName} on {currentNetwork || "Network"}
@@ -236,7 +236,7 @@ export const TransferScreen: React.FC<TransferScreenProps> = ({
                                 <Ionicons
                                     name={recipient ? "close-circle-outline" : "qr-code-outline"}
                                     size={24}
-                                    color={Colors.darkBlue}
+                                    color={Colors.secondary}
                                 />
                             </TouchableOpacity>
                         </View>

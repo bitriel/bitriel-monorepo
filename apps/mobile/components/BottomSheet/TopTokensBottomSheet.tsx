@@ -48,7 +48,7 @@ const TopTokensBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp,
             enablePanDownToClose={true}
             onClose={handleBottomSheetClose}
             backdropComponent={renderBackdrop}
-            handleIndicatorStyle={{ marginTop: 50, backgroundColor: Colors.darkBlue }}
+            handleIndicatorStyle={{ marginTop: 50, backgroundColor: Colors.secondary }}
             backgroundStyle={{ backgroundColor: "#ffffff99" }}
             backgroundComponent={({ style }) => (
                 <BlurView

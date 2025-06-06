@@ -30,7 +30,7 @@ const FriendsList: React.FC<Props> = ({ list }) => {
                                 className="bg-offWhite mx-2 justify-center items-center px-2 py-5 rounded-lg"
                             >
                                 <Avatar uri={item.avatar} />
-                                <Text className="mt-3 text-darkBlue font-SpaceGroteskRegular">{item.fullName}</Text>
+                                <Text className="mt-3 text-secondary font-SpaceGroteskRegular">{item.fullName}</Text>
                             </TouchableOpacity>
                         )}
                     </View>

@@ -57,7 +57,7 @@ const AuthLayout = () => {
                     title: "",
                     headerLeft: () => (
                         <TouchableOpacity className="pr-2" onPress={router.back}>
-                            <Iconify icon="solar:arrow-left-bold" size={34} color={Colors.darkBlue} />
+                            <Iconify icon="solar:arrow-left-bold" size={34} color={Colors.secondary} />
                         </TouchableOpacity>
                     ),
 

@@ -18,7 +18,7 @@ const Transparent: React.FC<Props> = ({ label, onPress, icon }) => {
             onPress={() => (onPress ? onPress() : {})}
         >
             <Ionicons name={icon} color={Colors.blackText} size={20} />
-            <Text className="text-darkBlue font-SpaceGroteskBold ml-2">{label}</Text>
+            <Text className="text-secondary font-SpaceGroteskBold ml-2">{label}</Text>
         </TouchableOpacity>
     );
 };

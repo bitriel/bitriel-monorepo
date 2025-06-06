@@ -7,7 +7,7 @@ const AppTextInput: React.FC<TextInputProps> = ({ ...otherProps }) => {
             autoCorrect={false}
             placeholderTextColor={"#626262"}
             className={`
-        p-5 bg-offWhite rounded-xl my-2 focus:border-2 focus:border-darkBlue
+        p-5 bg-offWhite rounded-xl my-2 focus:border-2 focus:border-secondary
       `}
             {...otherProps}
         />

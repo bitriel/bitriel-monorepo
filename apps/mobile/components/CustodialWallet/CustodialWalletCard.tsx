@@ -20,17 +20,17 @@ export const CustodialWalletCard: React.FC<CustodialWalletCardProps> = ({ balanc
 
             <View style={styles.actionsContainer}>
                 <TouchableOpacity style={styles.actionButton} onPress={onSend}>
-                    <Iconify icon="solar:round-arrow-up-bold" size={24} color={Colors.darkBlue} />
+                    <Iconify icon="solar:round-arrow-up-bold" size={24} color={Colors.secondary} />
                     <Text style={styles.actionLabel}>Send</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.actionButton} onPress={onReceive}>
-                    <Iconify icon="solar:round-arrow-left-down-bold" size={24} color={Colors.darkBlue} />
+                    <Iconify icon="solar:round-arrow-left-down-bold" size={24} color={Colors.secondary} />
                     <Text style={styles.actionLabel}>Receive</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.actionButton} onPress={onSwap}>
-                    <Iconify icon="solar:round-transfer-vertical-bold" size={24} color={Colors.darkBlue} />
+                    <Iconify icon="solar:round-transfer-vertical-bold" size={24} color={Colors.secondary} />
                     <Text style={styles.actionLabel}>Swap</Text>
                 </TouchableOpacity>
             </View>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     },
     balanceLabel: {
         fontSize: 16,
-        color: Colors.darkBlue,
+        color: Colors.secondary,
         fontFamily: "SpaceGrotesk-Regular",
         marginBottom: 8,
     },
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     actionLabel: {
         marginTop: 4,
         fontSize: 12,
-        color: Colors.darkBlue,
+        color: Colors.secondary,
         fontFamily: "SpaceGrotesk-Regular",
     },
 });

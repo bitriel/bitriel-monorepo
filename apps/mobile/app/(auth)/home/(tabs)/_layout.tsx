@@ -91,12 +91,12 @@ const TabsPage = () => {
                             paddingHorizontal: 20,
                             paddingVertical: 8,
                             borderRadius: 20,
-                            backgroundColor: walletType === "non-custodial" ? Colors.yellow : "transparent",
+                            backgroundColor: walletType === "non-custodial" ? Colors.primary : "transparent",
                         }}
                     >
                         <Text
                             style={{
-                                color: walletType === "non-custodial" ? Colors.blackText : Colors.darkBlue,
+                                color: walletType === "non-custodial" ? Colors.blackText : Colors.secondary,
                                 fontFamily: "SpaceGrotesk-SemiBold",
                             }}
                         >
@@ -109,12 +109,12 @@ const TabsPage = () => {
                             paddingHorizontal: 20,
                             paddingVertical: 8,
                             borderRadius: 20,
-                            backgroundColor: walletType === "custodial" ? Colors.yellow : "transparent",
+                            backgroundColor: walletType === "custodial" ? Colors.primary : "transparent",
                         }}
                     >
                         <Text
                             style={{
-                                color: walletType === "custodial" ? Colors.blackText : Colors.darkBlue,
+                                color: walletType === "custodial" ? Colors.blackText : Colors.secondary,
                                 fontFamily: "SpaceGrotesk-SemiBold",
                             }}
                         >
@@ -127,7 +127,7 @@ const TabsPage = () => {
             <View style={{ flex: 1 }}>
                 <Tabs
                     screenOptions={{
-                        tabBarActiveTintColor: Colors.yellow,
+                        tabBarActiveTintColor: Colors.primary,
                         headerShown: false,
                     }}
                 >

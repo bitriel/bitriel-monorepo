@@ -138,7 +138,7 @@ export default function PassCodeScreen() {
     return (
         <View className="flex flex-1 justify-center items-center bg-white">
             <View className="w-10/12 items-center">
-                <Text className="text-center text-darkBlue font-SpaceGroteskBold text-2xl mb-2">
+                <Text className="text-center text-secondary font-SpaceGroteskBold text-2xl mb-2">
                     {mode === "create" || mode === "set" ? "Create Passcode" : "Confirm Passcode"}
                 </Text>
                 <Text className="text-center text-gray-500 text-base mb-10 font-SpaceGroteskRegular">
@@ -156,7 +156,7 @@ export default function PassCodeScreen() {
                                 width: 22,
                                 height: isSelected ? 22 : 2,
                                 borderRadius: 22,
-                                backgroundColor: Colors.yellow,
+                                backgroundColor: Colors.primary,
                             }}
                         />
                     );

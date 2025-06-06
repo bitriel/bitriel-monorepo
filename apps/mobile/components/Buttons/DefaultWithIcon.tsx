@@ -14,11 +14,11 @@ interface Props {
 const DefaultWithIcon: React.FC<Props> = ({ label, icon, onPress }) => {
     return (
         <TouchableOpacity
-            className="bg-yellow flex-row py-4 justify-center items-center flex-1 rounded-lg mx-1"
+            className="bg-primary flex-row py-4 justify-center items-center flex-1 rounded-lg mx-1"
             onPress={() => (onPress ? onPress() : {})}
         >
-            <Text className="font-SpaceGroteskBold mr-2 text-darkBlue">{label}</Text>
-            <FontAwesome name={icon} color={Colors.darkBlue} />
+            <Text className="font-SpaceGroteskBold mr-2 text-secondary">{label}</Text>
+            <FontAwesome name={icon} color={Colors.secondary} />
         </TouchableOpacity>
     );
 };

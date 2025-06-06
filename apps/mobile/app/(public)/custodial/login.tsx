@@ -66,7 +66,7 @@ export default function CustodialLoginScreen() {
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <Iconify icon="solar:arrow-left-bold" size={24} color={Colors.darkBlue} />
+                        <Iconify icon="solar:arrow-left-bold" size={24} color={Colors.secondary} />
                     </TouchableOpacity>
                     <Text style={styles.title}>Login</Text>
                 </View>
@@ -102,9 +102,9 @@ export default function CustodialLoginScreen() {
                                 disabled={isLoading}
                             >
                                 {showPassword ? (
-                                    <Iconify icon="solar:eye-closed-bold" size={24} color={Colors.darkBlue} />
+                                    <Iconify icon="solar:eye-closed-bold" size={24} color={Colors.secondary} />
                                 ) : (
-                                    <Iconify icon="solar:eye-bold" size={24} color={Colors.darkBlue} />
+                                    <Iconify icon="solar:eye-bold" size={24} color={Colors.secondary} />
                                 )}
                             </TouchableOpacity>
                         </View>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontFamily: "SpaceGrotesk-Bold",
-        color: Colors.darkBlue,
+        color: Colors.secondary,
     },
     form: {
         padding: 16,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 14,
         fontFamily: "SpaceGrotesk-Medium",
-        color: Colors.darkBlue,
+        color: Colors.secondary,
     },
     input: {
         borderWidth: 1,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         padding: 4,
     },
     button: {
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.primary,
         padding: 16,
         borderRadius: 8,
         alignItems: "center",
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         fontFamily: "SpaceGrotesk-SemiBold",
     },
     linkText: {
-        color: Colors.yellow,
+        color: Colors.primary,
         fontSize: 14,
         fontFamily: "SpaceGrotesk-Medium",
         textAlign: "center",

@@ -65,7 +65,7 @@ const NeverShareMsgBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
             onChange={idx => setIsShowing(idx > -1)}
-            handleIndicatorStyle={{ backgroundColor: Colors.darkBlue }}
+            handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
             backgroundStyle={{ backgroundColor: Colors.white }}
         >
             <View style={styles.container}>
@@ -132,24 +132,24 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     key: {
-        color: Colors.darkBlue,
+        color: Colors.secondary,
         fontWeight: "bold",
     },
     text: {
         flex: 1,
-        color: Colors.darkBlue,
+        color: Colors.secondary,
     },
     safeArea: {
         marginVertical: 20,
         alignItems: "center",
     },
     button: {
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.primary,
         padding: 15,
         borderRadius: 10,
     },
     buttonText: {
-        color: Colors.darkBlue,
+        color: Colors.secondary,
         fontSize: 16,
         fontWeight: "bold",
         textAlign: "center",

@@ -29,10 +29,12 @@ const NetworkListItem = ({
     <TouchableOpacity
         onPress={onPress}
         className={`${isSelected ? "bg-blue-950/95" : "bg-white"}`}
-        style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: Colors.darkBlue }}
+        style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: Colors.secondary }}
     >
         <View className="flex-row items-center">
-            <View className={`${isSelected ? "bg-yellow" : "bg-transparent"} absolute w-1 -ml-1 rounded-full h-full`} />
+            <View
+                className={`${isSelected ? "bg-primary" : "bg-transparent"} absolute w-1 -ml-1 rounded-full h-full`}
+            />
             {network.logo && (
                 <Image
                     source={{ uri: network.logo }}
@@ -104,11 +106,11 @@ const ChangeNetworkBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
             index={-1}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
-            handleIndicatorStyle={{ backgroundColor: Colors.darkBlue }}
+            handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
             backgroundStyle={{ backgroundColor: Colors.white }}
         >
             <View className="px-4 py-2">
-                <Text className="text-center text-lg font-SpaceGroteskBold text-darkBlue">Select a network</Text>
+                <Text className="text-center text-lg font-SpaceGroteskBold text-secondary">Select a network</Text>
             </View>
 
             <BottomSheetFlatList

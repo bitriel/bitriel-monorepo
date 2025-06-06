@@ -43,10 +43,10 @@ export default function AppIconPage() {
                 <TouchableOpacity key={icon.name} className="flex-row p-4 gap-5 justify-between" onPress={() => onChangeAppIcon(icon.name)}>
                   <View className="flex-row">
                     <Image source={icon.icon} style={{ width: 24, height: 24, marginRight: 12 }} />
-                    <Text className="text-base font-SpaceGroteskBold text-darkBlue">{icon.name}</Text>
+                    <Text className="text-base font-SpaceGroteskBold text-secondary">{icon.name}</Text>
                   </View>
 
-                  {activeIcon.toLowerCase() === icon.name.toLowerCase() && <Iconify icon="solar:check-circle-bold" size={24} color={Colors.yellow} />}
+                  {activeIcon.toLowerCase() === icon.name.toLowerCase() && <Iconify icon="solar:check-circle-bold" size={24} color={Colors.primary} />}
                 </TouchableOpacity>
               ))} */}
                         </View>

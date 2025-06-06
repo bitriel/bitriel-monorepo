@@ -49,7 +49,7 @@ export default function ImportSecretPhraseScreen() {
                         <TextInput
                             autoCapitalize="none"
                             autoCorrect={false}
-                            className="h-3/5 border-yellow border mb-4 px-3 py-4 text-base rounded-lg"
+                            className="h-3/5 border-primary border mb-4 px-3 py-4 text-base rounded-lg"
                             onChangeText={text => setEnteredMnemonic(text)}
                             value={enteredMnemonic}
                             multiline={true}
@@ -59,7 +59,7 @@ export default function ImportSecretPhraseScreen() {
                         />
 
                         <TouchableOpacity className="items-end" onPress={handlePasteFromClipboard}>
-                            <Text className="text-base text-darkBlue font-SpaceGroteskBold">Paste</Text>
+                            <Text className="text-base text-secondary font-SpaceGroteskBold">Paste</Text>
                         </TouchableOpacity>
                     </KeyboardAvoidingView>
 
@@ -68,8 +68,8 @@ export default function ImportSecretPhraseScreen() {
                     </Text>
                 </View>
 
-                <TouchableOpacity className="bg-yellow p-5 mt-5 rounded-xl" onPress={importWallet}>
-                    <Text className="text-base text-center text-darkBlue font-SpaceGroteskBold">Import Wallet</Text>
+                <TouchableOpacity className="bg-primary p-5 mt-5 rounded-xl" onPress={importWallet}>
+                    <Text className="text-base text-center text-secondary font-SpaceGroteskBold">Import Wallet</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>

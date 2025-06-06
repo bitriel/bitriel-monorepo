@@ -111,7 +111,7 @@ export default function CustodialSendScreen() {
             <View style={styles.container}>
                 <Stack.Screen options={{ title: "Select Token" }} />
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={Colors.darkBlue} />
+                    <ActivityIndicator size="large" color={Colors.secondary} />
                     <Text className="mt-4 text-gray-600 font-SpaceGroteskMedium">Loading tokens...</Text>
                 </View>
             </View>
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     retryButton: {
-        backgroundColor: Colors.darkBlue,
+        backgroundColor: Colors.secondary,
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 8,
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: Colors.darkBlue,
+        backgroundColor: Colors.secondary,
         justifyContent: "center",
         alignItems: "center",
     },

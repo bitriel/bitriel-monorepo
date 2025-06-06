@@ -33,7 +33,7 @@ export default function WarnMsgRecoveryPage() {
 
                     <Text className="text-center text-2xl px-2 font-SpaceGroteskBold">Show secret phrase</Text>
 
-                    <Text className="text-darkBlue text-center my-3 px-2 font-SpaceGroteskRegular">
+                    <Text className="text-secondary text-center my-3 px-2 font-SpaceGroteskRegular">
                         Tap on all checkboxes to confirm you understand the importance of your secret phrase
                     </Text>
                 </View>
@@ -44,7 +44,7 @@ export default function WarnMsgRecoveryPage() {
                     <View className="bg-gray-50 p-4 rounded-xl">
                         <BouncyCheckbox
                             size={25}
-                            fillColor={Colors.yellow}
+                            fillColor={Colors.primary}
                             unFillColor={Colors.white}
                             text="Your secret phrase is the only way to recover your wallet. "
                             innerIconStyle={{ borderWidth: 2 }}
@@ -61,7 +61,7 @@ export default function WarnMsgRecoveryPage() {
                     <View className="bg-gray-50 p-4 rounded-xl">
                         <BouncyCheckbox
                             size={25}
-                            fillColor={Colors.yellow}
+                            fillColor={Colors.primary}
                             unFillColor={Colors.white}
                             text="Do not let anyone see your secret phrase"
                             innerIconStyle={{ borderWidth: 2 }}
@@ -78,7 +78,7 @@ export default function WarnMsgRecoveryPage() {
                     <View className="bg-gray-50 p-4 rounded-xl">
                         <BouncyCheckbox
                             size={25}
-                            fillColor={Colors.yellow}
+                            fillColor={Colors.primary}
                             unFillColor={Colors.white}
                             text="Never share your secret phrase with anyone"
                             innerIconStyle={{ borderWidth: 2 }}
@@ -96,7 +96,7 @@ export default function WarnMsgRecoveryPage() {
 
             <SafeAreaView>
                 <TouchableOpacity
-                    className={`bg-${isAllCheckboxesChecked ? "yellow" : "yellow/50"} p-4 m-3 rounded-xl ${!isAllCheckboxesChecked ? "opacity-50" : ""}`}
+                    className={`bg-${isAllCheckboxesChecked ? "primary" : "primary/50"} p-4 m-3 rounded-xl ${!isAllCheckboxesChecked ? "opacity-50" : ""}`}
                     onPress={() => {
                         if (isAllCheckboxesChecked) {
                             setVisible(true);
@@ -104,7 +104,7 @@ export default function WarnMsgRecoveryPage() {
                     }}
                     disabled={!isAllCheckboxesChecked}
                 >
-                    <Text className="text-base text-center text-darkBlue font-SpaceGroteskBold">Continue</Text>
+                    <Text className="text-base text-center text-secondary font-SpaceGroteskBold">Continue</Text>
                 </TouchableOpacity>
             </SafeAreaView>
 
@@ -113,7 +113,7 @@ export default function WarnMsgRecoveryPage() {
                     <View className="bg-white rounded-2xl w-[80%] p-4">
                         <View className="gap-3">
                             <View className="gap-2">
-                                <Text className="text-center text-xl text-darkBlue font-SpaceGroteskBold">
+                                <Text className="text-center text-xl text-secondary font-SpaceGroteskBold">
                                     Show secret recovery phrase
                                 </Text>
 
@@ -131,7 +131,7 @@ export default function WarnMsgRecoveryPage() {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
-                                    className="flex-1 bg-yellow p-3 rounded-lg"
+                                    className="flex-1 bg-primary p-3 rounded-lg"
                                     onPress={() => {
                                         setVisible(false);
                                         router.push({ pathname: "/(auth)/home/settings/account/recovery" });

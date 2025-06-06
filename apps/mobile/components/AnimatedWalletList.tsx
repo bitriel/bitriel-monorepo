@@ -82,8 +82,8 @@ export const AnimatedWalletList: React.FC<AnimatedWalletListProps> = ({ tokens, 
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={onRefresh}
-                        tintColor={Colors.yellow}
-                        colors={[Colors.yellow]}
+                        tintColor={Colors.primary}
+                        colors={[Colors.primary]}
                         progressBackgroundColor="#ffffff"
                         style={{ backgroundColor: "transparent" }}
                     />

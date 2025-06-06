@@ -30,7 +30,7 @@ export default function TransactionSuccess() {
             <Text className="font-SpaceGroteskSemiBold text-base text-black">Token were successfully transferred.</Text>
 
             <TouchableOpacity
-                className="bg-yellow mx-3 p-3 rounded-xl w-3/4"
+                className="bg-primary mx-3 p-3 rounded-xl w-3/4"
                 onPress={() => {
                     router.navigate({ pathname: "/(auth)/home/(tabs)/wallet", params: { mnemonicParam: mnemonic } });
                 }}

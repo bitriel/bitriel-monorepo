@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 16,
-        color: Colors.darkBlue,
+        color: Colors.secondary,
         textAlign: "center",
     },
     safeArea: {
@@ -110,12 +110,12 @@ const styles = StyleSheet.create({
         color: Colors.red,
     },
     continueButton: {
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.primary,
         padding: 16,
         borderRadius: 12,
     },
     continueButtonText: {
-        color: Colors.darkBlue,
+        color: Colors.secondary,
         fontSize: 16,
         fontWeight: "bold",
         textAlign: "center",

@@ -50,7 +50,7 @@ const TopCryptoListing = () => {
                         source={require("~Assets/animations/loading.json")}
                     />
 
-                    <Text className="font-SpaceGroteskSemiBold text-base text-darkBlue">Loading...</Text>
+                    <Text className="font-SpaceGroteskSemiBold text-base text-secondary">Loading...</Text>
                 </View>
             ) : error ? (
                 <Text>{error}</Text>
@@ -66,11 +66,11 @@ const TopCryptoListing = () => {
                                         style={{ width: 40, height: 40 }}
                                     />
                                     <View style={{ flex: 1, gap: 6 }}>
-                                        <Text className="font-SpaceGroteskBold text-darkBlue">{coin.name}</Text>
+                                        <Text className="font-SpaceGroteskBold text-secondary">{coin.name}</Text>
                                         <Text className="font-SpaceGroteskRegular text-defaultText">{coin.symbol}</Text>
                                     </View>
                                     <View style={{ gap: 6, alignItems: "flex-end" }}>
-                                        <Text className="font-SpaceGroteskBold text-darkBlue">
+                                        <Text className="font-SpaceGroteskBold text-secondary">
                                             {coin.quote.USD.price.toFixed(2)} $
                                         </Text>
                                         <View className="gap-1 flex-row items-center">

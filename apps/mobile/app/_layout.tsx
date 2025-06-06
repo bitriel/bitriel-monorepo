@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useCustodialAuthStore } from "~/src/store/useCustodialAuthStore";
 import { useWalletTypeStore } from "~/src/store/useWalletTypeStore";
 import { authApi } from "~/src/api/userApi";
+import { StatusBar } from "react-native";
 
 const InitialLayout = () => {
     const [fontsLoaded] = useFonts({
@@ -74,12 +75,12 @@ const InitialLayout = () => {
                 }
             } else {
                 // No wallet found, go to welcome screen
-                router.replace("/welcome");
+                router.replace("/(public)/welcome");
             }
         } catch (error) {
             console.error("Error checking wallet:", error);
             // Handle error state or show an error message to the user
-            router.replace("/welcome");
+            router.replace("/(public)/welcome");
         }
     };
 

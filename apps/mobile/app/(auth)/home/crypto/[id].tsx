@@ -16,7 +16,7 @@ Animated.addWhitelistedNativeProps({ text: true });
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 // function ToolTip({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }) {
-//   return <Circle cx={x} cy={y} r={8} color={Colors.yellow} />;
+//   return <Circle cx={x} cy={y} r={8} color={Colors.primary} />;
 // }
 
 const InfoCoin = () => {
@@ -85,7 +85,7 @@ const InfoCoin = () => {
                         source={require("~Assets/animations/loading.json")}
                     />
 
-                    <Text className="font-SpaceGroteskSemiBold text-base text-darkBlue">Loading...</Text>
+                    <Text className="font-SpaceGroteskSemiBold text-base text-secondary">Loading...</Text>
                 </View>
             ) : error ? (
                 <Text>{error}</Text>
@@ -118,7 +118,7 @@ const InfoCoin = () => {
                                         <>
                                             {!isActive && (
                                                 <View>
-                                                    <Text className="text-3xl font-SpaceGroteskBold text-darkBlue">
+                                                    <Text className="text-3xl font-SpaceGroteskBold text-secondary">
                                                         {coinTicker[coinTicker.length - 1]["high"]} $
                                                     </Text>
                                                     <Text className={"text-lg text-defaultText"}>Today</Text>
@@ -129,7 +129,7 @@ const InfoCoin = () => {
                                                     <AnimatedTextInput
                                                         editable={false}
                                                         underlineColorAndroid={"transparent"}
-                                                        className="text-3xl font-SpaceGroteskBold text-darkBlue"
+                                                        className="text-3xl font-SpaceGroteskBold text-secondary"
                                                         animatedProps={animatedText}
                                                     ></AnimatedTextInput>
                                                     <AnimatedTextInput
@@ -158,7 +158,7 @@ const InfoCoin = () => {
                                                     <>
                                                         <Line
                                                             points={points.high}
-                                                            color={Colors.yellow}
+                                                            color={Colors.primary}
                                                             strokeWidth={3}
                                                         />
                                                         {/* {isActive && <ToolTip x={state.x.position} y={state.y.high.position} />} */}

@@ -10,7 +10,7 @@ interface Props {
 const Default: React.FC<Props> = ({ label, onPress }) => {
     return (
         <TouchableOpacity
-            className="bg-yellow py-4 justify-center items-center rounded-lg"
+            className="bg-primary py-4 justify-center items-center rounded-lg"
             onPress={() => (onPress ? onPress() : {})}
         >
             <Text className="font-bold mr-2 font-SpaceGroteskBold">{label}</Text>

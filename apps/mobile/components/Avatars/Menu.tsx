@@ -7,7 +7,7 @@ interface Props {
 
 const MenuAvatar: React.FC<Props> = ({ uri }) => {
     return (
-        <View className="h-11 w-11 mx-3 rounded-2xl bg-darkBlue">
+        <View className="h-11 w-11 mx-3 rounded-2xl bg-secondary">
             <Image
                 source={{
                     uri,
