@@ -106,7 +106,7 @@ function TransactionItem({ time }: { time: string }) {
                     <Ionicons name="arrow-up" size={20} color="#6B7280" />
                 </View>
                 <View className="justify-center flex-1">
-                    <Text className="text-gray-800 text-base font-medium">Transfer</Text>
+                    <Text className="text-gray-800 text-base font-SpaceGroteskMedium">Transfer</Text>
                     <Text className="text-gray-500 text-sm w-full" numberOfLines={1} ellipsizeMode="middle">
                         To: 5DWespGr297i...RLXpJ5xFL8XdLGt
                     </Text>

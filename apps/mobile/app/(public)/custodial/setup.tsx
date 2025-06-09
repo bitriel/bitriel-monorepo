@@ -31,6 +31,7 @@ export default function SignInScreen() {
     }, []);
 
     const handleContinue = useCallback(() => {
+        handleCloseSheet();
         router.push("/mnemonic/create");
     }, []);
 
@@ -40,7 +41,7 @@ export default function SignInScreen() {
 
             <View className="flex-row justify-between items-center px-6 py-4">
                 <TouchableOpacity onPress={() => router.back()}>
-                    <Text className="text-lg font-bold text-gray-800">Cancel</Text>
+                    <Text className="text-lg font-SpaceGroteskBold text-gray-800">Cancel</Text>
                 </TouchableOpacity>
             </View>
 
