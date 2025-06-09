@@ -81,6 +81,15 @@ const PublicLayout = () => {
                     animation: "slide_from_right",
                 }}
             />
+
+            <Stack.Screen
+                name="auth-method/index"
+                options={{
+                    title: "Authentication Method",
+                    headerShown: false,
+                    animation: "slide_from_right",
+                }}
+            />
         </Stack>
     );
 };

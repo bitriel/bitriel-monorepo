@@ -27,7 +27,15 @@ const Welcome = () => {
                         <View className="gap-3">
                             <TouchableOpacity
                                 className="bg-[#007AFF] rounded-xl p-4 shadow-lg shadow-[#007AFF]/30"
-                                onPress={() => router.push({ pathname: "/(public)/custodial/setup" })}
+                                onPress={() =>
+                                    router.push({
+                                        pathname: "/(public)/passcode",
+                                        params: {
+                                            modeTypeParam: "create",
+                                            fromParam: "createWallet",
+                                        },
+                                    })
+                                }
                             >
                                 <View className="flex-row justify-between items-center">
                                     <Text className="text-white text-base font-semibold text-center flex-1">
@@ -37,7 +45,15 @@ const Welcome = () => {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 className="bg-transparent rounded-xl p-4"
-                                onPress={() => router.push({ pathname: "/(public)/restore" })}
+                                onPress={() =>
+                                    router.push({
+                                        pathname: "/(public)/passcode",
+                                        params: {
+                                            modeTypeParam: "create",
+                                            fromParam: "restoreWallet",
+                                        },
+                                    })
+                                }
                             >
                                 <Text className="text-white text-base font-semibold text-center">I have a wallet</Text>
                             </TouchableOpacity>

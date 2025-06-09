@@ -23,8 +23,8 @@ const TabsPage = () => {
                 if (!isAuthenticated) {
                     // Redirect to login screen with fromWallet parameter
                     router.push({
-                        pathname: "/(public)/custodial/login",
-                        params: { fromWallet: "true" },
+                        pathname: "/(public)/custodial/setup",
+                        params: { from: "custodial" },
                     });
                     return;
                 }

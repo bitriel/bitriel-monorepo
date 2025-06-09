@@ -6,6 +6,7 @@ import { KeyboardAvoidingView } from "react-native";
 import { validateMnemonic } from "@bitriel/wallet-sdk/src/utils/mnemonic";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import Colors from "~/src/constants/Colors";
+import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 
 export default function ImportSecretPhraseScreen() {
     const [enteredMnemonic, setEnteredMnemonic] = useState<string>("");
@@ -15,19 +16,19 @@ export default function ImportSecretPhraseScreen() {
         setEnteredMnemonic(clipboardContent);
     };
 
-    const importWallet = () => {
+    const importWallet = async () => {
         const trimmedMnemonic = enteredMnemonic.trimEnd();
 
         const isValidMnemonic = validateMnemonic(trimmedMnemonic);
 
         if (isValidMnemonic) {
-            router.push({
-                pathname: "/(public)/passcode",
-                params: {
-                    modeTypeParam: "create",
-                    fromParam: "importMnemonic",
-                    mnemonic: trimmedMnemonic,
-                },
+            // Since passcode is already created and confirmed in the initial flow,
+            // store the mnemonic and go directly to the wallet
+            await ExpoSecureStoreAdapter.setItem("wallet_mnemonic", trimmedMnemonic);
+
+            router.replace({
+                pathname: "/(auth)/home/(tabs)/wallet",
+                params: { mnemonicParam: trimmedMnemonic },
             });
         } else {
             Dialog.show({

@@ -35,6 +35,20 @@ export default function SignInScreen() {
         router.push("/mnemonic/create");
     }, []);
 
+    const handleCustodialAuth = useCallback(() => {
+        // Since passcode is already set, proceed with custodial authentication
+        // This would typically involve the actual SSO authentication process
+        // For now, we'll simulate successful authentication
+
+        // After successful authentication, navigate directly to wallet
+        router.replace({
+            pathname: "/(auth)/home/(tabs)/wallet",
+            params: {
+                isDualWallet: "true",
+            },
+        });
+    }, []);
+
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
             <StatusBar barStyle="dark-content" backgroundColor="#f9fafb" />
@@ -72,6 +86,7 @@ export default function SignInScreen() {
                 <TouchableOpacity
                     className="bg-blue-600 rounded-2xl py-4 px-6 flex-row items-center justify-center shadow-sm"
                     activeOpacity={0.8}
+                    onPress={handleCustodialAuth}
                 >
                     <Ionicons name="logo-apple" size={24} color="#fff" style={{ marginRight: 16 }} />
                     <Text className="text-lg font-semibold text-white flex-1 text-center mr-10">

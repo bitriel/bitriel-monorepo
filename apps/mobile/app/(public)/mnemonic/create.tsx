@@ -10,6 +10,7 @@ import { Shield, Copy } from "lucide-react-native";
 
 import MnemonicBox from "~/components/Mnemonic/MnemonicBox";
 import Colors from "~/src/constants/Colors";
+import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 
 export default function SecretPhraseScreen() {
     const [mnemonic, setMnemonic] = useState<string>("");
@@ -38,15 +39,15 @@ export default function SecretPhraseScreen() {
         }
     }, [fadeAnim]);
 
-    const handleConfirmBackup = useCallback(() => {
+    const handleConfirmBackup = useCallback(async () => {
         if (hasConfirmed) {
-            router.push({
-                pathname: "/(public)/passcode",
-                params: {
-                    modeTypeParam: "create",
-                    fromParam: "importMnemonic",
-                    mnemonic: mnemonic,
-                },
+            // Since passcode is already created and confirmed in the initial flow,
+            // store the mnemonic and go directly to the wallet
+            await ExpoSecureStoreAdapter.setItem("wallet_mnemonic", mnemonic);
+
+            router.replace({
+                pathname: "/(auth)/home/(tabs)/wallet",
+                params: { mnemonicParam: mnemonic },
             });
         } else {
             setHasConfirmed(true);

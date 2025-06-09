@@ -60,8 +60,13 @@ export default function PassCodeScreen() {
                 const enteredPin = newPinCode.join("");
 
                 if (getPin && getPin === enteredPin) {
-                    // Navigate to wallet screen based on the flow
-                    if (from === "custodial") {
+                    // Navigate based on the flow
+                    if (from === "createWallet" || from === "restoreWallet") {
+                        // Store the flow type temporarily for the auth method screen
+                        await ExpoSecureStoreAdapter.setItem("temp_flow_type", from);
+                        // New flow: redirect to auth method selection after passcode setup
+                        router.push("/(public)/auth-method");
+                    } else if (from === "custodial") {
                         // For custodial flow, navigate to wallet screen
                         router.replace({
                             pathname: "/(auth)/home/(tabs)/wallet",
@@ -70,14 +75,8 @@ export default function PassCodeScreen() {
                                 isDualWallet: "true",
                             },
                         });
-                    } else if (from === "createMnemonic" || from === "importMnemonic") {
-                        // For non-custodial flow
-                        await ExpoSecureStoreAdapter.setItem("wallet_mnemonic", mnemonic!);
-                        router.replace({
-                            pathname: "/(auth)/home/(tabs)/wallet",
-                            params: { mnemonicParam: mnemonic },
-                        });
                     }
+                    // Note: createMnemonic and importMnemonic cases removed as they now go directly to wallet
                 } else {
                     setIsPinMatch(false);
                     setPinCode([]);
