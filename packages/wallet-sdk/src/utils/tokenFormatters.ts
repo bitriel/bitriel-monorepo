@@ -58,7 +58,7 @@ export function formatTokenBalance(balance: string, decimals: number, options: T
         // Return formatted string, omitting decimal point if no fractional part
         return fractionalPart ? `${wholePart}.${fractionalPart}` : wholePart;
     } catch (error) {
-        console.warn("Failed to format token balance:", error);
+        // Silently return original balance for invalid inputs
         return balance;
     }
 }
@@ -79,8 +79,16 @@ export function parseTokenBalance(formattedBalance: string, decimals: number): s
         const paddedFractional = fractionalPart.padEnd(decimals, "0");
         const finalFractional = paddedFractional.slice(0, decimals);
 
-        // Combine parts and return
-        return wholePart + finalFractional;
+        // Combine parts and convert to BigInt to remove leading zeros, then back to string
+        const rawBalance = wholePart + finalFractional;
+
+        // Handle special case of "0" - don't convert to BigInt as it would remain "0"
+        if (rawBalance === "0".padEnd(decimals + 1, "0")) {
+            return "0";
+        }
+
+        // Convert to BigInt and back to string to remove leading zeros
+        return BigInt(rawBalance).toString();
     } catch (error) {
         console.warn("Failed to parse token balance:", error);
         return formattedBalance;

@@ -18,11 +18,22 @@ export function parseTransactionAmount(
         throw new Error("Amount cannot be null or undefined");
     }
 
+    const amountStr = amount.toString();
+
     if (chainType === "evm") {
-        return ethers.parseEther(amount.toString()).toString();
+        try {
+            // Handle excessive decimal places by truncating to 18 decimals max
+            const [whole, fraction = ""] = amountStr.split(".");
+            if (fraction.length > 18) {
+                const truncatedAmount = `${whole}.${fraction.slice(0, 18)}`;
+                return ethers.parseEther(truncatedAmount).toString();
+            }
+            return ethers.parseEther(amountStr).toString();
+        } catch (error) {
+            throw new Error(`Failed to parse EVM amount: ${amountStr}. ${error}`);
+        }
     } else {
         // For Substrate, we need to handle decimal numbers properly
-        const amountStr = amount.toString();
         const [whole, fraction = ""] = amountStr.split(".");
         const paddedFraction = fraction.padEnd(decimals, "0").slice(0, decimals);
         const fullNumber = whole + paddedFraction;

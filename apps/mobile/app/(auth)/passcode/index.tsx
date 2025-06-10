@@ -80,14 +80,8 @@ export default function PassCodeScreen() {
     const handleSendOperation = async () => {
         setShowLoadingModal(true);
         try {
-            if (walletType === "custodial") {
-                const transferRequest: TokenTransferRequest = {
-                    tokenAddress: contractAddress!,
-                    toAddress: recipient!,
-                    amount: parseFloat(amount!),
-                };
-
-                await swapApi.transferToken(transferRequest);
+            const hash = await sendTransaction(recipient!, amount!);
+            if (hash) {
                 await new Promise(resolve => setTimeout(resolve, 800));
                 setShowLoadingModal(false);
                 setTimeout(() => {
@@ -103,25 +97,6 @@ export default function PassCodeScreen() {
                 setTimeout(() => {
                     router.replace({ pathname: "/(auth)/home/success" });
                 }, 3500);
-            } else {
-                const hash = await sendTransaction(recipient!, amount!);
-                if (hash) {
-                    await new Promise(resolve => setTimeout(resolve, 800));
-                    setShowLoadingModal(false);
-                    setTimeout(() => {
-                        Dialog.show({
-                            type: ALERT_TYPE.SUCCESS,
-                            title: "Success",
-                            textBody: "Transfer completed successfully",
-                            button: "Close",
-                            autoClose: 3000,
-                        });
-                    }, 1000);
-
-                    setTimeout(() => {
-                        router.replace({ pathname: "/(auth)/home/success" });
-                    }, 3500);
-                }
             }
         } catch (error: any) {
             console.error("Send operation failed:", error);

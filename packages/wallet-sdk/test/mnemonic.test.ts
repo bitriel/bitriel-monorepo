@@ -6,113 +6,70 @@ import {
     formatMnemonic,
 } from "../src/utils/mnemonic";
 
-async function main() {
-    try {
-        console.log("=== Testing Mnemonic Generation and Validation ===\n");
-
-        // Test 1: Default 12-word mnemonic
-        console.log("Test 1: Default 12-word mnemonic");
+describe("Mnemonic Generation and Validation", () => {
+    test("should generate default 12-word mnemonic", () => {
         const defaultMnemonic = generateMnemonic();
-        console.log("Generated mnemonic:");
-        console.log(formatMnemonic(defaultMnemonic));
-        console.log("Word count:", getMnemonicWordCount(defaultMnemonic));
-        console.log("Strength:", getMnemonicStrength(defaultMnemonic), "bits");
-        console.log("Valid:", validateMnemonic(defaultMnemonic));
-        console.log("---\n");
 
-        // Test 2: 24-word mnemonic
-        console.log("Test 2: 24-word mnemonic");
-        const longMnemonic = generateMnemonic({ wordCount: 24, strength: 256 });
-        console.log("Generated mnemonic:");
-        console.log(formatMnemonic(longMnemonic));
-        console.log("Word count:", getMnemonicWordCount(longMnemonic));
-        console.log("Strength:", getMnemonicStrength(longMnemonic), "bits");
-        console.log("Valid:", validateMnemonic(longMnemonic));
-        console.log("---\n");
+        expect(getMnemonicWordCount(defaultMnemonic)).toBe(12);
+        expect(getMnemonicStrength(defaultMnemonic)).toBe(128);
+        expect(validateMnemonic(defaultMnemonic)).toBe(true);
+        expect(defaultMnemonic.split(" ").length).toBe(12);
+    });
 
-        // Test 3: 15-word mnemonic
-        console.log("Test 3: 15-word mnemonic");
-        const mediumMnemonic = generateMnemonic({
-            wordCount: 15,
-            strength: 160,
-        });
-        console.log("Generated mnemonic:");
-        console.log(formatMnemonic(mediumMnemonic));
-        console.log("Word count:", getMnemonicWordCount(mediumMnemonic));
-        console.log("Strength:", getMnemonicStrength(mediumMnemonic), "bits");
-        console.log("Valid:", validateMnemonic(mediumMnemonic));
-        console.log("---\n");
+    test("should generate 24-word mnemonic", () => {
+        const mnemonic24 = generateMnemonic({ wordCount: 24, strength: 256 });
 
-        // Test 4: Invalid mnemonics
-        console.log("Test 4: Invalid mnemonic validation");
+        expect(getMnemonicWordCount(mnemonic24)).toBe(24);
+        expect(getMnemonicStrength(mnemonic24)).toBe(256);
+        expect(validateMnemonic(mnemonic24)).toBe(true);
+        expect(mnemonic24.split(" ").length).toBe(24);
+    });
+
+    test("should generate 15-word mnemonic", () => {
+        const mnemonic15 = generateMnemonic({ wordCount: 15, strength: 160 });
+
+        expect(getMnemonicWordCount(mnemonic15)).toBe(15);
+        expect(getMnemonicStrength(mnemonic15)).toBe(160);
+        expect(validateMnemonic(mnemonic15)).toBe(true);
+        expect(mnemonic15.split(" ").length).toBe(15);
+    });
+
+    test("should validate invalid mnemonics correctly", () => {
         const invalidMnemonics = [
             "invalid mnemonic phrase",
-            "word1 word2 word3", // Too short
-            "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13", // Too long
-            "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13 word14 word15 word16", // Invalid length
+            "word1 word2 word3",
+            "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13",
+            "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13 word14 word15 word16",
         ];
 
-        invalidMnemonics.forEach((mnemonic, index) => {
-            console.log(`Invalid mnemonic ${index + 1}:`);
-            console.log(mnemonic);
-            console.log("Valid:", validateMnemonic(mnemonic));
-            console.log("Word count:", getMnemonicWordCount(mnemonic));
-            console.log("Strength:", getMnemonicStrength(mnemonic), "bits");
-            console.log("---");
+        invalidMnemonics.forEach(invalidMnemonic => {
+            expect(validateMnemonic(invalidMnemonic)).toBe(false);
         });
-        console.log("\n");
+    });
 
-        // Test 5: Error handling
-        console.log("Test 5: Error handling");
+    test("should handle error cases for invalid parameters", () => {
+        // Invalid word count
+        expect(() => generateMnemonic({ wordCount: 13 as any })).toThrow(
+            "Invalid word count. Must be 12, 15, 18, 21, or 24"
+        );
 
-        // Test invalid word count
-        try {
-            console.log("Attempting to generate mnemonic with invalid word count (13):");
-            generateMnemonic({ wordCount: 13 as any, strength: 128 });
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.log("✓ Expected error for invalid word count:", error.message);
-            } else {
-                console.log("✗ Unexpected error type:", error);
-            }
-        }
+        // Invalid strength
+        expect(() => generateMnemonic({ strength: 129 as any })).toThrow(
+            "Invalid strength. Must be 128, 160, 192, 224, or 256"
+        );
 
-        // Test invalid strength
-        try {
-            console.log("\nAttempting to generate mnemonic with invalid strength (129):");
-            generateMnemonic({ wordCount: 12, strength: 129 as any });
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.log("✓ Expected error for invalid strength:", error.message);
-            } else {
-                console.log("✗ Unexpected error type:", error);
-            }
-        }
+        // Mismatched strength and word count
+        expect(() => generateMnemonic({ strength: 256, wordCount: 12 })).toThrow(
+            "Strength 256 does not match word count 12. Expected strength: 128"
+        );
+    });
 
-        // Test mismatched strength and word count
-        try {
-            console.log("\nAttempting to generate mnemonic with mismatched strength (256) and word count (12):");
-            generateMnemonic({ wordCount: 12, strength: 256 });
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.log("✓ Expected error for mismatched strength:", error.message);
-            } else {
-                console.log("✗ Unexpected error type:", error);
-            }
-        }
+    test("should format mnemonic correctly", () => {
+        const testMnemonic =
+            "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+        const formatted = formatMnemonic(testMnemonic);
 
-        console.log("\n=== All tests completed successfully ===");
-    } catch (error: unknown) {
-        console.error("\nError during test execution:");
-        if (error instanceof Error) {
-            console.error("Error Name:", error.name);
-            console.error("Error Message:", error.message);
-            console.error("Error Stack:", error.stack);
-        } else {
-            console.error("Unexpected error type:", error);
-        }
-    }
-}
-
-// Run the test
-main().catch(console.error);
+        expect(formatted).toContain("abandon");
+        expect(formatted.split("\n").length).toBeGreaterThan(1); // Should be multi-line
+    });
+});
