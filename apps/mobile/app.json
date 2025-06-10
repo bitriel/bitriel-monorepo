@@ -106,6 +106,9 @@
         },
         "updates": {
             "url": "https://u.expo.dev/2258dc87-c9ef-49c3-a5fe-8b67255195fe"
+        },
+        "prebuild": {
+            "clean": true
         }
     }
 }

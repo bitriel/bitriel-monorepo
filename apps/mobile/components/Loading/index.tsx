@@ -2,7 +2,7 @@ import React from "react";
 import { View, Modal, StyleSheet, Text, ActivityIndicator, StyleProp, ViewStyle, TextStyle } from "react-native";
 
 interface Props {
-    modalVisible: boolean;
+    modalVisible?: boolean;
     color?: string;
     task?: string;
     title?: string;
@@ -43,11 +43,6 @@ export default function LoadingModal({
         </Modal>
     );
 }
-
-LoadingModal.defaultProps = {
-    modalVisible: false,
-    darkMode: false,
-};
 
 const styles = StyleSheet.create({
     centeredView: {

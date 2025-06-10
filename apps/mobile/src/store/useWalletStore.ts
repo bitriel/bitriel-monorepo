@@ -144,7 +144,7 @@ export const useWalletStore = create<WalletStateStore>((set, get) => ({
 export const useWalletTransactions = () => {
     const { sdk, currentNetwork, walletState, refreshWalletState } = useWalletStore();
 
-    const sendTransaction = async (recipient: string, amount: string) => {
+    const sendTransaction = async (recipient: string, amount: string, contractAddress?: string, decimals?: number) => {
         if (!sdk || !currentNetwork) {
             throw new Error("Wallet not connected");
         }
@@ -157,10 +157,37 @@ export const useWalletTransactions = () => {
                 params: ["transfer", recipient, parseTransactionAmount(amount, "substrate")],
             };
         } else if (walletState?.network?.type === "evm") {
-            tx = {
-                to: recipient,
-                value: parseTransactionAmount(amount, "evm"),
-            };
+            // Check if this is a custom token transaction
+            const isCustomToken =
+                contractAddress &&
+                contractAddress !== "0x0" &&
+                contractAddress.toLowerCase() !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+
+            if (isCustomToken) {
+                // ERC-20 token transfer
+                const tokenDecimals = decimals || 18;
+                const parsedAmount = parseTransactionAmount(amount, "evm", tokenDecimals);
+
+                // Encode ERC-20 transfer function call
+                // transfer(address,uint256) function selector is 0xa9059cbb
+                const transferSelector = "0xa9059cbb";
+                const paddedRecipient = recipient.slice(2).padStart(64, "0");
+                // Convert the parsed amount to hex and pad to 64 characters
+                const paddedAmount = BigInt(parsedAmount).toString(16).padStart(64, "0");
+                const data = transferSelector + paddedRecipient + paddedAmount;
+
+                tx = {
+                    to: contractAddress,
+                    value: "0", // No ETH sent for ERC-20 transfers
+                    data: data,
+                };
+            } else {
+                // Native token transfer (use 18 decimals for native ETH/native tokens)
+                tx = {
+                    to: recipient,
+                    value: parseTransactionAmount(amount, "evm", 18),
+                };
+            }
         } else {
             throw new Error("Unsupported network type");
         }
@@ -172,7 +199,7 @@ export const useWalletTransactions = () => {
         return { txHash, fee };
     };
 
-    const estimateFee = async (amount: string) => {
+    const estimateFee = async (amount: string, contractAddress?: string, decimals?: number) => {
         if (!sdk || !currentNetwork) {
             throw new Error("Wallet not connected");
         }
@@ -188,10 +215,36 @@ export const useWalletTransactions = () => {
                 ],
             };
         } else if (walletState?.network?.type === "evm") {
-            tx = {
-                to: "0x0000000000000000000000000000000000000000", // Dummy address for estimation
-                value: parseTransactionAmount(amount, "evm"),
-            };
+            // Check if this is a custom token transaction
+            const isCustomToken =
+                contractAddress &&
+                contractAddress !== "0x0" &&
+                contractAddress.toLowerCase() !== "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+
+            if (isCustomToken) {
+                // ERC-20 token transfer
+                const tokenDecimals = decimals || 18;
+                const parsedAmount = parseTransactionAmount(amount, "evm", tokenDecimals);
+
+                // Encode ERC-20 transfer function call for estimation
+                const transferSelector = "0xa9059cbb";
+                const dummyRecipient = "0x0000000000000000000000000000000000000000".slice(2).padStart(64, "0");
+                // Convert the parsed amount to hex and pad to 64 characters
+                const paddedAmount = BigInt(parsedAmount).toString(16).padStart(64, "0");
+                const data = transferSelector + dummyRecipient + paddedAmount;
+
+                tx = {
+                    to: contractAddress,
+                    value: "0",
+                    data: data,
+                };
+            } else {
+                // Native token transfer (use 18 decimals for native ETH/native tokens)
+                tx = {
+                    to: "0x0000000000000000000000000000000000000000", // Dummy address for estimation
+                    value: parseTransactionAmount(amount, "evm", 18),
+                };
+            }
         } else {
             throw new Error("Unsupported network type");
         }

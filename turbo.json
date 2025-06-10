@@ -23,6 +23,14 @@
         "test": {
             "dependsOn": ["^build"],
             "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
+        },
+        "prebuild": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", ".env*", "app.json", "expo.json", "package.json"],
+            "outputs": ["android/**", "ios/**"]
+        },
+        "clean": {
+            "cache": false
         }
     }
 }

@@ -7,7 +7,6 @@ import { Iconify } from "react-native-iconify";
 import { Image } from "expo-image";
 interface Props {
     nomargin?: boolean | undefined;
-    walletType: string;
     handleOpenBottomSheet: () => void;
     selectedNetworkLabel: string | null;
     selectedNetworkImage: string | null;
@@ -17,7 +16,6 @@ interface Props {
 
 const MainHeader: React.FC<Props> = ({
     nomargin = false,
-    walletType,
     handleOpenBottomSheet,
     selectedNetworkLabel,
     selectedNetworkImage,
@@ -41,29 +39,27 @@ const MainHeader: React.FC<Props> = ({
             <Iconify icon="solar:settings-line-duotone" size={28} color={Colors.secondary} />
         </TouchableOpacity>
 
-        {walletType === "non-custodial" && (
-            <TouchableOpacity
-                onPress={() => {
-                    handleOpenBottomSheet();
-                }}
-            >
-                <View className="flex-1 flex-row items-center border-primary border-2 px-2 m-2 rounded-full">
-                    {networkChainImage && ( // Display network image if available
-                        <Image
-                            source={{ uri: selectedNetworkImage || networkChainImage }}
-                            contentFit="contain"
-                            style={{ width: 20, height: 20 }}
-                        />
-                    )}
+        <TouchableOpacity
+            onPress={() => {
+                handleOpenBottomSheet();
+            }}
+        >
+            <View className="flex-1 flex-row items-center border-primary border-2 px-2 m-2 rounded-full">
+                {networkChainImage && ( // Display network image if available
+                    <Image
+                        source={{ uri: selectedNetworkImage || networkChainImage }}
+                        contentFit="contain"
+                        style={{ width: 20, height: 20 }}
+                    />
+                )}
 
-                    <Text className="font-SpaceGroteskSemiBold p-1 text-sm text-blackText">
-                        {selectedNetworkLabel || networkChainName}
-                    </Text>
+                <Text className="font-SpaceGroteskSemiBold p-1 text-sm text-blackText">
+                    {selectedNetworkLabel || networkChainName}
+                </Text>
 
-                    <Iconify icon="solar:alt-arrow-down-line-duotone" color={Colors.blackText} size={18} />
-                </View>
-            </TouchableOpacity>
-        )}
+                <Iconify icon="solar:alt-arrow-down-line-duotone" color={Colors.blackText} size={18} />
+            </View>
+        </TouchableOpacity>
 
         <>
             <TouchableOpacity

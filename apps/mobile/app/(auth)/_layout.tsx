@@ -150,24 +150,6 @@ const AuthLayout = () => {
                     animation: "slide_from_right",
                 }}
             />
-
-            <Stack.Screen
-                name="home/settings/preferences/index"
-                options={{
-                    title: "Preferences",
-                    headerBackButtonMenuEnabled: false,
-                    animation: "slide_from_right",
-                }}
-            />
-
-            <Stack.Screen
-                name="home/settings/preferences/appicon/index"
-                options={{
-                    title: "App Icon",
-                    headerBackButtonMenuEnabled: false,
-                    animation: "slide_from_right",
-                }}
-            />
         </Stack>
     );
 };

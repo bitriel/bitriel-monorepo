@@ -15,7 +15,7 @@ export default function SettingPage() {
                         <View style={settingStyles.sectionBody}>
                             <TouchableOpacity
                                 onPress={() => {
-                                    router.push({ pathname: "/(auth)/home/settings/account" });
+                                    router.push({ pathname: "/(auth)/home/settings/account/recovery" });
                                 }}
                                 style={settingStyles.profile}
                             >
@@ -35,38 +35,6 @@ export default function SettingPage() {
                             </TouchableOpacity>
                         </View>
                     </View>
-
-                    {/* <View style={settingStyles.section}>
-            <View style={settingStyles.sectionBody}>
-              <View style={[settingStyles.rowWrapper, settingStyles.rowFirst]}>
-                <TouchableOpacity
-                  onPress={() => {
-                    router.push({ pathname: "/(auth)/home/settings/preferences" });
-                  }}
-                  style={settingStyles.row}>
-                  <Text style={settingStyles.rowLabel}>Preferences</Text>
-
-                  <View style={settingStyles.rowSpacer} />
-
-                  <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
-                </TouchableOpacity>
-              </View>
-
-              <View style={[settingStyles.rowWrapper, settingStyles.rowLast]}>
-                <TouchableOpacity
-                  onPress={() => {
-                    router.push({ pathname: "/(auth)/home/settings/security" });
-                  }}
-                  style={settingStyles.row}>
-                  <Text style={settingStyles.rowLabel}>Security & Privacy</Text>
-
-                  <View style={settingStyles.rowSpacer} />
-
-                  <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View> */}
 
                     <View style={settingStyles.section}>
                         <View style={settingStyles.sectionBody}>

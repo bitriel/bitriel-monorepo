@@ -1,4 +1,5 @@
 import React, { Component, ReactNode } from "react";
+import PropTypes from "prop-types";
 import { Text, View, TouchableOpacity, Image, ViewStyle, TextStyle } from "react-native";
 
 import styles from "./VirtualKeyboard.style";

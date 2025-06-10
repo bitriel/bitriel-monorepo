@@ -6,18 +6,16 @@ import { Iconify } from "react-native-iconify";
 import { settingStyles } from "../index";
 import Colors from "~/src/constants/Colors";
 import { useWalletDataListStore } from "~/src/store/walletDataStore";
-import { useWalletTypeStore } from "~/src/store/useWalletTypeStore";
-import { useCustodialAuthStore } from "~/src/store/useCustodialAuthStore";
 
 export default function AccountPage() {
     const user = helpers.activeUser();
-    const { walletType } = useWalletTypeStore();
-    const { logout } = useCustodialAuthStore();
 
-    const handleLogout = async () => {
-        await logout();
-        useWalletDataListStore.getState().clearWalletDataListState();
-        await ExpoSecureStoreAdapter.removeAll();
+    const handleLogout = () => {
+        // clearWalletState(); // Clear the state when logging out
+
+        useWalletDataListStore.getState().clearWalletDataListState;
+
+        ExpoSecureStoreAdapter.removeAll();
 
         router.navigate({
             pathname: "/(public)/welcome",
@@ -35,26 +33,24 @@ export default function AccountPage() {
                         />
                     </View>
 
-                    {walletType === "non-custodial" && (
-                        <View style={settingStyles.section}>
-                            <View style={settingStyles.sectionBody}>
-                                <View style={[settingStyles.rowWrapper, settingStyles.rowFirst, settingStyles.rowLast]}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            router.push({ pathname: "/(auth)/home/settings/account/recovery/warnMsg" });
-                                        }}
-                                        style={settingStyles.row}
-                                    >
-                                        <Text style={settingStyles.rowLabel}>Show Secret Recovery Phrase</Text>
+                    <View style={settingStyles.section}>
+                        <View style={settingStyles.sectionBody}>
+                            <View style={[settingStyles.rowWrapper, settingStyles.rowFirst, settingStyles.rowLast]}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        router.push({ pathname: "/(auth)/home/settings/account/recovery/warnMsg" });
+                                    }}
+                                    style={settingStyles.row}
+                                >
+                                    <Text style={settingStyles.rowLabel}>Show Secret Recovery Phrase</Text>
 
-                                        <View style={settingStyles.rowSpacer} />
+                                    <View style={settingStyles.rowSpacer} />
 
-                                        <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
-                                    </TouchableOpacity>
-                                </View>
+                                    <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    )}
+                    </View>
 
                     <View style={settingStyles.section}>
                         <View style={settingStyles.sectionBody}>
@@ -68,7 +64,7 @@ export default function AccountPage() {
                             >
                                 <TouchableOpacity onPress={handleLogout} style={settingStyles.row}>
                                     <Text style={[settingStyles.rowLabel, settingStyles.rowLabelLogout]}>
-                                        {walletType === "custodial" ? "Logout" : "Remove Account"}
+                                        Remove Account
                                     </Text>
                                 </TouchableOpacity>
                             </View>

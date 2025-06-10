@@ -22,13 +22,13 @@ export function parseTransactionAmount(
 
     if (chainType === "evm") {
         try {
-            // Handle excessive decimal places by truncating to 18 decimals max
+            // Handle excessive decimal places by truncating to the specified decimals
             const [whole, fraction = ""] = amountStr.split(".");
-            if (fraction.length > 18) {
-                const truncatedAmount = `${whole}.${fraction.slice(0, 18)}`;
-                return ethers.parseEther(truncatedAmount).toString();
+            if (fraction.length > decimals) {
+                const truncatedAmount = `${whole}.${fraction.slice(0, decimals)}`;
+                return ethers.parseUnits(truncatedAmount, decimals).toString();
             }
-            return ethers.parseEther(amountStr).toString();
+            return ethers.parseUnits(amountStr, decimals).toString();
         } catch (error) {
             throw new Error(`Failed to parse EVM amount: ${amountStr}. ${error}`);
         }

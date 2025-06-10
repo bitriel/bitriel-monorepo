@@ -14,7 +14,12 @@
         "deploy-android": "eas submit -p android --latest",
         "deploy-ios": "eas submit -p ios --latest",
         "expo-env-genarate": "eas secret:push --scope project --env-file .env",
-        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,html,md}\" --config .prettierrc.cjs --ignore-path ../../.gitignore"
+        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,html,md}\" --config .prettierrc.cjs --ignore-path ../../.gitignore",
+        "prebuild": "expo prebuild --clean",
+        "prebuild:ios": "expo prebuild --platform ios --clean",
+        "prebuild:android": "expo prebuild --platform android --clean",
+        "clean": "rm -rf android ios node_modules",
+        "postinstall": "expo install --fix"
     },
     "jest": {
         "preset": "jest-expo"

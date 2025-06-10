@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { SafeAreaView } from "react-native";
 import { useWalletStore } from "~/src/store/useWalletStore";
 import { router, useLocalSearchParams } from "expo-router";
@@ -6,25 +6,76 @@ import { Header } from "~/components";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ChangeNetworkBottomSheet from "~/components/BottomSheet/ChangeNetworkBottomSheet";
 import useBottomSheet from "~/src/context/useBottomSheet";
+import { SUPPORTED_NETWORKS, TokenBalance } from "@bitriel/wallet-sdk";
 import TopTokensBottomSheet from "~/components/BottomSheet/TopTokensBottomSheet";
 import TokenListBottomSheet from "~/components/BottomSheet/TokenListBottomSheet";
-import { useWalletTypeStore } from "~/src/store/useWalletTypeStore";
-import { NonCustodialWallet } from "~/components/Wallet/NonCustodialWallet";
-import { CustodialWallet } from "~/components/Wallet/CustodialWallet";
-import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
-import { SUPPORTED_NETWORKS, TokenBalance } from "@bitriel/wallet-sdk";
-import BottomSheet from "@gorhom/bottom-sheet";
+import copyAddress from "~/src/utilities/copyClipboard";
+import { AnimatedWalletList } from "~/components/AnimatedWalletList";
+import WalletBalanceCard from "~/components/Card/WalletBalanceCard";
+import { QuickAction, IconType } from "~/src/types/quick.action.types";
 
 export default function WalletScreen() {
-    const { mnemonicParam, isDualWallet } = useLocalSearchParams<{ mnemonicParam: string; isDualWallet: string }>();
-    const { initializeWallet, currentNetwork, connectToNetwork, walletState } = useWalletStore();
-    const { walletType, setWalletType } = useWalletTypeStore();
+    const { mnemonicParam } = useLocalSearchParams<{ mnemonicParam: string }>();
+    const { initializeWallet, refreshWalletState, isLoading, currentNetwork, walletState } = useWalletStore();
 
-    const bottomSheetSwitchNetworkRef = useRef<BottomSheet>(null);
-    const bottomSheetTopTokenRef = useRef<BottomSheet>(null);
-    const bottomSheetTokenListRef = useRef<BottomSheet>(null);
+    // Find the current network details from SUPPORTED_NETWORKS
+    const selectedNetwork = SUPPORTED_NETWORKS.find(network => network.chainId === currentNetwork?.chainId);
 
-    // Prepare token data for non-custodial wallet
+    const {
+        bottomSheetRef: bottomSheetSwitchNetworkRef,
+        handleOpenBottomSheet: handleOpenSwitchNetworkSheet,
+        handleCloseBottomSheet: handleCloseSwitchNetworkSheet,
+    } = useBottomSheet();
+
+    const {
+        bottomSheetRef: bottomSheetTopTokenRef,
+        handleOpenBottomSheet: handleOpenTopTokenModal,
+        handleCloseBottomSheet: handleCloseTopTokenModal,
+    } = useBottomSheet();
+
+    const {
+        bottomSheetRef: bottomSheetTokenListRef,
+        handleOpenBottomSheet: handleOpenTokenListSheet,
+        handleCloseBottomSheet: handleCloseTokenListSheet,
+    } = useBottomSheet();
+
+    React.useEffect(() => {
+        const initWallet = async () => {
+            await initializeWallet(mnemonicParam);
+        };
+
+        initWallet();
+    }, []);
+
+    // Quick actions data
+    const quickActions: QuickAction[] = [
+        {
+            icon: "SEND" as IconType,
+            label: "Send",
+            onPress: handleOpenTokenListSheet(),
+        },
+        {
+            icon: "RECEIVE" as IconType,
+            label: "Receive",
+            onPress: () => router.navigate({ pathname: "/(auth)/home/receive" }),
+        },
+        ...(selectedNetwork?.name === "Selendra Mainnet"
+            ? [
+                  {
+                      icon: "SWAP" as IconType,
+                      label: "Swap",
+                      onPress: () => router.navigate({ pathname: "/(auth)/home/(tabs)/swap" }),
+                  },
+              ]
+            : []),
+        {
+            icon: "TOKENS" as IconType,
+            label: "Tokens",
+            onPress: handleOpenTopTokenModal(),
+        },
+    ];
+
+    // Prepare token data
     const allTokens: TokenBalance[] = walletState
         ? [
               {
@@ -42,111 +93,39 @@ export default function WalletScreen() {
           ]
         : [];
 
-    const handleOpenSwitchNetworkSheet = () => {
-        bottomSheetSwitchNetworkRef.current?.expand();
-    };
-
-    const handleCloseSwitchNetworkSheet = () => {
-        bottomSheetSwitchNetworkRef.current?.close();
-    };
-
-    const handleOpenTopTokenModal = () => {
-        bottomSheetTopTokenRef.current?.expand();
-    };
-
-    const handleCloseTopTokenModal = () => {
-        bottomSheetTopTokenRef.current?.close();
-    };
-
-    const handleOpenTokenListSheet = () => {
-        bottomSheetTokenListRef.current?.expand();
-    };
-
-    const handleCloseTokenListSheet = () => {
-        bottomSheetTokenListRef.current?.close();
-    };
-
-    // Initialize wallet and network when mnemonic is available and wallet type is non-custodial
-    useEffect(() => {
-        const initializeWalletAndNetwork = async () => {
-            if (walletType === "non-custodial" && mnemonicParam) {
-                try {
-                    // Get last used network first
-                    const lastNetwork = await ExpoSecureStoreAdapter.getItem("last_network");
-
-                    // Initialize wallet
-                    await initializeWallet(mnemonicParam);
-
-                    // Connect to last used network after initialization
-                    if (lastNetwork) {
-                        const network = SUPPORTED_NETWORKS.find(n => n.chainId.toString() === lastNetwork);
-                        if (network) {
-                            await connectToNetwork(network.chainId.toString());
-                        }
-                    }
-                } catch (error) {
-                    console.error("Error initializing wallet and network:", error);
-                }
-            }
-        };
-
-        initializeWalletAndNetwork();
-    }, [walletType, mnemonicParam]);
-
-    // Handle dual wallet mode
-    useEffect(() => {
-        if (isDualWallet === "true") {
-            // Set initial wallet type to non-custodial
-            setWalletType("non-custodial");
-        }
-    }, [isDualWallet]);
-
-    const handleOpenBottomSheet = {
-        handleOpenTopTokenModal,
-        handleOpenTokenListSheet,
-    };
-
-    const handleCloseBottomSheet = {
-        handleCloseTopTokenModal,
-        handleCloseTokenListSheet,
-    };
-
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <SafeAreaView className="flex-1 bg-offWhite">
+        <GestureHandlerRootView className="flex-1">
+            <SafeAreaView className="flex-1 bg-white">
                 <Header.Default
-                    walletType={walletType}
-                    handleOpenBottomSheet={handleOpenSwitchNetworkSheet}
-                    selectedNetworkLabel={currentNetwork?.name || null}
-                    selectedNetworkImage={currentNetwork?.logo || null}
-                    networkChainName={currentNetwork?.name || null}
-                    networkChainImage={currentNetwork?.logo || null}
+                    networkChainImage={selectedNetwork?.logo || null}
+                    networkChainName={selectedNetwork?.name || null}
+                    handleOpenBottomSheet={handleOpenSwitchNetworkSheet()}
+                    selectedNetworkLabel={selectedNetwork?.name || null}
+                    selectedNetworkImage={selectedNetwork?.logo || null}
                 />
 
-                {walletType === "custodial" ? (
-                    <>
-                        <CustodialWallet />
-                    </>
-                ) : (
-                    <>
-                        <NonCustodialWallet
-                            handleOpenBottomSheet={handleOpenBottomSheet}
-                            handleCloseBottomSheet={handleCloseBottomSheet}
-                        />
-                    </>
-                )}
+                <WalletBalanceCard
+                    address={walletState?.address}
+                    totalBalance={"≈$" + 0}
+                    onCopyAddress={copyAddress}
+                    quickActions={quickActions}
+                    networkName={selectedNetwork?.name}
+                />
+
+                <AnimatedWalletList tokens={allTokens} onRefresh={refreshWalletState} isRefreshing={isLoading} />
 
                 <ChangeNetworkBottomSheet
                     ref={bottomSheetSwitchNetworkRef}
                     handleCloseBottomSheet={handleCloseSwitchNetworkSheet}
                 />
-
-                <TopTokensBottomSheet ref={bottomSheetTopTokenRef} handleCloseBottomSheet={handleCloseTopTokenModal} />
-
+                <TopTokensBottomSheet
+                    ref={bottomSheetTopTokenRef}
+                    handleCloseBottomSheet={handleCloseTopTokenModal()}
+                />
                 <TokenListBottomSheet
                     ref={bottomSheetTokenListRef}
                     networkName={currentNetwork?.name!}
-                    handleCloseBottomSheet={handleCloseTokenListSheet}
+                    handleCloseBottomSheet={handleCloseTokenListSheet()}
                     tokens={allTokens}
                 />
             </SafeAreaView>

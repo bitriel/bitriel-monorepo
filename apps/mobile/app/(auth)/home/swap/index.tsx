@@ -1,388 +1,248 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { MotiView } from "moti";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useWalletStore, useWalletTransactions } from "~/src/store/useWalletStore";
+import { TokenBalance } from "@bitriel/wallet-sdk";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
 import { RefreshCw, ArrowDownUp } from "lucide-react-native";
 import { BlurView } from "expo-blur";
-import { SwapButton } from "~/components/Swap/SwapButton";
-import { SwapInput } from "~/components/Swap/SwapInput";
-import { SwapRate } from "~/components/Swap/SwapRate";
-import { SwapSettings } from "~/components/Swap/SwapSettings";
-import { SwapTokenSelector } from "~/components/Swap/SwapTokenSelector";
-import { swapApi } from "~/src/api/swapApi";
-import { useCustodialAuthStore } from "~/src/store/useCustodialAuthStore";
-import * as SecureStore from "expo-secure-store";
-import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
-import { Stack } from "expo-router";
-import { useRouter } from "expo-router";
+import { SwapButton } from "~/components/swap/SwapButton";
+import { SwapInput } from "~/components/swap/SwapInput";
+import { SwapRate } from "~/components/swap/SwapRate";
+import { SwapSettings } from "~/components/swap/SwapSettings";
+import { SwapTokenSelector } from "~/components/swap/SwapTokenSelector";
 
-interface Token {
-    symbol: string;
-    decimals: number;
-    name: string;
-    address: string;
-    balance: string;
-    ratio?: number;
-    stable_coin_amount?: number;
-}
-
-interface TokenBalance {
-    token: {
-        symbol: string;
-        decimals: number;
-        name: string;
-        address: string;
-    };
-    balance: string;
-    formatted: string;
-    ratio?: number;
-    stable_coin_amount?: number;
-}
-
-interface SwapState {
-    fromToken: TokenBalance | null;
-    toToken: TokenBalance | null;
-    fromAmount: string;
-    toAmount: string;
-    slippage: number;
-    isLoading: boolean;
-    error: string | null;
-    isRefreshing: boolean;
-    allTokens: TokenBalance[];
-    createdTokens: Token[];
-}
-
-const KHR_TOKEN: Token = {
-    symbol: "KHR",
-    decimals: 18,
-    name: "KHR Stablecoin",
-    address: process.env.EXPO_PUBLIC_KHR_TOKEN_ADDRESS!,
-    balance: "0",
-};
-
-const convertToTokenBalance = (token: Token): TokenBalance => ({
-    token: {
-        symbol: token.symbol,
-        decimals: token.decimals,
-        name: token.name,
-        address: token.address,
-    },
-    balance: token.balance,
-    formatted: token.balance,
-});
-
-export default function SwapScreenCustodial() {
-    const { user } = useCustodialAuthStore();
-    const [state, setState] = useState<SwapState>({
-        fromToken: null,
-        toToken: null,
-        fromAmount: "",
-        toAmount: "",
-        slippage: 0.5,
-        isLoading: false,
-        error: null,
-        isRefreshing: false,
-        allTokens: [],
-        createdTokens: [],
-    });
+export default function SwapScreen() {
+    const { walletState, currentNetwork, refreshWalletState } = useWalletStore();
+    const { sendTransaction, estimateFee } = useWalletTransactions();
+    const [fromToken, setFromToken] = useState<TokenBalance | null>(null);
+    const [toToken, setToToken] = useState<TokenBalance | null>(null);
+    const [fromAmount, setFromAmount] = useState("");
+    const [toAmount, setToAmount] = useState("");
     const [showTokenSelector, setShowTokenSelector] = useState(false);
     const [selectorType, setSelectorType] = useState<"from" | "to">("from");
-    const router = useRouter();
+    const [slippage, setSlippage] = useState(0.5);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const updateState = (updates: Partial<SwapState>) => {
-        setState(prev => ({ ...prev, ...updates }));
-    };
+    // Prepare token data from wallet state
+    const allTokens: TokenBalance[] = React.useMemo(() => {
+        if (!walletState || !currentNetwork) return [];
 
-    const fetchKhrBalance = async () => {
-        if (!user?.address) return null;
-        try {
-            const response = await swapApi.getStablecoinBalance(user.address);
-            return {
-                ...KHR_TOKEN,
-                balance: response.balance || "0",
-            };
-        } catch (error) {
-            console.error("Error fetching KHR balance:", error);
-            return null;
-        }
-    };
+        return [
+            {
+                token: {
+                    symbol: currentNetwork?.nativeCurrency.symbol || "",
+                    decimals: currentNetwork?.nativeCurrency.decimals || 18,
+                    logoURI: currentNetwork?.nativeCurrency.logoURI,
+                    name: currentNetwork?.nativeCurrency.name || "Native Token",
+                    address: "0x0",
+                },
+                balance: walletState.balances.detailed?.formatted.transferable!,
+                formatted: walletState.balances.detailed?.formatted.transferable!,
+            },
+            ...walletState.balances.tokens,
+        ];
+    }, [walletState, currentNetwork]);
 
-    const fetchCreatedTokens = async () => {
-        if (!user?.address) return [];
-        try {
-            const tokens = await swapApi.getCreatedTokens();
-            const validTokens = tokens.filter(token => token.status === "CREATED" && token.token_address);
+    console.log(allTokens);
 
-            const tokenBalances = await Promise.all(
-                validTokens.map(async token => {
-                    if (!token.token_address) return null;
-                    try {
-                        const response = await swapApi.getTokenBalance(token.token_address, user.address);
-                        const tokenData: Token = {
-                            symbol: token.symbol,
-                            decimals: 18, // Default to 18 decimals
-                            name: token.name,
-                            address: token.token_address,
-                            balance: response.balance || "0",
-                            ratio: token.ratio,
-                            stable_coin_amount: token.stable_coin_amount,
-                        };
-                        return tokenData;
-                    } catch (error) {
-                        console.error(`Error fetching balance for token ${token.token_address}:`, error);
-                        return null;
-                    }
-                })
-            );
-
-            // Filter out null values
-            return tokenBalances.filter((token): token is Token => token !== null);
-        } catch (error) {
-            console.error("Error fetching created tokens:", error);
-            return [];
-        }
-    };
-
-    const fetchBalances = async () => {
-        if (!user?.address) return;
-
-        try {
-            updateState({ isRefreshing: true, error: null });
-
-            // Fetch KHR and created tokens in parallel
-            const [khrToken, createdTokens] = await Promise.all([fetchKhrBalance(), fetchCreatedTokens()]);
-
-            // Convert KHR token to TokenBalance if it exists
-            const khrTokenBalance = khrToken ? convertToTokenBalance(khrToken) : null;
-
-            // Convert created tokens to TokenBalance
-            const createdTokenBalances = createdTokens.map(convertToTokenBalance);
-
-            // Combine all tokens
-            const allTokens = [...(khrTokenBalance ? [khrTokenBalance] : []), ...createdTokenBalances];
-
-            updateState({ allTokens, createdTokens });
-
-            // Set default tokens if none selected
-            if (!state.fromToken && !state.toToken && allTokens.length > 0) {
-                updateState({
-                    fromToken: allTokens[0],
-                    toToken: allTokens.length > 1 ? allTokens[1] : null,
-                });
-            }
-        } catch (error: any) {
-            console.error("Error fetching balances:", error);
-            updateState({ error: error.message || "Failed to fetch balances" });
-        } finally {
-            updateState({ isRefreshing: false });
-        }
-    };
-
+    // Set default tokens only once when allTokens changes and no tokens are selected
     useEffect(() => {
-        fetchBalances();
-    }, [user?.address]);
-
-    useEffect(() => {
-        if (state.fromAmount && state.fromToken && state.toToken) {
-            // Find the created token that matches either fromToken or toToken
-            const createdToken = state.createdTokens.find(
-                token =>
-                    token.address.toLowerCase() === state.fromToken?.token.address.toLowerCase() ||
-                    token.address.toLowerCase() === state.toToken?.token.address.toLowerCase()
-            );
-
-            if (createdToken?.ratio) {
-                const estimated = parseFloat(state.fromAmount) * createdToken.ratio;
-                updateState({ toAmount: estimated.toFixed(2) });
-            } else {
-                updateState({ toAmount: "" });
+        if (allTokens.length > 0 && !fromToken && !toToken) {
+            setFromToken(allTokens[0]);
+            if (allTokens.length > 1) {
+                setToToken(allTokens[1]);
             }
+        }
+    }, [allTokens, fromToken, toToken]);
+
+    // Calculate estimated output whenever fromAmount or exchange rate changes
+    useEffect(() => {
+        if (fromAmount && fromToken && toToken) {
+            // In a real application, this would come from an API or price oracle
+            // For now, we'll use a dummy exchange rate calculation
+            const exchangeRate = 1.5; // Dummy exchange rate
+            const estimated = parseFloat(fromAmount) * exchangeRate;
+            setToAmount(estimated.toFixed(6));
         } else {
-            updateState({ toAmount: "" });
+            setToAmount("");
         }
-    }, [state.fromAmount, state.fromToken, state.toToken, state.createdTokens]);
+    }, [fromAmount, fromToken, toToken]);
 
     const handleSwapTokens = () => {
-        // Only swap tokens, don't update amounts
-        updateState({
-            fromToken: state.toToken,
-            toToken: state.fromToken,
-            fromAmount: "", // Clear amounts to trigger recalculation
-            toAmount: "",
-        });
+        const temp = fromToken;
+        setFromToken(toToken);
+        setToToken(temp);
+
+        // Swap amounts too
+        const tempAmount = fromAmount;
+        setFromAmount(toAmount);
+        setToAmount(tempAmount);
+    };
+
+    const handleRefresh = async () => {
+        try {
+            setIsRefreshing(true);
+            await refreshWalletState();
+        } finally {
+            setIsRefreshing(false);
+        }
     };
 
     const handleSwap = async () => {
-        if (!state.fromToken || !state.toToken || !state.fromAmount || !user?.address) return;
+        if (!fromToken || !toToken || !fromAmount) return;
 
         try {
-            updateState({ isLoading: true, error: null });
+            setIsLoading(true);
+            setError(null);
 
-            const isTokenToStablecoin =
-                state.fromToken.token.address !== KHR_TOKEN.address &&
-                state.toToken.token.address === KHR_TOKEN.address;
-            const isStablecoinToToken =
-                state.fromToken.token.address === KHR_TOKEN.address &&
-                state.toToken.token.address !== KHR_TOKEN.address;
+            // Estimate fee first
+            const fee = await estimateFee(fromAmount);
+            console.log("Estimated fee:", fee);
 
-            console.log("state.allTokens", state.allTokens);
+            // Send transaction
+            const { txHash } = await sendTransaction(toToken.token.address, fromAmount);
+            console.log("Transaction hash:", txHash);
 
-            // Route to passcode screen for confirmation
-            router.push({
-                pathname: "/(auth)/passcode",
-                params: {
-                    modeTypeParam: "confirm",
-                    fromParam: "swap",
-                    amount: state.fromAmount,
-                    fromToken: state.fromToken.token.symbol,
-                    toToken: state.toToken.token.symbol,
-                    fromTokenAddress: state.fromToken.token.address,
-                    toTokenAddress: state.toToken.token.address,
-                    isTokenToStablecoin: isTokenToStablecoin.toString(),
-                    isStablecoinToToken: isStablecoinToToken.toString(),
-                    tokenAddress: state.allTokens.map(token => token.token.address),
-                },
-            } as never);
+            // Refresh wallet state
+            await refreshWalletState();
         } catch (error: any) {
             console.error("Swap failed:", error);
-            updateState({ error: error.message || "Swap failed" });
+            setError(error.message || "Swap failed");
         } finally {
-            updateState({ isLoading: false });
+            setIsLoading(false);
         }
     };
 
-    if (state.isRefreshing) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#6366f1" />
-                <Text style={styles.loadingText}>Loading balances...</Text>
-            </View>
-        );
-    }
-
-    if (state.error) {
-        return (
-            <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{state.error}</Text>
-                <TouchableOpacity onPress={fetchBalances} style={styles.retryButton}>
-                    <Text style={styles.retryButtonText}>Retry</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
-
     return (
-        <>
-            <Stack.Screen options={{ title: "" }} />
-            <GestureHandlerRootView style={styles.container}>
-                <LinearGradient colors={["#f8f9fa", "#e9ecef", "#dee2e6"]} style={styles.background}>
-                    <ScrollView
-                        style={styles.scrollView}
-                        showsVerticalScrollIndicator={false}
-                        contentContainerStyle={styles.scrollContent}
+        <GestureHandlerRootView style={styles.container}>
+            <LinearGradient colors={["#f8f9fa", "#e9ecef", "#dee2e6"]} style={[styles.background]}>
+                <ScrollView
+                    style={styles.scrollView}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.scrollContent}
+                >
+                    <MotiView
+                        from={{ opacity: 0, translateY: 20 }}
+                        animate={{ opacity: 1, translateY: 0 }}
+                        transition={{ type: "timing", duration: 500 }}
+                        style={styles.content}
                     >
-                        <MotiView
-                            from={{ opacity: 0, translateY: 20 }}
-                            animate={{ opacity: 1, translateY: 0 }}
-                            transition={{ type: "timing", duration: 500 }}
-                            style={styles.content}
-                        >
-                            <View style={styles.header}>
-                                <Text style={styles.title}>Swap</Text>
-                                <MotiView
-                                    animate={{ scale: state.isRefreshing ? 1.1 : 1 }}
-                                    transition={{ type: "timing", duration: 300 }}
+                        <View style={styles.header}>
+                            <Text style={styles.title}>Swap</Text>
+                            <MotiView
+                                animate={{ scale: isRefreshing ? 1.1 : 1 }}
+                                transition={{ type: "timing", duration: 300 }}
+                            >
+                                <TouchableOpacity
+                                    onPress={handleRefresh}
+                                    style={styles.refreshButton}
+                                    disabled={isRefreshing}
                                 >
-                                    <TouchableOpacity
-                                        onPress={fetchBalances}
-                                        style={styles.refreshButton}
-                                        disabled={state.isRefreshing}
+                                    <RefreshCw
+                                        size={18}
+                                        color="#6366f1"
+                                        style={{ transform: [{ rotate: isRefreshing ? "180deg" : "0deg" }] }}
+                                    />
+                                </TouchableOpacity>
+                            </MotiView>
+                        </View>
+
+                        {error && (
+                            <MotiView
+                                from={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ type: "spring", damping: 15 }}
+                                style={styles.errorContainer}
+                            >
+                                <Text style={styles.errorText}>{error}</Text>
+                            </MotiView>
+                        )}
+
+                        {/* Fixed: Added solid background color to BlurView container */}
+                        <View style={styles.swapCardContainer}>
+                            <BlurView intensity={10} tint="light" style={styles.swapCard}>
+                                {/* From Token Input */}
+                                <SwapInput
+                                    label="From"
+                                    token={fromToken}
+                                    amount={fromAmount}
+                                    onAmountChange={setFromAmount}
+                                    onTokenPress={() => {
+                                        setSelectorType("from");
+                                        setShowTokenSelector(true);
+                                    }}
+                                />
+
+                                {/* Swap Direction Button */}
+                                <View style={styles.swapButtonContainer}>
+                                    {/* Fixed: Added solid background color to swapButtonWrapper */}
+                                    <MotiView
+                                        animate={{ rotate: "0deg" }}
+                                        transition={{ type: "timing", duration: 300 }}
+                                        style={styles.swapButtonWrapper}
                                     >
-                                        <RefreshCw
-                                            size={18}
-                                            color="#6366f1"
-                                            style={{ transform: [{ rotate: state.isRefreshing ? "180deg" : "0deg" }] }}
-                                        />
-                                    </TouchableOpacity>
-                                </MotiView>
-                            </View>
+                                        <TouchableOpacity onPress={handleSwapTokens} style={styles.swapDirectionButton}>
+                                            <ArrowDownUp size={20} color="#ffffff" />
+                                        </TouchableOpacity>
+                                    </MotiView>
+                                </View>
 
-                            <View style={styles.swapCardContainer}>
-                                <BlurView intensity={10} tint="light" style={styles.swapCard}>
-                                    <SwapInput
-                                        label="From"
-                                        token={state.fromToken}
-                                        amount={state.fromAmount}
-                                        onAmountChange={amount => updateState({ fromAmount: amount })}
-                                        onTokenPress={() => {
-                                            setSelectorType("from");
-                                            setShowTokenSelector(true);
-                                        }}
-                                    />
+                                {/* To Token Input */}
+                                <SwapInput
+                                    label="To"
+                                    token={toToken}
+                                    amount={toAmount}
+                                    onAmountChange={setToAmount}
+                                    readOnly={true}
+                                    onTokenPress={() => {
+                                        setSelectorType("to");
+                                        setShowTokenSelector(true);
+                                    }}
+                                />
+                            </BlurView>
+                        </View>
 
-                                    <View style={styles.swapButtonContainer}>
-                                        <MotiView
-                                            animate={{ rotate: "0deg" }}
-                                            transition={{ type: "timing", duration: 300 }}
-                                            style={styles.swapButtonWrapper}
-                                        >
-                                            <TouchableOpacity
-                                                onPress={handleSwapTokens}
-                                                style={styles.swapDirectionButton}
-                                            >
-                                                <ArrowDownUp size={20} color="#ffffff" />
-                                            </TouchableOpacity>
-                                        </MotiView>
-                                    </View>
+                        {/* Swap Rate */}
+                        <SwapRate fromToken={fromToken} toToken={toToken} amount={fromAmount} />
 
-                                    <SwapInput
-                                        label="To"
-                                        token={state.toToken}
-                                        amount={state.toAmount}
-                                        onAmountChange={amount => updateState({ toAmount: amount })}
-                                        readOnly={true}
-                                        onTokenPress={() => {
-                                            setSelectorType("to");
-                                            setShowTokenSelector(true);
-                                        }}
-                                    />
-                                </BlurView>
-                            </View>
+                        {/* Swap Settings */}
+                        <SwapSettings slippage={slippage} onSlippageChange={setSlippage} />
+                    </MotiView>
+                </ScrollView>
 
-                            <SwapRate fromToken={state.fromToken} toToken={state.toToken} amount={state.fromAmount} />
-
-                            {/* <SwapSettings slippage={state.slippage} onSlippageChange={(slippage) => updateState({ slippage })} /> */}
-                        </MotiView>
-                    </ScrollView>
-
-                    <View style={styles.bottomContainer}>
-                        <SwapButton
-                            fromToken={state.fromToken}
-                            toToken={state.toToken}
-                            amount={state.fromAmount}
-                            disabled={!state.fromToken || !state.toToken || !state.fromAmount || state.isLoading}
-                            onPress={handleSwap}
-                        />
-                    </View>
-
-                    <SwapTokenSelector
-                        visible={showTokenSelector}
-                        onClose={() => setShowTokenSelector(false)}
-                        type={selectorType}
-                        onSelect={token => {
-                            if (selectorType === "from") {
-                                updateState({ fromToken: token });
-                            } else {
-                                updateState({ toToken: token });
-                            }
-                            setShowTokenSelector(false);
-                        }}
-                        tokens={state.allTokens}
+                {/* Fixed: Added solid background color to bottomContainer */}
+                <View style={[styles.bottomContainer]}>
+                    <SwapButton
+                        fromToken={fromToken}
+                        toToken={toToken}
+                        amount={fromAmount}
+                        disabled={!fromToken || !toToken || !fromAmount || isLoading}
+                        onPress={handleSwap}
                     />
-                </LinearGradient>
-            </GestureHandlerRootView>
-        </>
+                </View>
+
+                {/* Token Selector Modal */}
+                <SwapTokenSelector
+                    visible={showTokenSelector}
+                    onClose={() => setShowTokenSelector(false)}
+                    type={selectorType}
+                    onSelect={(token: TokenBalance) => {
+                        if (selectorType === "from") {
+                            setFromToken(token);
+                        } else {
+                            setToToken(token);
+                        }
+                        setShowTokenSelector(false);
+                    }}
+                    tokens={allTokens}
+                />
+            </LinearGradient>
+        </GestureHandlerRootView>
     );
 }
 
@@ -421,47 +281,24 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f8f9fa",
-    },
-    loadingText: {
-        marginTop: 12,
-        fontSize: 16,
-        color: "#6366f1",
-        fontWeight: "500",
-    },
     errorContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f8f9fa",
-        padding: 20,
+        backgroundColor: "rgba(239, 68, 68, 0.15)",
+        padding: 16,
+        borderRadius: 16,
+        marginBottom: 16,
+        borderLeftWidth: 4,
+        borderLeftColor: "#ef4444",
     },
     errorText: {
-        color: "#ef4444",
-        fontSize: 16,
-        textAlign: "center",
-        marginBottom: 16,
-    },
-    retryButton: {
-        backgroundColor: "#6366f1",
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 8,
-    },
-    retryButtonText: {
-        color: "white",
-        fontSize: 16,
+        color: "#b91c1c",
         fontWeight: "500",
     },
+    // Added a new container with solid background for the swapCard
     swapCardContainer: {
         borderRadius: 24,
         overflow: "hidden",
         marginBottom: 16,
-        backgroundColor: "white",
+        backgroundColor: "white", // Solid background color
         shadowColor: "#6366f1",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -470,7 +307,7 @@ const styles = StyleSheet.create({
     },
     swapCard: {
         padding: 16,
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        backgroundColor: "rgba(255, 255, 255, 0.8)", // Keep the semi-transparent background for BlurView
     },
     swapButtonContainer: {
         alignItems: "center",
@@ -478,8 +315,8 @@ const styles = StyleSheet.create({
         height: 50,
     },
     swapButtonWrapper: {
-        backgroundColor: "white",
-        borderRadius: 20,
+        backgroundColor: "white", // Added solid background color
+        borderRadius: 20, // Match the button's border radius
         shadowColor: "#6366f1",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
@@ -496,6 +333,6 @@ const styles = StyleSheet.create({
     },
     bottomContainer: {
         padding: 16,
-        backgroundColor: "white",
+        backgroundColor: "white", // Added solid background color
     },
 });

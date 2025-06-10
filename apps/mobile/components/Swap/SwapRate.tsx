@@ -1,9 +1,8 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MotiView } from "moti";
 import { ArrowRight, Info } from "lucide-react-native";
 import { TokenBalance } from "@bitriel/wallet-sdk";
-import { swapApi, Token } from "~/src/api/swapApi";
 
 interface SwapRateProps {
     fromToken: TokenBalance | null;
@@ -12,84 +11,26 @@ interface SwapRateProps {
 }
 
 export const SwapRate: React.FC<SwapRateProps> = ({ fromToken, toToken, amount }) => {
-    const [createdTokens, setCreatedTokens] = useState<Token[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchCreatedTokens = async () => {
-            try {
-                const tokens = await swapApi.getCreatedTokens();
-                // Filter out tokens with null addresses and cast to CreatedToken[]
-                const validTokens = tokens.filter(token => token.token_address !== null) as Token[];
-                setCreatedTokens(validTokens);
-            } catch (error) {
-                console.error("Error fetching created tokens:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchCreatedTokens();
-    }, []);
-
-    // Calculate exchange rate based on token ratio
+    // Calculate exchange rate (in real app this would come from API)
     const exchangeRate = useMemo(() => {
-        if (!fromToken || !toToken) return "0";
-
-        // Find the created token that matches either fromToken or toToken
-        const createdToken = createdTokens.find(
-            token =>
-                token.token_address?.toLowerCase() === fromToken.token.address.toLowerCase() ||
-                token.token_address?.toLowerCase() === toToken.token.address.toLowerCase()
-        );
-
-        if (!createdToken) return "0";
-
-        return createdToken.ratio.toString();
-    }, [fromToken, toToken, createdTokens]);
+        if (!fromToken || !toToken) return "1.0";
+        // This is just for display, in a real app you'd get this from an API
+        return "43.2591";
+    }, [fromToken, toToken]);
 
     // Calculate estimated output
     const estimatedOutput = useMemo(() => {
-        if (!amount || !exchangeRate || exchangeRate === "0") return "0.0";
+        if (!amount || !exchangeRate) return "0.0";
         const output = parseFloat(amount) * parseFloat(exchangeRate);
-        return output.toFixed(2);
+        return output.toFixed(6);
     }, [amount, exchangeRate]);
 
-    // Calculate price impact based on stable_coin_amount
-    const priceImpact = useMemo(() => {
-        if (!fromToken || !toToken) return "0";
-
-        const createdToken = createdTokens.find(
-            token =>
-                token.token_address?.toLowerCase() === fromToken.token.address.toLowerCase() ||
-                token.token_address?.toLowerCase() === toToken.token.address.toLowerCase()
-        );
-
-        if (!createdToken) return "0";
-
-        // Calculate price impact based on stable_coin_amount
-        const impact = (parseFloat(amount) / createdToken.stable_coin_amount) * 100;
-        return impact.toFixed(2);
-    }, [fromToken, toToken, amount, createdTokens]);
-
-    // For demo: static network fee
+    // For demo: static values
+    const priceImpact = "0.1"; // percentage
     const networkFee = "0.001"; // ETH
 
     if (!fromToken || !toToken) {
         return null;
-    }
-
-    if (isLoading) {
-        return (
-            <MotiView
-                from={{ opacity: 0, translateY: 10 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: "timing", duration: 400, delay: 200 }}
-                style={styles.container}
-            >
-                <Text style={styles.loadingText}>Loading swap rate...</Text>
-            </MotiView>
-        );
     }
 
     return (
@@ -103,9 +44,9 @@ export const SwapRate: React.FC<SwapRateProps> = ({ fromToken, toToken, amount }
             <View style={styles.row}>
                 <View style={styles.labelContainer}>
                     <Text style={styles.label}>Exchange Rate</Text>
-                    {/* <TouchableOpacity style={styles.infoButton}>
-            <Info size={14} color="#64748b" />
-          </TouchableOpacity> */}
+                    <TouchableOpacity style={styles.infoButton}>
+                        <Info size={14} color="#64748b" />
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.valueContainer}>
                     <Text style={styles.value}>
@@ -131,36 +72,30 @@ export const SwapRate: React.FC<SwapRateProps> = ({ fromToken, toToken, amount }
             </View>
 
             {/* Price Impact */}
-            {/* <View style={styles.row}>
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}>Price Impact</Text>
-          <TouchableOpacity style={styles.infoButton}>
-            <Info size={14} color="#64748b" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.valueContainer}>
-          <Text
-            style={[
-              styles.value,
-              parseFloat(priceImpact) > 5 ? styles.dangerValue : parseFloat(priceImpact) > 2 ? styles.warningValue : styles.goodValue
-            ]}>
-            ~{priceImpact}%
-          </Text>
-        </View>
-      </View> */}
+            <View style={styles.row}>
+                <View style={styles.labelContainer}>
+                    <Text style={styles.label}>Price Impact</Text>
+                    <TouchableOpacity style={styles.infoButton}>
+                        <Info size={14} color="#64748b" />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.valueContainer}>
+                    <Text style={[styles.value, styles.goodValue]}>~{priceImpact}%</Text>
+                </View>
+            </View>
 
             {/* Network Fee */}
-            {/* <View style={styles.row}>
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}>Network Fee</Text>
-          <TouchableOpacity style={styles.infoButton}>
-            <Info size={14} color="#64748b" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.valueContainer}>
-          <Text style={styles.value}>{networkFee} ETH</Text>
-        </View>
-      </View> */}
+            <View style={styles.row}>
+                <View style={styles.labelContainer}>
+                    <Text style={styles.label}>Network Fee</Text>
+                    <TouchableOpacity style={styles.infoButton}>
+                        <Info size={14} color="#64748b" />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.valueContainer}>
+                    <Text style={styles.value}>{networkFee} ETH</Text>
+                </View>
+            </View>
         </MotiView>
     );
 };
@@ -216,11 +151,5 @@ const styles = StyleSheet.create({
     },
     dangerValue: {
         color: "#ef4444",
-    },
-    loadingText: {
-        fontSize: 14,
-        color: "#64748b",
-        textAlign: "center",
-        padding: 8,
     },
 });

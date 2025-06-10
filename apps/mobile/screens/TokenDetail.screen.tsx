@@ -69,13 +69,7 @@ const TransactionHistory = ({
             animateOnMount={true}
             enableContentPanningGesture={true}
         >
-            <View
-                style={{
-                    flex: 1,
-                    paddingHorizontal: 16,
-                    backgroundColor: "white",
-                }}
-            >
+            <View style={{ flex: 1, paddingHorizontal: 16, backgroundColor: "white" }}>
                 <Text className="text-gray-800 text-2xl font-bold mb-4">History</Text>
 
                 <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 40 }}>
@@ -106,7 +100,7 @@ function TransactionItem({ time }: { time: string }) {
                     <Ionicons name="arrow-up" size={20} color="#6B7280" />
                 </View>
                 <View className="justify-center flex-1">
-                    <Text className="text-gray-800 text-base font-SpaceGroteskMedium">Transfer</Text>
+                    <Text className="text-gray-800 text-base font-medium">Transfer</Text>
                     <Text className="text-gray-500 text-sm w-full" numberOfLines={1} ellipsizeMode="middle">
                         To: 5DWespGr297i...RLXpJ5xFL8XdLGt
                     </Text>
