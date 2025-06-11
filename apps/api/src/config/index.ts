@@ -21,7 +21,7 @@ const config: Config = {
     clientSecret: process.env.CLIENT_SECRET || "",
     useHttps: process.env.USE_HTTPS === "true",
     corsOrigin: process.env.CORS_ORIGIN || "*",
-    redirectUri: process.env.REDIRECT_URI || "https://api.bitriel.com/auth/callback",
+    redirectUri: process.env.REDIRECT_URI || "https://localhost:8000/auth/callback",
 };
 
 export default config;

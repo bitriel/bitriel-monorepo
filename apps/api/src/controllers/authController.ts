@@ -15,11 +15,6 @@ const client = new SelOAuthClient({
 export class AuthController {
     static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            // const authUrl = client.getAuthorizeUrl({
-            //     redirectUri: `https://api.bitriel.com/auth/callback`,
-            //     state: crypto.randomUUID(),
-            // });
-
             const authUrl = `https://oauth.koompi.org/v1/oauth/login?client_id=${config.clientId}&redirect_uri=${config.redirectUri}`;
 
             res.redirect(authUrl);
