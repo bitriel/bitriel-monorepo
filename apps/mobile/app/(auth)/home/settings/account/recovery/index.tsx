@@ -7,7 +7,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 import { router } from "expo-router";
-import { Iconify } from "react-native-iconify";
 
 export default function RecoverySecretPhraseScreen() {
     const [mnemonicsArray, setMnemonicsArray] = useState<string[]>([]);
@@ -15,7 +14,7 @@ export default function RecoverySecretPhraseScreen() {
     const getMnemonic = async () => {
         const mnemonic = await ExpoSecureStoreAdapter.getItem("wallet_mnemonic");
 
-        setMnemonicsArray(prevMnemonics => [...prevMnemonics, mnemonic!]);
+        setMnemonicsArray([mnemonic!]);
     };
 
     useEffect(() => {
@@ -25,20 +24,6 @@ export default function RecoverySecretPhraseScreen() {
         <GestureHandlerRootView style={styles.root}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.container}>
-                    <View style={styles.header}>
-                        <View className="bg-red-500/20" style={styles.warningContainer}>
-                            <Iconify
-                                icon="solar:danger-circle-line-duotone"
-                                size={18}
-                                color={Colors.red}
-                                style={styles.warningIcon}
-                            />
-                            <Text style={styles.warningText}>
-                                Never share your secret phrase with anyone, and store it secretly!
-                            </Text>
-                        </View>
-                    </View>
-
                     <View>
                         {mnemonicsArray.map((mnemonic, index) => (
                             <MnemonicBox key={index} mnemonic={mnemonic} />
