@@ -19,22 +19,33 @@ export class AuthController {
             // Extract redirect schema from query parameters
             const { schema } = req.query;
 
-            const authUrl = client.getLoginUrl();
+            console.log(`🔐 OAuth login request - schema: ${schema}`);
 
-            // If mobile app schema is provided, store it with a session ID
+            // If mobile app schema is provided, create a dynamic redirect URI with session ID
             if (schema) {
                 // Create a new OAuth session for mobile redirect
                 const sessionId = OAuthSessionService.createSession(schema as string);
 
-                // Append session ID to the auth URL as a custom parameter
-                const urlObj = new URL(authUrl);
-                urlObj.searchParams.set("mobile_session", sessionId);
+                // Create a temporary OAuth client with a dynamic redirect URI that includes the session ID
+                const mobileClient = new SelOAuthClient({
+                    clientId: config.clientId,
+                    clientSecret: config.clientSecret,
+                    redirectUri: `${config.redirectUri}?mobile_session=${sessionId}`,
+                });
 
-                res.redirect(urlObj.toString());
+                const authUrl = mobileClient.getLoginUrl();
+
+                console.log(`📱 Session ID created: ${sessionId}`);
+                console.log(`🔗 Mobile OAuth URL with dynamic redirect: ${authUrl}`);
+
+                res.redirect(authUrl);
             } else {
+                const authUrl = client.getLoginUrl();
+                console.log(`🌐 Web OAuth login - redirecting to: ${authUrl}`);
                 res.redirect(authUrl);
             }
         } catch (error) {
+            console.error("❌ OAuth login error:", error);
             next(new AppError(MessageBuilder.build("AUTH_FAILED"), HTTP_STATUS.INTERNAL_SERVER_ERROR));
         }
     }
@@ -43,10 +54,16 @@ export class AuthController {
         try {
             const { access_token, mobile_session } = req.query;
 
-            // Check if there's a mobile app redirect schema
+            console.log(
+                `📞 OAuth callback - access_token: ${access_token ? "present" : "missing"}, mobile_session: ${mobile_session}`
+            );
+
+            // Check if there's a mobile app redirect schema using the mobile_session parameter
             const redirectSchema = mobile_session
                 ? OAuthSessionService.getSchemaForSession(mobile_session as string)
                 : null;
+
+            console.log(`📱 Redirect schema found: ${redirectSchema}`);
 
             if (!access_token) {
                 if (redirectSchema) {
@@ -83,10 +100,12 @@ export class AuthController {
 
                 // Redirect to mobile app if schema is provided
                 if (redirectSchema) {
+                    console.log(`📱 Redirecting to mobile app with schema: ${redirectSchema}`);
                     return AuthController.redirectToMobileApp(res, redirectSchema, authData);
                 }
 
                 // Default JSON response for web clients
+                console.log(`🌐 Sending JSON response for web client`);
                 res.status(HTTP_STATUS.OK).json(authData);
             } catch (dbError) {
                 console.error("❌ Database error:", dbError);

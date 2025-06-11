@@ -105,11 +105,23 @@ export class OAuthSessionService {
     /**
      * Get session statistics (for monitoring)
      */
-    static getStats(): { totalSessions: number; activeSessions: number } {
+    static getStats(): {
+        totalSessions: number;
+        activeSessions: number;
+        sessions: Array<{ sessionId: string; schema: string; createdAt: Date; expiresAt: Date }>;
+    } {
         const now = new Date();
         let activeSessions = 0;
+        const sessionDetails: Array<{ sessionId: string; schema: string; createdAt: Date; expiresAt: Date }> = [];
 
         for (const session of this.sessions.values()) {
+            sessionDetails.push({
+                sessionId: session.sessionId,
+                schema: session.schema,
+                createdAt: session.createdAt,
+                expiresAt: session.expiresAt,
+            });
+
             if (now <= session.expiresAt) {
                 activeSessions++;
             }
@@ -118,6 +130,7 @@ export class OAuthSessionService {
         return {
             totalSessions: this.sessions.size,
             activeSessions,
+            sessions: sessionDetails,
         };
     }
 }
