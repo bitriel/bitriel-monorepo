@@ -21,29 +21,28 @@ export class AuthController {
 
             console.log(`🔐 OAuth login request - schema: ${schema}`);
 
-            // If mobile app schema is provided, create a dynamic redirect URI with session ID
+            const authUrl = client.getLoginUrl();
+
+            // If mobile app schema is provided, store session ID in a cookie
             if (schema) {
                 // Create a new OAuth session for mobile redirect
                 const sessionId = OAuthSessionService.createSession(schema as string);
 
-                // Create a temporary OAuth client with a dynamic redirect URI that includes the session ID
-                const mobileClient = new SelOAuthClient({
-                    clientId: config.clientId,
-                    clientSecret: config.clientSecret,
-                    redirectUri: `${config.redirectUri}?mobile_session=${sessionId}`,
+                // Store the session ID in a secure cookie that will be available during callback
+                res.cookie("mobile_oauth_session", sessionId, {
+                    httpOnly: true,
+                    secure: config.nodeEnv === "production",
+                    sameSite: "lax",
+                    maxAge: 10 * 60 * 1000, // 10 minutes (same as session duration)
                 });
 
-                const authUrl = mobileClient.getLoginUrl();
-
-                console.log(`📱 Session ID created: ${sessionId}`);
-                console.log(`🔗 Mobile OAuth URL with dynamic redirect: ${authUrl}`);
-
-                res.redirect(authUrl);
+                console.log(`📱 Session ID created and stored in cookie: ${sessionId}`);
+                console.log(`🔗 Mobile OAuth URL: ${authUrl}`);
             } else {
-                const authUrl = client.getLoginUrl();
                 console.log(`🌐 Web OAuth login - redirecting to: ${authUrl}`);
-                res.redirect(authUrl);
             }
+
+            res.redirect(authUrl);
         } catch (error) {
             console.error("❌ OAuth login error:", error);
             next(new AppError(MessageBuilder.build("AUTH_FAILED"), HTTP_STATUS.INTERNAL_SERVER_ERROR));
@@ -52,20 +51,28 @@ export class AuthController {
 
     static async callback(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { access_token, mobile_session } = req.query;
+            const { access_token } = req.query;
+
+            // Get mobile session ID from cookie
+            const mobileSessionId = req.cookies?.mobile_oauth_session;
 
             console.log(
-                `📞 OAuth callback - access_token: ${access_token ? "present" : "missing"}, mobile_session: ${mobile_session}`
+                `📞 OAuth callback - access_token: ${access_token ? "present" : "missing"}, mobile_session_cookie: ${mobileSessionId}`
             );
 
-            // Check if there's a mobile app redirect schema using the mobile_session parameter
-            const redirectSchema = mobile_session
-                ? OAuthSessionService.getSchemaForSession(mobile_session as string)
+            // Check if there's a mobile app redirect schema using the session ID from cookie
+            const redirectSchema = mobileSessionId
+                ? OAuthSessionService.getSchemaForSession(mobileSessionId as string)
                 : null;
 
             console.log(`📱 Redirect schema found: ${redirectSchema}`);
 
             if (!access_token) {
+                // Clear the cookie on error
+                if (mobileSessionId) {
+                    res.clearCookie("mobile_oauth_session");
+                }
+
                 if (redirectSchema) {
                     return AuthController.redirectToMobileApp(res, redirectSchema, {
                         success: false,
@@ -84,9 +91,10 @@ export class AuthController {
                 const savedUser = await UserService.createOrUpdateUser(userProfile.user);
                 console.log("✅ User data saved to MongoDB:", savedUser._id);
 
-                // Clean up stored schema
-                if (mobile_session) {
-                    OAuthSessionService.removeSession(mobile_session as string);
+                // Clean up stored schema and cookie
+                if (mobileSessionId) {
+                    OAuthSessionService.removeSession(mobileSessionId as string);
+                    res.clearCookie("mobile_oauth_session");
                 }
 
                 const authData = {
@@ -110,9 +118,10 @@ export class AuthController {
             } catch (dbError) {
                 console.error("❌ Database error:", dbError);
 
-                // Clean up stored schema
-                if (mobile_session) {
-                    OAuthSessionService.removeSession(mobile_session as string);
+                // Clean up stored schema and cookie
+                if (mobileSessionId) {
+                    OAuthSessionService.removeSession(mobileSessionId as string);
+                    res.clearCookie("mobile_oauth_session");
                 }
 
                 const authData = {
@@ -136,14 +145,15 @@ export class AuthController {
         } catch (error) {
             console.error("OAuth callback error:", error);
 
-            const { mobile_session } = req.query;
-            const redirectSchema = mobile_session
-                ? OAuthSessionService.getSchemaForSession(mobile_session as string)
+            const mobileSessionId = req.cookies?.mobile_oauth_session;
+            const redirectSchema = mobileSessionId
+                ? OAuthSessionService.getSchemaForSession(mobileSessionId as string)
                 : null;
 
-            // Clean up stored schema
-            if (mobile_session) {
-                OAuthSessionService.removeSession(mobile_session as string);
+            // Clean up stored schema and cookie
+            if (mobileSessionId) {
+                OAuthSessionService.removeSession(mobileSessionId as string);
+                res.clearCookie("mobile_oauth_session");
             }
 
             if (redirectSchema) {
