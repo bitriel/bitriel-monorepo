@@ -52,7 +52,7 @@ export default function WalletScreen() {
         {
             icon: "SEND" as IconType,
             label: "Send",
-            onPress: handleOpenTokenListSheet(),
+            onPress: handleOpenTokenListSheet,
         },
         {
             icon: "RECEIVE" as IconType,
@@ -71,7 +71,7 @@ export default function WalletScreen() {
         {
             icon: "TOKENS" as IconType,
             label: "Tokens",
-            onPress: handleOpenTopTokenModal(),
+            onPress: handleOpenTopTokenModal,
         },
     ];
 
@@ -99,7 +99,7 @@ export default function WalletScreen() {
                 <Header.Default
                     networkChainImage={selectedNetwork?.logo || null}
                     networkChainName={selectedNetwork?.name || null}
-                    handleOpenBottomSheet={handleOpenSwitchNetworkSheet()}
+                    handleOpenBottomSheet={handleOpenSwitchNetworkSheet}
                     selectedNetworkLabel={selectedNetwork?.name || null}
                     selectedNetworkImage={selectedNetwork?.logo || null}
                 />
@@ -118,14 +118,11 @@ export default function WalletScreen() {
                     ref={bottomSheetSwitchNetworkRef}
                     handleCloseBottomSheet={handleCloseSwitchNetworkSheet}
                 />
-                <TopTokensBottomSheet
-                    ref={bottomSheetTopTokenRef}
-                    handleCloseBottomSheet={handleCloseTopTokenModal()}
-                />
+                <TopTokensBottomSheet ref={bottomSheetTopTokenRef} handleCloseBottomSheet={handleCloseTopTokenModal} />
                 <TokenListBottomSheet
                     ref={bottomSheetTokenListRef}
                     networkName={currentNetwork?.name!}
-                    handleCloseBottomSheet={handleCloseTokenListSheet()}
+                    handleCloseBottomSheet={handleCloseTokenListSheet}
                     tokens={allTokens}
                 />
             </SafeAreaView>

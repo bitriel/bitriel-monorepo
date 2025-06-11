@@ -5,7 +5,7 @@ import { Area, CartesianChart, Line, useChartPressState } from "victory-native";
 import { Circle, useFont } from "@shopify/react-native-skia";
 import { format } from "date-fns";
 import * as Haptics from "expo-haptics";
-import Animated, { SharedValue, useAnimatedProps } from "react-native-reanimated";
+import Animated, { SharedValue, useAnimatedProps, useDerivedValue } from "react-native-reanimated";
 import Colors from "~/src/constants/Colors";
 import { defaultStyles } from "~/src/constants/Styles";
 import { GetListingCoinsInfo } from "~/src/api/infoApi";
@@ -57,17 +57,31 @@ const InfoCoin = () => {
         fetchCoins();
     }, []);
 
+    const priceText = useDerivedValue(() => {
+        if (state.y.high.value && typeof state.y.high.value.value === "number") {
+            return `${state.y.high.value.value.toFixed(2)} $`;
+        }
+        return "0.00 $";
+    });
+
+    const dateText = useDerivedValue(() => {
+        if (state.x.value && typeof state.x.value.value === "number") {
+            const date = new Date(state.x.value.value * 1000);
+            return date.toLocaleDateString();
+        }
+        return "";
+    });
+
     const animatedText = useAnimatedProps(() => {
         return {
-            text: `${state.y.high.value.value.toFixed(2)} $`,
+            text: priceText.value,
             defaultValue: "",
         };
     });
 
     const animatedDateText = useAnimatedProps(() => {
-        const date = new Date(state.x.value.value * 1000);
         return {
-            text: `${date.toLocaleDateString()}`,
+            text: dateText.value,
             defaultValue: "",
         };
     });
