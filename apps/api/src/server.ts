@@ -11,7 +11,8 @@ const startServer = async (): Promise<void> => {
         // Connect to database
         await connectToDatabase();
 
-        if (config.useHttps) {
+        // Only use HTTPS with certificates in non-production environments
+        if (config.useHttps && config.nodeEnv !== "production") {
             const httpsOptions = {
                 key: fs.readFileSync(path.join(__dirname, CERT_PATHS.KEY)),
                 cert: fs.readFileSync(path.join(__dirname, CERT_PATHS.CERT)),
