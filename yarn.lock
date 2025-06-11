@@ -2008,10 +2008,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@koompi/oauth@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@koompi/oauth/-/oauth-1.1.2.tgz#3894932b16a7fbcdc98be368df92b89b65a3fe4a"
-  integrity sha512-USaFgznm/UyoQaJCLD6JL8a0afGCcN3G9z/+pl8LLL3fTwunnkP1g7f9QdQr5cVwLh4g9QgImCvqq5kYySYLbw==
+"@koompi/oauth@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@koompi/oauth/-/oauth-1.1.3.tgz#ce040072eb1b3bd69cc6097e1473992638dcca91"
+  integrity sha512-rNspXrFgbd3volD2FoAlZwEOl0eZy6zKjQCBgNz0K5O/7EMOyduCKK0kIHCnedlaO9wGZtop/rgMqEIbPkmbWg==
   dependencies:
     axios "^1.6.0"
 

@@ -15,20 +15,3 @@ export interface ApiResponse<T = any> {
     error?: string;
     warning?: string;
 }
-
-export interface PaginationOptions {
-    page: number;
-    limit: number;
-    sort?: string;
-    order?: "asc" | "desc";
-}
-
-export interface PaginatedResponse<T> extends ApiResponse<T[]> {
-    pagination: {
-        currentPage: number;
-        totalPages: number;
-        totalItems: number;
-        hasNext: boolean;
-        hasPrev: boolean;
-    };
-}

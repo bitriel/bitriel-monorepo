@@ -1,17 +1,31 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StatusBar, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, StatusBar, SafeAreaView, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
+import { useAuth } from "~/lib/hooks/useAuth";
 
 export default function SignInScreen() {
     const { isRestore } = useLocalSearchParams<{ isRestore: string }>();
+    const { signIn, isLoading, error, isAuthenticated } = useAuth();
 
     const isRestoreMode = isRestore === "true";
-
     const bottomSheetRef = useRef<BottomSheet>(null);
+
+    // Handle authentication success - redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated && !isLoading) {
+            console.log("✅ User is already authenticated, redirecting to wallet...");
+            router.replace({
+                pathname: "/(auth)/home/(tabs)/wallet",
+                params: {
+                    isDualWallet: "true",
+                },
+            });
+        }
+    }, [isAuthenticated, isLoading]);
 
     const renderBackdrop = useCallback(
         (props: any) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.5} />,
@@ -35,19 +49,30 @@ export default function SignInScreen() {
         router.push("/mnemonic/create");
     }, []);
 
-    const handleCustodialAuth = useCallback(() => {
-        // Since passcode is already set, proceed with custodial authentication
-        // This would typically involve the actual SSO authentication process
-        // For now, we'll simulate successful authentication
+    const handleCustodialAuth = useCallback(async () => {
+        try {
+            console.log("🔐 Starting custodial authentication...");
 
-        // After successful authentication, navigate directly to wallet
-        router.replace({
-            pathname: "/(auth)/home/(tabs)/wallet",
-            params: {
-                isDualWallet: "true",
-            },
-        });
-    }, []);
+            const success = await signIn();
+
+            if (success) {
+                console.log("✅ Authentication successful, navigating to wallet...");
+
+                // After successful authentication, navigate directly to wallet
+                router.replace({
+                    pathname: "/(auth)/home/(tabs)/wallet",
+                    params: {
+                        isDualWallet: "true",
+                    },
+                });
+            } else {
+                console.log("❌ Authentication failed");
+                // Error is handled by the useAuth hook
+            }
+        } catch (error) {
+            console.error("❌ Custodial auth error:", error);
+        }
+    }, [signIn]);
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
@@ -84,13 +109,18 @@ export default function SignInScreen() {
 
             <View className="px-6 pb-8 space-y-3">
                 <TouchableOpacity
-                    className="bg-blue-600 rounded-2xl py-4 px-6 flex-row items-center justify-center shadow-sm"
+                    className={`${isLoading ? "bg-blue-400" : "bg-blue-600"} rounded-2xl py-4 px-6 flex-row items-center justify-center shadow-sm`}
                     activeOpacity={0.8}
                     onPress={handleCustodialAuth}
+                    disabled={isLoading}
                 >
-                    <Ionicons name="logo-apple" size={24} color="#fff" style={{ marginRight: 16 }} />
+                    {isLoading ? (
+                        <ActivityIndicator color="#fff" size="small" style={{ marginRight: 12 }} />
+                    ) : (
+                        <Ionicons name="logo-apple" size={24} color="#fff" style={{ marginRight: 16 }} />
+                    )}
                     <Text className="text-lg font-semibold text-white flex-1 text-center mr-10">
-                        Continue with Digital ID
+                        {isLoading ? "Authenticating..." : "Continue with Digital ID"}
                     </Text>
                 </TouchableOpacity>
 

@@ -56,8 +56,18 @@ src/
 
 ## API Endpoints
 
-- `GET /auth/login` - OAuth login redirect
+### Authentication
+
+- `GET /auth/login` - OAuth login redirect (supports mobile app schema)
 - `GET /auth/callback` - OAuth callback handler
+- `GET /auth/sessions` - Get OAuth session statistics (for monitoring)
+- `GET /user/profile` - Get user profile (requires access token)
+
+### Mobile OAuth Support
+
+The API supports mobile app OAuth integration via custom URL schemes. Mobile apps can initiate OAuth by calling `/auth/login?schema=myapp` and will receive authentication data via deep link callbacks to `myapp://auth/callback?data=...`.
+
+See [Mobile OAuth Documentation](./docs/mobile-oauth.md) for detailed integration guide.
 
 ## Message System
 
