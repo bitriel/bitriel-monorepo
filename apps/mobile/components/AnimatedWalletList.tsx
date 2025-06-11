@@ -88,7 +88,7 @@ export const AnimatedWalletList: React.FC<AnimatedWalletListProps> = React.memo(
                         />
                     }
                 >
-                    <View className="bg-white boarder-b border-gray-100 py-2 z-10">
+                    <View className="bg-white border-b border-gray-100 py-2 z-10">
                         <Text className="font-SpaceGroteskBold text-xl text-gray-900 px-4">Assets</Text>
                     </View>
                     <View className="flex-1 bg-white">{tokens.map(renderTokenItem)}</View>
