@@ -15,7 +15,7 @@ const client = new SelOAuthClient({
 export class AuthController {
     static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const authUrl = `https://oauth.koompi.org/v1/oauth/login?client_id=${config.clientId}&redirect_uri=${config.redirectUri}`;
+            const authUrl = client.getLoginUrl();
 
             res.redirect(authUrl);
         } catch (error) {

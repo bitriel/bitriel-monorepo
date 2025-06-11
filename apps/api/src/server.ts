@@ -11,14 +11,6 @@ const startServer = async (): Promise<void> => {
         // Connect to database
         await connectToDatabase();
 
-        console.log("config.useHttps", config.useHttps);
-        console.log("config.nodeEnv", config.nodeEnv);
-        console.log("config.port", config.port);
-        console.log("config.mongoUri", config.mongoUri);
-        console.log("config.clientId", config.clientId);
-        console.log("config.clientSecret", config.clientSecret);
-        console.log("config.corsOrigin", config.corsOrigin);
-
         // Only use HTTPS with certificates in non-production environments
         if (config.useHttps && config.nodeEnv !== "production") {
             const httpsOptions = {
