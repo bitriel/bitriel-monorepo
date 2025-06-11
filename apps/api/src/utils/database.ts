@@ -1,12 +1,24 @@
 import mongoose from "mongoose";
+import config from "../config";
 
 export const connectToDatabase = async (): Promise<void> => {
     try {
-        const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/bitriel";
-
-        await mongoose.connect(mongoUri);
+        await mongoose.connect(config.mongoUri);
 
         console.log("✅ Connected to MongoDB successfully");
+
+        // Handle connection events
+        mongoose.connection.on("error", error => {
+            console.error("❌ MongoDB connection error:", error);
+        });
+
+        mongoose.connection.on("disconnected", () => {
+            console.warn("⚠️ MongoDB disconnected");
+        });
+
+        mongoose.connection.on("reconnected", () => {
+            console.log("✅ MongoDB reconnected");
+        });
     } catch (error) {
         console.error("❌ MongoDB connection error:", error);
         process.exit(1);
