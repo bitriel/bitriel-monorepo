@@ -15,7 +15,7 @@ export class AuthController {
     static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const authUrl = client.getAuthorizeUrl({
-                redirectUri: `${req.protocol}://${req.get("host")}/auth/callback`,
+                redirectUri: `https://api.bitriel.com/auth/callback`,
                 state: crypto.randomUUID(),
             });
 
