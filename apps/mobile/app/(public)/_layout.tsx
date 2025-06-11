@@ -65,24 +65,6 @@ const PublicLayout = () => {
             />
 
             <Stack.Screen
-                name="custodial/login"
-                options={{
-                    title: "Login",
-                    headerShown: true,
-                    animation: "slide_from_right",
-                }}
-            />
-
-            <Stack.Screen
-                name="custodial/register"
-                options={{
-                    title: "Register",
-                    headerShown: true,
-                    animation: "slide_from_right",
-                }}
-            />
-
-            <Stack.Screen
                 name="auth-method/index"
                 options={{
                     title: "Authentication Method",

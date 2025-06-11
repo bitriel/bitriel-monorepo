@@ -15,7 +15,7 @@ export default function SettingPage() {
                         <View style={settingStyles.sectionBody}>
                             <TouchableOpacity
                                 onPress={() => {
-                                    router.push({ pathname: "/(auth)/home/settings/account/recovery" });
+                                    router.push({ pathname: "/(auth)/home/settings/account" });
                                 }}
                                 style={settingStyles.profile}
                             >

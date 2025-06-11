@@ -1,16 +1,16 @@
 import BottomSheet from "@gorhom/bottom-sheet";
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 
 const useBottomSheet = () => {
     const bottomSheetRef = useRef<BottomSheet>(null);
 
-    const handleOpenBottomSheet = () => () => {
+    const handleOpenBottomSheet = useCallback(() => {
         bottomSheetRef.current?.expand();
-    };
+    }, []);
 
-    const handleCloseBottomSheet = () => () => {
+    const handleCloseBottomSheet = useCallback(() => {
         bottomSheetRef.current?.close();
-    };
+    }, []);
 
     return { bottomSheetRef, handleOpenBottomSheet, handleCloseBottomSheet };
 };

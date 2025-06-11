@@ -47,51 +47,56 @@ export default function WalletScreen() {
         initWallet();
     }, []);
 
-    // Quick actions data
-    const quickActions: QuickAction[] = [
-        {
-            icon: "SEND" as IconType,
-            label: "Send",
-            onPress: handleOpenTokenListSheet(),
-        },
-        {
-            icon: "RECEIVE" as IconType,
-            label: "Receive",
-            onPress: () => router.navigate({ pathname: "/(auth)/home/receive" }),
-        },
-        ...(selectedNetwork?.name === "Selendra Mainnet"
-            ? [
-                  {
-                      icon: "SWAP" as IconType,
-                      label: "Swap",
-                      onPress: () => router.navigate({ pathname: "/(auth)/home/(tabs)/swap" }),
-                  },
-              ]
-            : []),
-        {
-            icon: "TOKENS" as IconType,
-            label: "Tokens",
-            onPress: handleOpenTopTokenModal(),
-        },
-    ];
+    // Memoize quick actions to prevent unnecessary re-creations
+    const quickActions: QuickAction[] = React.useMemo(
+        () => [
+            {
+                icon: "SEND" as IconType,
+                label: "Send",
+                onPress: handleOpenTokenListSheet,
+            },
+            {
+                icon: "RECEIVE" as IconType,
+                label: "Receive",
+                onPress: () => router.navigate({ pathname: "/(auth)/home/receive" }),
+            },
+            ...(selectedNetwork?.name === "Selendra Mainnet"
+                ? [
+                      {
+                          icon: "SWAP" as IconType,
+                          label: "Swap",
+                          onPress: () => router.navigate({ pathname: "/(auth)/home/(tabs)/swap" }),
+                      },
+                  ]
+                : []),
+            {
+                icon: "TOKENS" as IconType,
+                label: "Tokens",
+                onPress: handleOpenTopTokenModal,
+            },
+        ],
+        [selectedNetwork?.name, handleOpenTokenListSheet, handleOpenTopTokenModal]
+    );
 
-    // Prepare token data
-    const allTokens: TokenBalance[] = walletState
-        ? [
-              {
-                  token: {
-                      symbol: currentNetwork?.nativeCurrency.symbol || "",
-                      decimals: currentNetwork?.nativeCurrency.decimals || 18,
-                      logoURI: currentNetwork?.nativeCurrency.logoURI,
-                      name: currentNetwork?.nativeCurrency.name || "Native Token",
-                      address: "0x0",
-                  },
-                  balance: walletState.balances.native,
-                  formatted: walletState.balances.native,
-              },
-              ...walletState.balances.tokens,
-          ]
-        : [];
+    // Memoize token data to prevent unnecessary re-renders
+    const allTokens: TokenBalance[] = React.useMemo(() => {
+        if (!walletState || !currentNetwork) return [];
+
+        return [
+            {
+                token: {
+                    symbol: currentNetwork.nativeCurrency.symbol || "",
+                    decimals: currentNetwork.nativeCurrency.decimals || 18,
+                    logoURI: currentNetwork.nativeCurrency.logoURI,
+                    name: currentNetwork.nativeCurrency.name || "Native Token",
+                    address: "0x0",
+                },
+                balance: walletState.balances.native,
+                formatted: walletState.balances.native,
+            },
+            ...walletState.balances.tokens,
+        ];
+    }, [walletState, currentNetwork]);
 
     return (
         <GestureHandlerRootView className="flex-1">
@@ -99,7 +104,7 @@ export default function WalletScreen() {
                 <Header.Default
                     networkChainImage={selectedNetwork?.logo || null}
                     networkChainName={selectedNetwork?.name || null}
-                    handleOpenBottomSheet={handleOpenSwitchNetworkSheet()}
+                    handleOpenBottomSheet={handleOpenSwitchNetworkSheet}
                     selectedNetworkLabel={selectedNetwork?.name || null}
                     selectedNetworkImage={selectedNetwork?.logo || null}
                 />
@@ -118,14 +123,11 @@ export default function WalletScreen() {
                     ref={bottomSheetSwitchNetworkRef}
                     handleCloseBottomSheet={handleCloseSwitchNetworkSheet}
                 />
-                <TopTokensBottomSheet
-                    ref={bottomSheetTopTokenRef}
-                    handleCloseBottomSheet={handleCloseTopTokenModal()}
-                />
+                <TopTokensBottomSheet ref={bottomSheetTopTokenRef} handleCloseBottomSheet={handleCloseTopTokenModal} />
                 <TokenListBottomSheet
                     ref={bottomSheetTokenListRef}
                     networkName={currentNetwork?.name!}
-                    handleCloseBottomSheet={handleCloseTokenListSheet()}
+                    handleCloseBottomSheet={handleCloseTokenListSheet}
                     tokens={allTokens}
                 />
             </SafeAreaView>
