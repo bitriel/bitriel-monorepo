@@ -1,0 +1,33 @@
+# Development Dockerfile
+FROM node:18-alpine AS dev
+WORKDIR /app
+
+# Install dependencies needed for native modules
+RUN apk add --no-cache libc6-compat python3 make g++
+
+# Copy workspace configuration and package files
+COPY package.json yarn.lock turbo.json ./
+
+# Create app directories and copy package.json files
+RUN mkdir -p apps/api apps/web apps/docs apps/mobile
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY apps/docs/package.json ./apps/docs/
+COPY apps/mobile/package.json ./apps/mobile/
+
+# Copy all packages (needed for workspace resolution)
+COPY packages/ ./packages/
+
+# Enable corepack for yarn
+RUN corepack enable
+
+# Install all dependencies
+RUN yarn install --frozen-lockfile --production=false
+
+# Copy source code
+COPY . .
+
+EXPOSE 3000 3001 8000
+ENV NODE_ENV=development
+
+CMD ["yarn", "dev"] 

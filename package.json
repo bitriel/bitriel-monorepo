@@ -23,11 +23,11 @@
         "mobile:prebuild:ios": "yarn workspace @bitriel/mobile prebuild:ios",
         "mobile:prebuild:android": "yarn workspace @bitriel/mobile prebuild:android",
         "mobile:clean": "yarn workspace @bitriel/mobile clean",
-        "api:dev": "yarn workspace api dev",
-        "api:build": "yarn workspace api build",
-        "api:start": "yarn workspace api start",
-        "api:lint": "yarn workspace api lint",
-        "api:test": "yarn workspace api test"
+        "api:dev": "yarn workspace @bitriel/api dev",
+        "api:build": "yarn workspace @bitriel/api build",
+        "api:start": "yarn workspace @bitriel/api start",
+        "api:lint": "yarn workspace @bitriel/api lint",
+        "api:test": "yarn workspace @bitriel/api test"
     },
     "devDependencies": {
         "prettier": "^3.1.1",

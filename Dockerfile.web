@@ -1,0 +1,54 @@
+# Dockerfile for Web service
+FROM node:18-alpine AS base
+WORKDIR /app
+
+# Install dependencies needed for native modules
+RUN apk add --no-cache libc6-compat python3 make g++
+
+# Copy workspace configuration and package files
+COPY package.json yarn.lock turbo.json ./
+
+# Create app directories and copy package.json files
+RUN mkdir -p apps/api apps/web apps/docs apps/mobile
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY apps/docs/package.json ./apps/docs/
+COPY apps/mobile/package.json ./apps/mobile/
+
+# Copy all packages (needed for workspace resolution)
+COPY packages/ ./packages/
+
+# Enable corepack for yarn
+RUN corepack enable
+
+# Dependencies stage
+FROM base AS deps
+RUN yarn install --frozen-lockfile --production=false
+
+# Build stage
+FROM base AS builder
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Build the Web app using turbo
+RUN yarn turbo build --filter=web
+
+# Production stage
+FROM node:18-alpine AS production
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy built Next.js web app
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+
+USER nextjs
+EXPOSE 3000
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["node", "apps/web/server.js"] 

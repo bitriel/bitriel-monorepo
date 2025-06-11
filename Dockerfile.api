@@ -1,0 +1,56 @@
+# Dockerfile for API service
+FROM node:18-alpine AS base
+WORKDIR /app
+
+# Install dependencies needed for native modules
+RUN apk add --no-cache libc6-compat python3 make g++
+
+# Copy workspace configuration and package files
+COPY package.json yarn.lock turbo.json ./
+
+# Create app directories and copy package.json files
+RUN mkdir -p apps/api apps/web apps/docs apps/mobile
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+COPY apps/docs/package.json ./apps/docs/
+COPY apps/mobile/package.json ./apps/mobile/
+
+# Copy all packages (needed for workspace resolution)
+COPY packages/ ./packages/
+
+# Enable corepack for yarn
+RUN corepack enable
+
+# Dependencies stage
+FROM base AS deps
+RUN yarn install --frozen-lockfile --production=false
+
+# Build stage
+FROM base AS builder
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Build the API using turbo
+RUN yarn turbo build --filter=@bitriel/api
+
+# Production stage
+FROM node:18-alpine AS production
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+
+# Copy built API
+COPY --from=builder --chown=nodejs:nodejs /app/apps/api/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /app/apps/api/package.json ./package.json
+
+# Install only production dependencies for the API
+COPY --from=builder /app/yarn.lock ./yarn.lock
+RUN corepack enable && yarn install --production --frozen-lockfile && yarn cache clean
+
+USER nodejs
+EXPOSE 8000
+ENV NODE_ENV=production
+ENV PORT=8000
+
+CMD ["node", "dist/index.js"] 

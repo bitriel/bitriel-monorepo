@@ -72,6 +72,67 @@ Next, you can link your Turborepo to your Remote Cache by running the following 
 npx turbo link
 ```
 
+## Docker Usage
+
+This monorepo includes Docker configuration for running all services (API, Web, and Docs) in containers.
+
+### Prerequisites
+
+- Docker and Docker Compose installed on your system
+- Node.js 18 or higher (for local development)
+
+### Running with Docker
+
+#### Production Mode
+
+To run all services in production mode:
+
+```bash
+docker-compose up -d
+```
+
+This will start:
+
+- API service on port 8000
+- Web application on port 3000
+- Documentation on port 3001
+
+#### Development Mode
+
+To run the development environment with hot-reloading:
+
+```bash
+docker-compose --profile dev up
+```
+
+This will start all services in development mode with hot-reloading enabled.
+
+### Building Individual Services
+
+Each service has its own Dockerfile for better maintainability:
+
+```bash
+# Build API only
+docker build -f Dockerfile.api -t bitriel-api .
+
+# Build Web app only
+docker build -f Dockerfile.web -t bitriel-web .
+
+# Build Docs only
+docker build -f Dockerfile.docs -t bitriel-docs .
+
+# Build Development environment
+docker build -f Dockerfile.dev -t bitriel-dev .
+```
+
+### Environment Variables
+
+For production deployment, make sure to set the following environment variables:
+
+- For API: Create a `.env` file in the `apps/api` directory
+- For Web: Create a `.env.local` file in the `apps/web` directory
+- For Docs: Create a `.env.local` file in the `apps/docs` directory
+
 ## Useful Links
 
 Learn more about the power of Turborepo:
