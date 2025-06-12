@@ -29,24 +29,6 @@ const PublicLayout = () => {
             />
 
             <Stack.Screen
-                name="custodial/setup"
-                options={{
-                    title: "Setup Custodial",
-                    headerShown: false,
-                    animation: "slide_from_right",
-                }}
-            />
-
-            <Stack.Screen
-                name="restore/index"
-                options={{
-                    title: "Restore",
-                    headerShown: false,
-                    animation: "slide_from_right",
-                }}
-            />
-
-            <Stack.Screen
                 name="mnemonic/import"
                 options={{
                     title: "Import Mnemonic",
