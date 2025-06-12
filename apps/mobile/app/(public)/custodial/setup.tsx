@@ -61,9 +61,6 @@ export default function SignInScreen() {
                 // After successful authentication, navigate directly to wallet
                 router.replace({
                     pathname: "/(auth)/home/(tabs)/wallet",
-                    params: {
-                        isDualWallet: "true",
-                    },
                 });
             } else {
                 console.log("❌ Authentication failed");

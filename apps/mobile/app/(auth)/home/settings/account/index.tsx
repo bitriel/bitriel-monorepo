@@ -6,9 +6,12 @@ import { Iconify } from "react-native-iconify";
 import { settingStyles } from "../index";
 import Colors from "~/src/constants/Colors";
 import { useWalletDataListStore } from "~/src/store/walletDataStore";
+import { useAuth } from "~/lib/hooks/useAuth";
 
 export default function AccountPage() {
     const user = helpers.activeUser();
+
+    const { signOut } = useAuth();
 
     const handleLogout = () => {
         // clearWalletState(); // Clear the state when logging out
@@ -16,6 +19,8 @@ export default function AccountPage() {
         useWalletDataListStore.getState().clearWalletDataListState;
 
         ExpoSecureStoreAdapter.removeAll();
+
+        signOut();
 
         router.navigate({
             pathname: "/(public)/welcome",
