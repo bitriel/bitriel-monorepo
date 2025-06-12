@@ -124,7 +124,10 @@ export default function AuthMethodSelectionScreen() {
                     {isCreateWallet ? (
                         // Recovery Phrase Creation Option (only for create)
                         <TouchableOpacity
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+                            // className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+                            className={`${
+                                isLoading ? "opacity-50 bg-white" : "bg-white"
+                            } rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50`}
                             activeOpacity={0.7}
                             onPress={() => router.push({ pathname: "/(public)/mnemonic/create" })}
                             disabled={isLoading}
@@ -144,7 +147,9 @@ export default function AuthMethodSelectionScreen() {
                     ) : (
                         // Recovery Phrase Import Option (only for restore)
                         <TouchableOpacity
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+                            className={`${
+                                isLoading ? "opacity-50 bg-white" : "bg-white"
+                            } rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50`}
                             activeOpacity={0.7}
                             onPress={() => router.push({ pathname: "/(public)/mnemonic/import" })}
                             disabled={isLoading}
