@@ -1,31 +1,61 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, TouchableOpacity, SafeAreaView, ActivityIndicator } from "react-native";
 import { Cloud, Key, Shield, Plus } from "lucide-react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
+import { useAuth } from "~/lib/hooks/useAuth";
 
 export default function AuthMethodSelectionScreen() {
     const { flowType } = useLocalSearchParams<{ flowType: string }>();
     const [actualFlowType, setActualFlowType] = useState<string>("createWallet");
+    const { signIn, isLoading, error, isAuthenticated } = useAuth();
 
     useEffect(() => {
-        const getFlowType = async () => {
-            // Try to get from URL params first, then from secure storage
-            if (flowType) {
-                setActualFlowType(flowType);
-            } else {
-                const storedFlowType = await ExpoSecureStoreAdapter.getItem("temp_flow_type");
-                if (storedFlowType) {
-                    setActualFlowType(storedFlowType);
-                    // Clean up the temporary storage
-                    await ExpoSecureStoreAdapter.removeItem("temp_flow_type");
-                }
-            }
-        };
-        getFlowType();
+        if (flowType) {
+            setActualFlowType(flowType);
+        }
     }, [flowType]);
 
+    // Handle authentication success - redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated && !isLoading) {
+            console.log("✅ User is already authenticated, redirecting to wallet...");
+            router.replace({
+                pathname: "/(auth)/home/(tabs)/wallet",
+                params: {
+                    isDualWallet: "true",
+                },
+            });
+        }
+    }, [isAuthenticated, isLoading]);
+
     const isCreateWallet = actualFlowType === "createWallet";
+
+    const handleCustodialAuth = useCallback(async () => {
+        try {
+            console.log("🔐 Starting custodial authentication...");
+
+            const success = await signIn();
+
+            if (success) {
+                console.log("✅ Authentication successful, navigating to wallet...");
+
+                // After successful authentication, navigate directly to wallet
+                router.replace({
+                    pathname: "/(auth)/home/(tabs)/wallet",
+                    params: {
+                        isDualWallet: "true",
+                    },
+                });
+            } else {
+                console.log("❌ Authentication failed");
+                // Error is handled by the useAuth hook
+            }
+        } catch (error) {
+            console.error("❌ Custodial auth error:", error);
+        }
+    }, [signIn]);
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
@@ -52,36 +82,55 @@ export default function AuthMethodSelectionScreen() {
                 <View className="gap-4">
                     {/* Digital ID Option */}
                     <TouchableOpacity
-                        className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+                        className={`${
+                            isLoading ? "bg-blue-400" : "bg-white"
+                        } rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50`}
                         activeOpacity={0.7}
-                        onPress={() =>
-                            router.push({
-                                pathname: "/(public)/custodial/setup",
-                                params: { isRestore: isCreateWallet ? "false" : "true" },
-                            })
-                        }
+                        onPress={handleCustodialAuth}
+                        disabled={isLoading}
                     >
                         <View className="flex-row items-start">
                             <View className="bg-blue-50 rounded-full p-3 mr-4">
-                                <Cloud size={24} color="#2563EB" />
+                                {isLoading ? (
+                                    <ActivityIndicator color="#2563EB" size="small" />
+                                ) : (
+                                    <Cloud size={24} color="#2563EB" />
+                                )}
                             </View>
                             <View className="flex-1">
-                                <Text className="text-xl font-semibold text-gray-900 mb-2">Digital ID</Text>
-                                <Text className="text-base text-gray-600 leading-5">
-                                    {isCreateWallet
-                                        ? "Create using your Single Sign-On (SSO) with cloud backup"
-                                        : "Restore using your registered Single Sign-On (SSO)"}
+                                <Text
+                                    className={`text-xl font-semibold ${isLoading ? "text-white" : "text-gray-900"} mb-2`}
+                                >
+                                    {isLoading ? "Authenticating..." : "Digital ID"}
+                                </Text>
+                                <Text
+                                    className={`text-base ${isLoading ? "text-blue-100" : "text-gray-600"} leading-5`}
+                                >
+                                    {isLoading
+                                        ? "Please wait while we authenticate your Digital ID..."
+                                        : isCreateWallet
+                                          ? "Create using your Single Sign-On (SSO) with cloud backup"
+                                          : "Restore using your registered Single Sign-On (SSO)"}
                                 </Text>
                             </View>
+                            {/* {isLoading && (
+                                <View className="ml-2">
+                                    <Ionicons name="logo-apple" size={24} color="#fff" />
+                                </View>
+                            )} */}
                         </View>
                     </TouchableOpacity>
 
                     {isCreateWallet ? (
                         // Recovery Phrase Creation Option (only for create)
                         <TouchableOpacity
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+                            // className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+                            className={`${
+                                isLoading ? "opacity-50 bg-white" : "bg-white"
+                            } rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50`}
                             activeOpacity={0.7}
                             onPress={() => router.push({ pathname: "/(public)/mnemonic/create" })}
+                            disabled={isLoading}
                         >
                             <View className="flex-row items-start">
                                 <View className="bg-green-50 rounded-full p-3 mr-4">
@@ -98,9 +147,12 @@ export default function AuthMethodSelectionScreen() {
                     ) : (
                         // Recovery Phrase Import Option (only for restore)
                         <TouchableOpacity
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
+                            className={`${
+                                isLoading ? "opacity-50 bg-white" : "bg-white"
+                            } rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50`}
                             activeOpacity={0.7}
                             onPress={() => router.push({ pathname: "/(public)/mnemonic/import" })}
+                            disabled={isLoading}
                         >
                             <View className="flex-row items-start">
                                 <View className="bg-purple-50 rounded-full p-3 mr-4">
@@ -116,6 +168,13 @@ export default function AuthMethodSelectionScreen() {
                         </TouchableOpacity>
                     )}
                 </View>
+
+                {/* Error Display */}
+                {error && (
+                    <View className="mt-4 bg-red-50 rounded-2xl p-4">
+                        <Text className="text-sm text-red-800 text-center">{error}</Text>
+                    </View>
+                )}
 
                 {/* Security Note */}
                 <View className="mt-8 bg-blue-50 rounded-2xl p-4">

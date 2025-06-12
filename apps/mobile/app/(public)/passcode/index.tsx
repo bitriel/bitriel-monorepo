@@ -62,10 +62,11 @@ export default function PassCodeScreen() {
                 if (getPin && getPin === enteredPin) {
                     // Navigate based on the flow
                     if (from === "createWallet" || from === "restoreWallet") {
-                        // Store the flow type temporarily for the auth method screen
-                        await ExpoSecureStoreAdapter.setItem("temp_flow_type", from);
                         // New flow: redirect to auth method selection after passcode setup
-                        router.push("/(public)/auth-method");
+                        router.push({
+                            pathname: "/(public)/auth-method",
+                            params: { flowType: from },
+                        });
                     } else if (from === "custodial") {
                         // For custodial flow, navigate to wallet screen
                         router.replace({
