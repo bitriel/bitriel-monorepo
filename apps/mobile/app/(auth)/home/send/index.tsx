@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { DetailedBalance } from "@bitriel/wallet-sdk";
 import { useLocalSearchParams, router } from "expo-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { PixelRatio, Pressable, ScrollView, StyleSheet, TextInput, TouchableOpacity, View, Text } from "react-native";
 import { Dialog, ALERT_TYPE } from "react-native-alert-notification";
 import { Iconify } from "react-native-iconify";
@@ -49,6 +49,24 @@ export default function TransferScreen() {
 
     const { getDetailedBalance } = useWalletStore();
 
+    // Use refs to store latest values without causing re-renders
+    const estimateFeeRef = useRef(estimateFee);
+    const tokenContractRef = useRef(tokenContract);
+    const decimalChainRef = useRef(decimalChain);
+
+    // Update refs when values change
+    useEffect(() => {
+        estimateFeeRef.current = estimateFee;
+    }, [estimateFee]);
+
+    useEffect(() => {
+        tokenContractRef.current = tokenContract;
+    }, [tokenContract]);
+
+    useEffect(() => {
+        decimalChainRef.current = decimalChain;
+    }, [decimalChain]);
+
     const [recipient, setRecipient] = useState<string>("");
     const [amount, setAmount] = useState<string>("");
     const [amountValid, setAmountValid] = useState<boolean>(true);
@@ -56,43 +74,118 @@ export default function TransferScreen() {
     const [isEstimatingFee, setIsEstimatingFee] = useState<boolean>(false);
     const [balance, setBalance] = useState<DetailedBalance | null>(null);
 
+    // Debug: Log estimatedFee changes
+    useEffect(() => {
+        console.log("estimatedFee state changed to:", estimatedFee);
+    }, [estimatedFee]);
+
+    // Add debounce timer and flag to prevent multiple simultaneous calculations
+    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const isCalculatingRef = useRef(false);
+
     // Check if this is a native token (address is "0x0" or similar)
     const isNativeToken =
         !tokenContract ||
         tokenContract === "0x0" ||
         tokenContract.toLowerCase() === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 
-    const calculateFee = async (amt: string) => {
-        if (!amt || !/^\d*\.?\d*$/.test(amt)) {
+    const calculateFee = useCallback(async (amt: string) => {
+        // Prevent multiple simultaneous calculations
+        if (isCalculatingRef.current) {
+            console.log("Fee calculation already in progress, skipping...");
+            return;
+        }
+
+        // Improved validation - ensure amount is a valid number and not empty
+        if (!amt || amt === "0" || amt === "." || !/^\d+\.?\d*$/.test(amt)) {
             setEstimatedFee("0");
             return;
         }
 
+        // Ensure amount is a valid number
+        const numericAmount = parseFloat(amt);
+        if (isNaN(numericAmount) || numericAmount <= 0) {
+            setEstimatedFee("0");
+            return;
+        }
+
+        // Check if amount exceeds available balance
+        console.log("Balance validation check - balance state:", balance);
+        if (balance) {
+            const availableBalance = isNativeToken ? balance.formatted.transferable : tokenBalance;
+            const cleanAvailableBalance = availableBalance?.replace(/[^\d.]/g, "") || "0";
+
+            console.log("Balance validation:", {
+                inputAmount: numericAmount,
+                availableBalance: availableBalance,
+                cleanAvailableBalance: cleanAvailableBalance,
+                isNativeToken: isNativeToken,
+                comparison: numericAmount > parseFloat(cleanAvailableBalance),
+            });
+
+            if (numericAmount > parseFloat(cleanAvailableBalance)) {
+                console.log("Amount exceeds balance, showing insufficient balance message");
+                setEstimatedFee("Insufficient balance");
+                return;
+            }
+        } else {
+            console.log("Balance is null, skipping balance validation");
+        }
+
+        isCalculatingRef.current = true;
         setIsEstimatingFee(true);
+
         try {
+            console.log(
+                "Calculating fee for amount:",
+                amt,
+                "tokenContract:",
+                tokenContractRef.current,
+                "decimals:",
+                decimalChainRef.current
+            );
+
             // Pass contract address and decimals for ERC-20 token fee estimation
-            const fee = await estimateFee(amt, tokenContract, decimalChain ? parseInt(decimalChain) : undefined);
-            setEstimatedFee(fee.formatted + " " + fee.currency);
+            const fee = await estimateFeeRef.current(
+                amt,
+                tokenContractRef.current,
+                decimalChainRef.current ? parseInt(decimalChainRef.current) : undefined
+            );
+            const feeDisplay = fee.formatted + " " + fee.currency;
+            console.log("Fee calculation successful:", fee);
+            console.log("Setting estimatedFee to:", feeDisplay);
+
+            setEstimatedFee(feeDisplay);
         } catch (error) {
             console.error("Error estimating fee:", error);
-            setEstimatedFee("0");
+            // Set a more descriptive error message but don't loop on errors
+            setEstimatedFee("Fee estimation failed");
         } finally {
+            console.log("Fee calculation completed, isEstimatingFee set to false");
             setIsEstimatingFee(false);
+            isCalculatingRef.current = false;
         }
-    };
+    }, []); // Empty dependencies array to prevent recreation
 
     const handleAmountChange = (text: string) => {
+        // Improved validation - ensure it's a valid decimal number
         const validInput = /^\d*\.?\d*$/;
-        setAmountValid(validInput.test(text));
+        setAmountValid(validInput.test(text) && text !== ".");
         setAmount(text);
     };
 
     useEffect(() => {
         // Only get detailed balance for native tokens
         if (isNativeToken) {
-            getDetailedBalance().then(balance => {
-                setBalance(balance);
-            });
+            console.log("Loading detailed balance for native token...");
+            getDetailedBalance()
+                .then(balance => {
+                    console.log("DetailedBalance loaded:", balance);
+                    setBalance(balance);
+                })
+                .catch(error => {
+                    console.error("Error getting detailed balance:", error);
+                });
         } else {
             // For custom tokens, create a mock DetailedBalance using the token balance
             const mockBalance: DetailedBalance = {
@@ -105,15 +198,69 @@ export default function TransferScreen() {
                     transferable: tokenBalance || "0",
                 },
             };
+            console.log("Created mock balance for custom token:", mockBalance);
             setBalance(mockBalance);
         }
-    }, [tokenBalance, isNativeToken]);
+    }, [tokenBalance, isNativeToken, getDetailedBalance]);
 
+    // Fix: Use displayValue instead of amount, and removed estimateFee from dependencies to prevent infinite loop
     useEffect(() => {
-        if (amount && amountValid) {
-            calculateFee(amount);
+        console.log("useEffect triggered with displayValue:", displayValue);
+
+        // Clear existing timer
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
         }
-    }, [amount, amountValid]);
+
+        // Clean the display value for validation (remove commas and other formatting)
+        const cleanDisplayValue = displayValue.replace(/[^\d.]/g, "");
+        const numericValue = parseFloat(cleanDisplayValue);
+
+        if (
+            cleanDisplayValue &&
+            cleanDisplayValue !== "0" &&
+            cleanDisplayValue !== "." &&
+            !isNaN(numericValue) &&
+            numericValue > 0
+        ) {
+            console.log("Starting debounced fee calculation for:", displayValue, "(cleaned:", cleanDisplayValue, ")");
+
+            // Early balance check to avoid unnecessary fee calculations for obviously invalid amounts
+            if (balance) {
+                const availableBalance = isNativeToken ? balance.formatted.transferable : tokenBalance;
+                const cleanAvailableBalance = availableBalance?.replace(/[^\d.]/g, "") || "0";
+
+                if (numericValue > parseFloat(cleanAvailableBalance)) {
+                    console.log(
+                        "Early balance check: Amount exceeds balance, setting insufficient balance immediately"
+                    );
+                    setEstimatedFee("Insufficient balance");
+                    return;
+                }
+            }
+
+            // Debounce fee calculation to prevent rapid-fire calls
+            debounceTimerRef.current = setTimeout(() => {
+                calculateFee(cleanDisplayValue);
+            }, 500); // 500ms debounce
+        } else {
+            console.log(
+                "Setting estimatedFee to '0' because displayValue is invalid:",
+                displayValue,
+                "(cleaned:",
+                cleanDisplayValue,
+                ")"
+            );
+            setEstimatedFee("0");
+        }
+
+        // Cleanup function
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, [displayValue, calculateFee, balance, tokenBalance, isNativeToken]);
 
     useEffect(() => {
         if (scannedData) {
