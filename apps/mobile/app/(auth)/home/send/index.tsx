@@ -129,6 +129,10 @@ export default function TransferScreen() {
     const sendTransaction = async () => {
         const availableBalance = isNativeToken ? balance?.formatted.transferable : tokenBalance;
 
+        // Clean the formatted balance string by removing commas and other formatting
+        const cleanAvailableBalance = availableBalance?.replace(/[^\d.]/g, "") || "0";
+        const cleanDisplayValue = displayValue.replace(/[^\d.]/g, "");
+
         if (!displayValue || !recipient) {
             Dialog.show({
                 type: ALERT_TYPE.WARNING,
@@ -143,7 +147,7 @@ export default function TransferScreen() {
                 textBody: "Invalid amount",
                 button: "Close",
             });
-        } else if (parseFloat(displayValue) > parseFloat(availableBalance || "0")) {
+        } else if (parseFloat(cleanDisplayValue) > parseFloat(cleanAvailableBalance)) {
             Dialog.show({
                 type: ALERT_TYPE.WARNING,
                 title: "Attention",
