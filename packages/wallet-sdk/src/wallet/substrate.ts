@@ -240,7 +240,20 @@ export class SubstrateWalletProvider implements WalletProvider {
             // Get the payment info for the transaction
             const paymentInfo = await extrinsic.paymentInfo(this.pair);
             const fee = paymentInfo.partialFee.toString();
-            const formatted = this.formatTokenBalance(fee, this.network.nativeCurrency.decimals);
+
+            // Use dynamic precision for fee formatting to show small amounts properly
+            // Start with higher precision and reduce until we have a meaningful display
+            let formatted = "0";
+            for (let precision = 12; precision >= 2; precision--) {
+                formatted = formatTokenBalance(fee, this.network.nativeCurrency.decimals, {
+                    precision,
+                    trimTrailingZeros: false,
+                });
+                // If we get a non-zero result, use it
+                if (formatted !== "0" && !formatted.match(/^0\.0+$/)) {
+                    break;
+                }
+            }
 
             return {
                 fee,

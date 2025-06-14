@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { WalletProvider, TransactionRequest, EVMTransactionRequest, TokenInfo, FeeEstimate } from "./types";
 import { EVMNetworkConfig } from "../config/networks";
-import { formatTokenBalance } from "../utils/tokenFormatters";
+import { formatTokenBalance, TokenBalanceFormatOptions } from "../utils/tokenFormatters";
 
 export class EVMWalletProvider implements WalletProvider {
     private provider: ethers.Provider | null = null;
@@ -241,7 +241,20 @@ export class EVMWalletProvider implements WalletProvider {
 
             // Calculate total fee
             const fee = gasLimit * gasPrice.gasPrice;
-            const formatted = this.formatTokenBalance(fee.toString(), this.network.nativeCurrency.decimals);
+
+            // Use dynamic precision for fee formatting to show small amounts properly
+            // Start with higher precision and reduce until we have a meaningful display
+            let formatted = "0";
+            for (let precision = 12; precision >= 2; precision--) {
+                formatted = formatTokenBalance(fee.toString(), this.network.nativeCurrency.decimals, {
+                    precision,
+                    trimTrailingZeros: false,
+                });
+                // If we get a non-zero result, use it
+                if (formatted !== "0" && !formatted.match(/^0\.0+$/)) {
+                    break;
+                }
+            }
 
             return {
                 fee: fee.toString(),
