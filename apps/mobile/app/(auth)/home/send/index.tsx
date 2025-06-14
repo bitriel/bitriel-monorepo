@@ -130,8 +130,8 @@ export default function TransferScreen() {
         const availableBalance = isNativeToken ? balance?.formatted.transferable : tokenBalance;
 
         // Clean the formatted balance string by removing commas and other formatting
-        const cleanAvailableBalance = availableBalance?.replace(/,/g, "") || "0";
-        const cleanDisplayValue = displayValue.replace(/,/g, "");
+        const cleanAvailableBalance = availableBalance?.replace(/[^\d.]/g, "") || "0";
+        const cleanDisplayValue = displayValue.replace(/[^\d.]/g, "");
 
         if (!displayValue || !recipient) {
             Dialog.show({
