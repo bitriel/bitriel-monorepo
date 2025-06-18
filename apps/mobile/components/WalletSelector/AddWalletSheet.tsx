@@ -9,16 +9,24 @@ interface AddWalletSheetProps {
 }
 
 const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleCloseBottomSheet }, ref) => {
-    const snapPoints = useMemo(() => ["45%"], []);
+    const snapPoints = useMemo(() => ["35%"], []);
 
-    const handleCreateWallet = () => {
+    const handleCreateSelfCustodyWallet = () => {
         handleCloseBottomSheet();
-        router.push({ pathname: "/(public)/auth-method", params: { flowType: "createWallet" } });
+        // Pass parameter indicating we're coming from wallet management
+        router.push({
+            pathname: "/(public)/mnemonic/create",
+            params: { fromWalletManagement: "true" },
+        });
     };
 
     const handleRestoreWallet = () => {
         handleCloseBottomSheet();
-        router.push({ pathname: "/(public)/auth-method", params: { flowType: "restoreWallet" } });
+        // Pass parameter indicating we're coming from wallet management
+        router.push({
+            pathname: "/(public)/mnemonic/import",
+            params: { fromWalletManagement: "true" },
+        });
     };
 
     return (
@@ -30,26 +38,23 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
             backgroundStyle={{ backgroundColor: "#F9FAFB" }}
             handleIndicatorStyle={{ backgroundColor: "#D1D5DB", width: 40 }}
         >
-            <BottomSheetView style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 20 }}>
+            <BottomSheetView style={{ flex: 1, paddingHorizontal: 20, paddingTop: 10 }}>
                 {/* Header */}
                 <View
                     style={{
                         flexDirection: "row",
-                        alignItems: "center",
                         justifyContent: "space-between",
+                        alignItems: "center",
                         marginBottom: 24,
                     }}
                 >
-                    <Text style={{ fontSize: 24, fontWeight: "700", color: "#1F2937" }}>Add New Wallet</Text>
+                    <Text style={{ fontSize: 20, fontWeight: "600", color: "#1F2937" }}>Add New Wallet</Text>
                     <TouchableOpacity
                         onPress={handleCloseBottomSheet}
                         style={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: 16,
                             backgroundColor: "#F3F4F6",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            borderRadius: 20,
+                            padding: 8,
                         }}
                     >
                         <X size={20} color="#6B7280" />
@@ -57,7 +62,7 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                 </View>
 
                 <View style={{ gap: 16 }}>
-                    {/* Create New Wallet */}
+                    {/* Create Self-Custody Wallet */}
                     <TouchableOpacity
                         style={{
                             backgroundColor: "#FFFFFF",
@@ -71,7 +76,7 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                             borderWidth: 1,
                             borderColor: "#F3F4F6",
                         }}
-                        onPress={handleCreateWallet}
+                        onPress={handleCreateSelfCustodyWallet}
                         activeOpacity={0.7}
                     >
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -83,7 +88,7 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                                     marginRight: 16,
                                 }}
                             >
-                                <Plus size={28} color="#059669" />
+                                <Key size={28} color="#059669" />
                             </View>
                             <View style={{ flex: 1 }}>
                                 <Text
@@ -94,7 +99,7 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                                         marginBottom: 4,
                                     }}
                                 >
-                                    Create New Wallet
+                                    Self-Custody Wallet
                                 </Text>
                                 <Text
                                     style={{
@@ -103,7 +108,7 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                                         lineHeight: 20,
                                     }}
                                 >
-                                    Start fresh with a new wallet using recovery phrase or cloud backup
+                                    Create a new wallet with a 12-word recovery phrase
                                 </Text>
                             </View>
                             <ArrowRight size={20} color="#9CA3AF" />
@@ -130,13 +135,13 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                             <View
                                 style={{
-                                    backgroundColor: "#EBF4FF",
+                                    backgroundColor: "#F3F4F6",
                                     borderRadius: 16,
                                     padding: 12,
                                     marginRight: 16,
                                 }}
                             >
-                                <Key size={28} color="#2563EB" />
+                                <Plus size={28} color="#6B7280" />
                             </View>
                             <View style={{ flex: 1 }}>
                                 <Text
@@ -156,7 +161,7 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                                         lineHeight: 20,
                                     }}
                                 >
-                                    Import an existing wallet using recovery phrase or cloud backup
+                                    Restore from recovery phrase or cloud backup
                                 </Text>
                             </View>
                             <ArrowRight size={20} color="#9CA3AF" />
@@ -164,7 +169,6 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                     </TouchableOpacity>
                 </View>
 
-                {/* Security Notice */}
                 <View
                     style={{
                         marginTop: 20,

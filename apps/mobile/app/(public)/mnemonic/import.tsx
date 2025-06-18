@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, TouchableOpacity, ScrollView, Platform } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { KeyboardAvoidingView } from "react-native";
 import { validateMnemonic } from "@bitriel/wallet-sdk/src/utils/mnemonic";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
@@ -10,6 +10,7 @@ import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 
 export default function ImportSecretPhraseScreen() {
+    const { fromWalletManagement } = useLocalSearchParams<{ fromWalletManagement?: string }>();
     const [enteredMnemonic, setEnteredMnemonic] = useState<string>("");
     const { addWallet, wallets, checkMnemonicExists, setActiveWallet } = useMultiWalletStore();
 
@@ -47,10 +48,14 @@ export default function ImportSecretPhraseScreen() {
                     button: "Continue",
                     onPressButton: () => {
                         Dialog.hide();
-                        router.replace({
-                            pathname: "/(auth)/home/(tabs)/wallet",
-                            params: { mnemonicParam: existingWallet.mnemonic },
-                        });
+                        if (fromWalletManagement === "true") {
+                            router.replace("/(auth)/home/settings/wallets");
+                        } else {
+                            router.replace({
+                                pathname: "/(auth)/home/(tabs)/wallet",
+                                params: { mnemonicParam: existingWallet.mnemonic },
+                            });
+                        }
                     },
                 });
                 return;
@@ -75,11 +80,15 @@ export default function ImportSecretPhraseScreen() {
                 isActive: true,
             });
 
-            // Navigate to wallet screen
-            router.replace({
-                pathname: "/(auth)/home/(tabs)/wallet",
-                params: { mnemonicParam: trimmedMnemonic },
-            });
+            // Navigate based on where we came from
+            if (fromWalletManagement === "true") {
+                router.replace("/(auth)/home/settings/wallets");
+            } else {
+                router.replace({
+                    pathname: "/(auth)/home/(tabs)/wallet",
+                    params: { mnemonicParam: trimmedMnemonic },
+                });
+            }
         } catch (error) {
             Dialog.show({
                 type: ALERT_TYPE.DANGER,

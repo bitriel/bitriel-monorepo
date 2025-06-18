@@ -1,17 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView, ActivityIndicator } from "react-native";
 import { Cloud, Key, Shield, Plus } from "lucide-react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
-import { useAuth } from "~/lib/hooks/useAuth";
+import { useMultiAuth } from "~/lib/hooks/useMultiAuth";
 import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 
 export default function AuthMethodSelectionScreen() {
     const { flowType } = useLocalSearchParams<{ flowType: string }>();
     const [actualFlowType, setActualFlowType] = useState<string>("createWallet");
-    const { signIn, isLoading, error, isAuthenticated, user } = useAuth();
-    const { addWallet, loadWallets } = useMultiWalletStore();
+    const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+    // Use multi-auth hook - but don't rely on its loading state
+    const { signInNewAccount, error, activeAccount } = useMultiAuth();
+    const { addWallet } = useMultiWalletStore();
 
     useEffect(() => {
         if (flowType) {
@@ -19,37 +20,26 @@ export default function AuthMethodSelectionScreen() {
         }
     }, [flowType]);
 
-    // Handle authentication success - redirect if already authenticated
-    useEffect(() => {
-        if (isAuthenticated && !isLoading) {
-            console.log("✅ User is already authenticated, redirecting to wallet...");
-            router.replace({
-                pathname: "/(auth)/home/(tabs)/wallet",
-                params: {
-                    isDualWallet: "true",
-                },
-            });
-        }
-    }, [isAuthenticated, isLoading]);
-
     const isCreateWallet = actualFlowType === "createWallet";
     const isRestoreWallet = actualFlowType === "restoreWallet";
 
     const handleCustodialAuth = useCallback(async () => {
         try {
+            setIsAuthenticating(true);
             console.log("🔐 Starting custodial authentication...");
 
-            const success = await signIn();
+            const success = await signInNewAccount();
 
-            if (success && user) {
+            if (success && activeAccount) {
                 console.log("✅ Authentication successful, adding custodial wallet...");
 
                 // Add the custodial wallet to the multi-wallet store
                 await addWallet({
-                    name: user.fullname || user.email || "Cloud Wallet",
+                    name: activeAccount.user.fullname || activeAccount.user.email || "Cloud Wallet",
                     type: "custodial",
-                    avatar: user.profile,
-                    userId: user._id,
+                    avatar: activeAccount.user.profile,
+                    userId: activeAccount.user._id,
+                    accessToken: activeAccount.accessToken,
                     isActive: true,
                 });
 
@@ -62,12 +52,13 @@ export default function AuthMethodSelectionScreen() {
                 });
             } else {
                 console.log("❌ Authentication failed");
-                // Error is handled by the useAuth hook
             }
         } catch (error) {
             console.error("❌ Custodial auth error:", error);
+        } finally {
+            setIsAuthenticating(false);
         }
-    }, [signIn, user, addWallet]);
+    }, [signInNewAccount, activeAccount, addWallet]);
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
@@ -101,15 +92,15 @@ export default function AuthMethodSelectionScreen() {
                     {/* Digital ID Option */}
                     <TouchableOpacity
                         className={`${
-                            isLoading ? "bg-blue-400" : "bg-white"
+                            isAuthenticating ? "bg-blue-400" : "bg-white"
                         } rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50`}
                         activeOpacity={0.7}
                         onPress={handleCustodialAuth}
-                        disabled={isLoading}
+                        disabled={isAuthenticating}
                     >
                         <View className="flex-row items-start">
                             <View className="bg-blue-50 rounded-full p-3 mr-4">
-                                {isLoading ? (
+                                {isAuthenticating ? (
                                     <ActivityIndicator color="#2563EB" size="small" />
                                 ) : (
                                     <Cloud size={24} color="#2563EB" />
@@ -117,14 +108,14 @@ export default function AuthMethodSelectionScreen() {
                             </View>
                             <View className="flex-1">
                                 <Text
-                                    className={`text-xl font-semibold ${isLoading ? "text-white" : "text-gray-900"} mb-2`}
+                                    className={`text-xl font-semibold ${isAuthenticating ? "text-white" : "text-gray-900"} mb-2`}
                                 >
-                                    {isLoading ? "Authenticating..." : "Digital ID"}
+                                    {isAuthenticating ? "Authenticating..." : "Digital ID"}
                                 </Text>
                                 <Text
-                                    className={`text-base ${isLoading ? "text-blue-100" : "text-gray-600"} leading-5`}
+                                    className={`text-base ${isAuthenticating ? "text-blue-100" : "text-gray-600"} leading-5`}
                                 >
-                                    {isLoading
+                                    {isAuthenticating
                                         ? "Please wait while we authenticate your Digital ID..."
                                         : isCreateWallet
                                           ? "Create using your Single Sign-On (SSO) with cloud backup"
@@ -133,24 +124,18 @@ export default function AuthMethodSelectionScreen() {
                                             : "Use your Single Sign-On (SSO) with cloud backup"}
                                 </Text>
                             </View>
-                            {/* {isLoading && (
-                                <View className="ml-2">
-                                    <Ionicons name="logo-apple" size={24} color="#fff" />
-                                </View>
-                            )} */}
                         </View>
                     </TouchableOpacity>
 
                     {isCreateWallet ? (
                         // Recovery Phrase Creation Option (only for create)
                         <TouchableOpacity
-                            // className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50"
                             className={`${
-                                isLoading ? "opacity-50 bg-white" : "bg-white"
+                                isAuthenticating ? "opacity-50 bg-white" : "bg-white"
                             } rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50`}
                             activeOpacity={0.7}
                             onPress={() => router.push({ pathname: "/(public)/mnemonic/create" })}
-                            disabled={isLoading}
+                            disabled={isAuthenticating}
                         >
                             <View className="flex-row items-start">
                                 <View className="bg-green-50 rounded-full p-3 mr-4">
@@ -168,11 +153,11 @@ export default function AuthMethodSelectionScreen() {
                         // Recovery Phrase Import Option (only for restore)
                         <TouchableOpacity
                             className={`${
-                                isLoading ? "opacity-50 bg-white" : "bg-white"
+                                isAuthenticating ? "opacity-50 bg-white" : "bg-white"
                             } rounded-2xl p-6 shadow-sm border border-gray-100 active:bg-gray-50`}
                             activeOpacity={0.7}
                             onPress={() => router.push({ pathname: "/(public)/mnemonic/import" })}
-                            disabled={isLoading}
+                            disabled={isAuthenticating}
                         >
                             <View className="flex-row items-start">
                                 <View className="bg-purple-50 rounded-full p-3 mr-4">

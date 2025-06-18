@@ -26,33 +26,8 @@ export function useAuth() {
         checkAuthStatus();
     }, []);
 
-    // Handle deep links
-    useEffect(() => {
-        const handleDeepLink = async (url: string) => {
-            console.log("🔗 Deep link received:", url);
-
-            if (url.startsWith(`${API_CONFIG.APP.URL_SCHEME}://auth/callback`)) {
-                const result = await oauthService.handleDeepLink(url);
-                if (result) {
-                    handleAuthResult(result);
-                }
-            }
-        };
-
-        // Listen for deep link events
-        const subscription = Linking.addEventListener("url", ({ url }) => {
-            handleDeepLink(url);
-        });
-
-        // Check if app was opened with a deep link
-        Linking.getInitialURL().then(url => {
-            if (url) {
-                handleDeepLink(url);
-            }
-        });
-
-        return () => subscription?.remove();
-    }, []);
+    // Note: Deep link handling for auth callbacks is now handled by the dedicated /auth/callback route
+    // This prevents conflicts and provides a better user experience
 
     const checkAuthStatus = async () => {
         try {
