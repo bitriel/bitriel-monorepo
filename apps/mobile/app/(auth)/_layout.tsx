@@ -150,6 +150,15 @@ const AuthLayout = () => {
                     animation: "slide_from_right",
                 }}
             />
+
+            <Stack.Screen
+                name="home/settings/wallets/index"
+                options={{
+                    title: "Manage Wallets",
+                    headerBackButtonMenuEnabled: false,
+                    animation: "slide_from_right",
+                }}
+            />
         </Stack>
     );
 };

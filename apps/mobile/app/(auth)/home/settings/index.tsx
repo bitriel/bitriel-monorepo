@@ -41,6 +41,21 @@ export default function SettingPage() {
                             <View style={[settingStyles.rowWrapper, settingStyles.rowFirst]}>
                                 <TouchableOpacity
                                     onPress={() => {
+                                        router.push({ pathname: "/(auth)/home/settings/wallets" });
+                                    }}
+                                    style={settingStyles.row}
+                                >
+                                    <Text style={settingStyles.rowLabel}>Manage Wallets</Text>
+
+                                    <View style={settingStyles.rowSpacer} />
+
+                                    <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={settingStyles.rowWrapper}>
+                                <TouchableOpacity
+                                    onPress={() => {
                                         Linking.openURL("https://t.me/selendranetwork");
                                     }}
                                     style={settingStyles.row}

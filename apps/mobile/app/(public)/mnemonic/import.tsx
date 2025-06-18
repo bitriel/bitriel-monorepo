@@ -7,9 +7,11 @@ import { validateMnemonic } from "@bitriel/wallet-sdk/src/utils/mnemonic";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import Colors from "~/src/constants/Colors";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
+import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 
 export default function ImportSecretPhraseScreen() {
     const [enteredMnemonic, setEnteredMnemonic] = useState<string>("");
+    const { addWallet, wallets, checkMnemonicExists, setActiveWallet } = useMultiWalletStore();
 
     const handlePasteFromClipboard = async () => {
         const clipboardContent = await Clipboard.getStringAsync();
@@ -21,22 +23,71 @@ export default function ImportSecretPhraseScreen() {
 
         const isValidMnemonic = validateMnemonic(trimmedMnemonic);
 
-        if (isValidMnemonic) {
-            // Since passcode is already created and confirmed in the initial flow,
-            // store the mnemonic and go directly to the wallet
-            await ExpoSecureStoreAdapter.setItem("wallet_mnemonic", trimmedMnemonic);
-
-            router.replace({
-                pathname: "/(auth)/home/(tabs)/wallet",
-                params: { mnemonicParam: trimmedMnemonic },
-            });
-        } else {
+        if (!isValidMnemonic) {
             Dialog.show({
                 type: ALERT_TYPE.DANGER,
                 title: "Error",
                 textBody: "Invalid secret recovery phrase",
                 button: "Close",
             });
+            return;
+        }
+
+        // Check for existing wallet with same mnemonic
+        const existingWallet = checkMnemonicExists(trimmedMnemonic);
+        if (existingWallet) {
+            try {
+                // Auto-switch to existing wallet with friendly notification
+                await setActiveWallet(existingWallet.id);
+
+                Dialog.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: "Wallet Found!",
+                    textBody: `Switched to your existing wallet: "${existingWallet.name}"`,
+                    button: "Continue",
+                    onPressButton: () => {
+                        Dialog.hide();
+                        router.replace({
+                            pathname: "/(auth)/home/(tabs)/wallet",
+                            params: { mnemonicParam: existingWallet.mnemonic },
+                        });
+                    },
+                });
+                return;
+            } catch (error) {
+                Dialog.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "Error",
+                    textBody: "Failed to switch to existing wallet",
+                    button: "Close",
+                });
+                return;
+            }
+        }
+
+        try {
+            // Add the imported wallet to the multi-wallet store
+            const walletName = `Imported Wallet ${wallets.length + 1}`;
+            await addWallet({
+                name: walletName,
+                type: "non-custodial",
+                mnemonic: trimmedMnemonic,
+                isActive: true,
+            });
+
+            // Navigate to wallet screen
+            router.replace({
+                pathname: "/(auth)/home/(tabs)/wallet",
+                params: { mnemonicParam: trimmedMnemonic },
+            });
+        } catch (error) {
+            Dialog.show({
+                type: ALERT_TYPE.DANGER,
+                title: "Error",
+                textBody: "Failed to import wallet. Please try again.",
+                button: "Close",
+            });
+            console.error("Failed to import wallet:", error);
         }
     };
 

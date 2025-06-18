@@ -40,25 +40,6 @@ export default function AccountPage() {
 
                     <View style={settingStyles.section}>
                         <View style={settingStyles.sectionBody}>
-                            <View style={[settingStyles.rowWrapper, settingStyles.rowFirst, settingStyles.rowLast]}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        router.push({ pathname: "/(auth)/home/settings/account/recovery/warnMsg" });
-                                    }}
-                                    style={settingStyles.row}
-                                >
-                                    <Text style={settingStyles.rowLabel}>Show Secret Recovery Phrase</Text>
-
-                                    <View style={settingStyles.rowSpacer} />
-
-                                    <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={settingStyles.section}>
-                        <View style={settingStyles.sectionBody}>
                             <View
                                 style={[
                                     settingStyles.rowWrapper,

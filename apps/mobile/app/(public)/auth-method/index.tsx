@@ -5,11 +5,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 import { useAuth } from "~/lib/hooks/useAuth";
+import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 
 export default function AuthMethodSelectionScreen() {
     const { flowType } = useLocalSearchParams<{ flowType: string }>();
     const [actualFlowType, setActualFlowType] = useState<string>("createWallet");
-    const { signIn, isLoading, error, isAuthenticated } = useAuth();
+    const { signIn, isLoading, error, isAuthenticated, user } = useAuth();
+    const { addWallet, loadWallets } = useMultiWalletStore();
 
     useEffect(() => {
         if (flowType) {
@@ -31,6 +33,7 @@ export default function AuthMethodSelectionScreen() {
     }, [isAuthenticated, isLoading]);
 
     const isCreateWallet = actualFlowType === "createWallet";
+    const isRestoreWallet = actualFlowType === "restoreWallet";
 
     const handleCustodialAuth = useCallback(async () => {
         try {
@@ -38,10 +41,19 @@ export default function AuthMethodSelectionScreen() {
 
             const success = await signIn();
 
-            if (success) {
-                console.log("✅ Authentication successful, navigating to wallet...");
+            if (success && user) {
+                console.log("✅ Authentication successful, adding custodial wallet...");
 
-                // After successful authentication, navigate directly to wallet
+                // Add the custodial wallet to the multi-wallet store
+                await addWallet({
+                    name: user.fullname || user.email || "Cloud Wallet",
+                    type: "custodial",
+                    avatar: user.profile,
+                    userId: user._id,
+                    isActive: true,
+                });
+
+                // Navigate to wallet screen
                 router.replace({
                     pathname: "/(auth)/home/(tabs)/wallet",
                     params: {
@@ -55,7 +67,7 @@ export default function AuthMethodSelectionScreen() {
         } catch (error) {
             console.error("❌ Custodial auth error:", error);
         }
-    }, [signIn]);
+    }, [signIn, user, addWallet]);
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
@@ -69,12 +81,18 @@ export default function AuthMethodSelectionScreen() {
             <View className="flex-1 px-6 pt-8">
                 <View className="mb-12">
                     <Text className="text-3xl font-bold text-gray-900 mb-4 text-center">
-                        {isCreateWallet ? "Choose How to Create Your Wallet" : "Choose How to Restore Your Wallet"}
+                        {isCreateWallet
+                            ? "Choose How to Create Your Wallet"
+                            : isRestoreWallet
+                              ? "Choose How to Restore Your Wallet"
+                              : "Choose Your Wallet Type"}
                     </Text>
                     <Text className="text-lg text-gray-600 text-center leading-6">
                         {isCreateWallet
                             ? "Select your preferred method to create and secure your wallet"
-                            : "Select your preferred method to restore your wallet backup"}
+                            : isRestoreWallet
+                              ? "Select your preferred method to restore your wallet backup"
+                              : "Select your preferred method to manage your wallet"}
                     </Text>
                 </View>
 
@@ -110,7 +128,9 @@ export default function AuthMethodSelectionScreen() {
                                         ? "Please wait while we authenticate your Digital ID..."
                                         : isCreateWallet
                                           ? "Create using your Single Sign-On (SSO) with cloud backup"
-                                          : "Restore using your registered Single Sign-On (SSO)"}
+                                          : isRestoreWallet
+                                            ? "Restore using your registered Single Sign-On (SSO)"
+                                            : "Use your Single Sign-On (SSO) with cloud backup"}
                                 </Text>
                             </View>
                             {/* {isLoading && (

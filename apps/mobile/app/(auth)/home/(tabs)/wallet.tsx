@@ -13,10 +13,13 @@ import copyAddress from "~/src/utilities/copyClipboard";
 import { AnimatedWalletList } from "~/components/AnimatedWalletList";
 import WalletBalanceCard from "~/components/Card/WalletBalanceCard";
 import { QuickAction, IconType } from "~/src/types/quick.action.types";
+import { useMultiWalletStore } from "~/src/store/multiWalletStore";
+import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 
 export default function WalletScreen() {
     const { mnemonicParam } = useLocalSearchParams<{ mnemonicParam: string }>();
     const { initializeWallet, refreshWalletState, isLoading, currentNetwork, walletState } = useWalletStore();
+    const { activeWallet, loadWallets, addWallet, wallets, isInitialized: walletsInitialized } = useMultiWalletStore();
 
     // Find the current network details from SUPPORTED_NETWORKS
     const selectedNetwork = SUPPORTED_NETWORKS.find(network => network.chainId === currentNetwork?.chainId);
@@ -39,13 +42,76 @@ export default function WalletScreen() {
         handleCloseBottomSheet: handleCloseTokenListSheet,
     } = useBottomSheet();
 
+    const [isInitialized, setIsInitialized] = React.useState(false);
+    const [currentMnemonic, setCurrentMnemonic] = React.useState<string | null>(null);
+
+    // Initial wallet loading and migration
     React.useEffect(() => {
-        const initWallet = async () => {
-            await initializeWallet(mnemonicParam);
+        let isMounted = true;
+
+        const initWallets = async () => {
+            try {
+                await loadWallets();
+
+                // Only run migration once on initial load
+                if (!walletsInitialized && wallets.length === 0 && mnemonicParam && !isInitialized) {
+                    const legacyMnemonic = await ExpoSecureStoreAdapter.getItem("wallet_mnemonic");
+                    if (legacyMnemonic || mnemonicParam) {
+                        // Migrate legacy wallet to multi-wallet system
+                        await addWallet({
+                            name: "My Wallet",
+                            type: "non-custodial",
+                            mnemonic: legacyMnemonic || mnemonicParam,
+                            isActive: true,
+                        });
+                        console.log("Migrated legacy wallet to multi-wallet system");
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to initialize wallets:", error);
+            }
         };
 
-        initWallet();
-    }, []);
+        // Only initialize if not already initialized
+        if (!walletsInitialized && !isInitialized) {
+            initWallets();
+        }
+    }, [loadWallets, addWallet, walletsInitialized, mnemonicParam, isInitialized]);
+
+    // Wallet initialization - only when active wallet or mnemonic changes
+    React.useEffect(() => {
+        let isMounted = true;
+
+        const initWallet = async () => {
+            // Determine which mnemonic to use
+            const walletMnemonic = activeWallet?.type === "non-custodial" ? activeWallet.mnemonic : mnemonicParam;
+
+            // Only initialize if we have a mnemonic and it's different from current
+            if (walletMnemonic && walletMnemonic !== currentMnemonic && walletsInitialized) {
+                try {
+                    console.log("Initializing wallet with new mnemonic...");
+                    await initializeWallet(walletMnemonic);
+                    if (isMounted) {
+                        setCurrentMnemonic(walletMnemonic);
+                        setIsInitialized(true);
+                    }
+                } catch (error) {
+                    console.error("Failed to initialize wallet:", error);
+                }
+            } else if (walletMnemonic === currentMnemonic && currentMnemonic) {
+                console.log("Wallet already initialized with same mnemonic, skipping...");
+            }
+        };
+
+        // Only initialize if wallets are loaded
+        if (walletsInitialized) {
+            initWallet();
+        }
+
+        return () => {
+            isMounted = false;
+        };
+    }, [activeWallet, mnemonicParam, initializeWallet, currentMnemonic, walletsInitialized]);
 
     // Memoize quick actions to prevent unnecessary re-creations
     const quickActions: QuickAction[] = React.useMemo(

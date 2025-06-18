@@ -1,0 +1,197 @@
+import React, { forwardRef, useMemo } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { router } from "expo-router";
+import { Plus, Key, X, ArrowRight } from "lucide-react-native";
+
+interface AddWalletSheetProps {
+    handleCloseBottomSheet: () => void;
+}
+
+const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleCloseBottomSheet }, ref) => {
+    const snapPoints = useMemo(() => ["45%"], []);
+
+    const handleCreateWallet = () => {
+        handleCloseBottomSheet();
+        router.push({ pathname: "/(public)/auth-method", params: { flowType: "createWallet" } });
+    };
+
+    const handleRestoreWallet = () => {
+        handleCloseBottomSheet();
+        router.push({ pathname: "/(public)/auth-method", params: { flowType: "restoreWallet" } });
+    };
+
+    return (
+        <BottomSheet
+            ref={ref}
+            snapPoints={snapPoints}
+            enablePanDownToClose
+            index={-1}
+            backgroundStyle={{ backgroundColor: "#F9FAFB" }}
+            handleIndicatorStyle={{ backgroundColor: "#D1D5DB", width: 40 }}
+        >
+            <BottomSheetView style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 20 }}>
+                {/* Header */}
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 24,
+                    }}
+                >
+                    <Text style={{ fontSize: 24, fontWeight: "700", color: "#1F2937" }}>Add New Wallet</Text>
+                    <TouchableOpacity
+                        onPress={handleCloseBottomSheet}
+                        style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: 16,
+                            backgroundColor: "#F3F4F6",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <X size={20} color="#6B7280" />
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ gap: 16 }}>
+                    {/* Create New Wallet */}
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: "#FFFFFF",
+                            borderRadius: 16,
+                            padding: 20,
+                            shadowColor: "#000",
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.08,
+                            shadowRadius: 8,
+                            elevation: 3,
+                            borderWidth: 1,
+                            borderColor: "#F3F4F6",
+                        }}
+                        onPress={handleCreateWallet}
+                        activeOpacity={0.7}
+                    >
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <View
+                                style={{
+                                    backgroundColor: "#ECFDF5",
+                                    borderRadius: 16,
+                                    padding: 12,
+                                    marginRight: 16,
+                                }}
+                            >
+                                <Plus size={28} color="#059669" />
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <Text
+                                    style={{
+                                        fontSize: 18,
+                                        fontWeight: "600",
+                                        color: "#1F2937",
+                                        marginBottom: 4,
+                                    }}
+                                >
+                                    Create New Wallet
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        color: "#6B7280",
+                                        lineHeight: 20,
+                                    }}
+                                >
+                                    Start fresh with a new wallet using recovery phrase or cloud backup
+                                </Text>
+                            </View>
+                            <ArrowRight size={20} color="#9CA3AF" />
+                        </View>
+                    </TouchableOpacity>
+
+                    {/* Restore Wallet */}
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: "#FFFFFF",
+                            borderRadius: 16,
+                            padding: 20,
+                            shadowColor: "#000",
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.08,
+                            shadowRadius: 8,
+                            elevation: 3,
+                            borderWidth: 1,
+                            borderColor: "#F3F4F6",
+                        }}
+                        onPress={handleRestoreWallet}
+                        activeOpacity={0.7}
+                    >
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <View
+                                style={{
+                                    backgroundColor: "#EBF4FF",
+                                    borderRadius: 16,
+                                    padding: 12,
+                                    marginRight: 16,
+                                }}
+                            >
+                                <Key size={28} color="#2563EB" />
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <Text
+                                    style={{
+                                        fontSize: 18,
+                                        fontWeight: "600",
+                                        color: "#1F2937",
+                                        marginBottom: 4,
+                                    }}
+                                >
+                                    Restore Wallet
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        color: "#6B7280",
+                                        lineHeight: 20,
+                                    }}
+                                >
+                                    Import an existing wallet using recovery phrase or cloud backup
+                                </Text>
+                            </View>
+                            <ArrowRight size={20} color="#9CA3AF" />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                {/* Security Notice */}
+                <View
+                    style={{
+                        marginTop: 20,
+                        backgroundColor: "#FEF3C7",
+                        borderRadius: 12,
+                        padding: 16,
+                        borderLeftWidth: 4,
+                        borderLeftColor: "#F59E0B",
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontSize: 13,
+                            color: "#92400E",
+                            fontWeight: "500",
+                            lineHeight: 18,
+                        }}
+                    >
+                        💡 Your wallets are secured with your device passcode and biometric authentication when
+                        available.
+                    </Text>
+                </View>
+            </BottomSheetView>
+        </BottomSheet>
+    );
+});
+
+AddWalletSheet.displayName = "AddWalletSheet";
+
+export default AddWalletSheet;

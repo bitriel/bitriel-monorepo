@@ -11,6 +11,7 @@ let storedKeys = [
     "contractDataSelEvm",
     "walletList",
     "last_network",
+    "multi_wallets",
 ]; // List of all keys you have data stored under
 
 export const ExpoSecureStoreAdapter = {

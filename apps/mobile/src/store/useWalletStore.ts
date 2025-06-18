@@ -18,6 +18,7 @@ interface WalletStateStore {
     currentNetwork: NetworkConfig | null;
     isLoading: boolean;
     error: string | null;
+    lastMnemonic: string | null;
 
     // Actions
     initializeWallet: (mnemonic: string) => Promise<void>;
@@ -35,13 +36,22 @@ export const useWalletStore = create<WalletStateStore>((set, get) => ({
     currentNetwork: null,
     isLoading: false,
     error: null,
+    lastMnemonic: null,
 
     initializeWallet: async (mnemonic: string) => {
+        const { lastMnemonic, sdk } = get();
+
+        // Skip initialization if the same mnemonic and SDK is already active
+        if (lastMnemonic === mnemonic && sdk) {
+            console.log("Wallet already initialized with same mnemonic, skipping...");
+            return;
+        }
+
         try {
             set({ isLoading: true, error: null });
 
             const walletSdk = new BitrielWalletSDK(mnemonic!);
-            set({ sdk: walletSdk });
+            set({ sdk: walletSdk, lastMnemonic: mnemonic });
 
             // Connect to last used network if available
             const lastNetwork = await SecureStore.getItemAsync("last_network");
@@ -122,6 +132,8 @@ export const useWalletStore = create<WalletStateStore>((set, get) => ({
                 set({
                     walletState: null,
                     currentNetwork: null,
+                    lastMnemonic: null,
+                    sdk: null,
                 });
             } catch (error: any) {
                 set({ error: error.message });
