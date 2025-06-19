@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, forwardRef } from "react";
 import { View, Text, TouchableOpacity, Alert, ScrollView } from "react-native";
-import BottomSheet, { BottomSheetView, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetView, BottomSheetScrollView, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { Shield, AlertTriangle, X, Eye } from "lucide-react-native";
 import { MultiWallet } from "~/src/store/multiWalletStore";
 import MnemonicBox from "~/components/Mnemonic/MnemonicBox";
@@ -11,13 +11,20 @@ interface WalletRecoverySheetProps {
     onClose: () => void;
 }
 
-const WalletRecoverySheet = forwardRef<BottomSheet, WalletRecoverySheetProps>(({ wallet, onClose }, ref) => {
+const WalletRecoverySheet = forwardRef<BottomSheetModal, WalletRecoverySheetProps>(({ wallet, onClose }, ref) => {
     const [hasConfirmed, setHasConfirmed] = useState(false);
 
     // Bottom sheet snap points
     const snapPoints = useMemo(() => ["85%"], []);
 
     console.log("WalletRecoverySheet rendered with wallet:", wallet?.name, wallet?.type, !!wallet?.mnemonic);
+
+    const renderBackdrop = useCallback(
+        (backdropProps: any) => (
+            <BottomSheetBackdrop {...backdropProps} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.5} />
+        ),
+        []
+    );
 
     const handleRevealPhrase = () => {
         console.log("Revealing phrase for wallet:", wallet?.name);
@@ -31,9 +38,8 @@ const WalletRecoverySheet = forwardRef<BottomSheet, WalletRecoverySheetProps>(({
     };
 
     return (
-        <BottomSheet
+        <BottomSheetModal
             ref={ref}
-            index={-1}
             snapPoints={snapPoints}
             onChange={index => {
                 console.log("Bottom sheet index changed to:", index);
@@ -43,6 +49,8 @@ const WalletRecoverySheet = forwardRef<BottomSheet, WalletRecoverySheetProps>(({
                 }
             }}
             enablePanDownToClose={true}
+            enableDismissOnClose={true}
+            backdropComponent={renderBackdrop}
             backgroundStyle={{
                 backgroundColor: "#F9FAFB",
             }}
@@ -243,7 +251,7 @@ const WalletRecoverySheet = forwardRef<BottomSheet, WalletRecoverySheetProps>(({
                     )}
                 </BottomSheetScrollView>
             </BottomSheetView>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 });
 

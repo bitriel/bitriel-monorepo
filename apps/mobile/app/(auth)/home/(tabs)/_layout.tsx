@@ -18,7 +18,7 @@ const Tabs = withLayoutContext<
 
 export default function TabLayout() {
     return (
-        <Tabs tabBar={props => <CustomTabBar {...props} />}>
+        <Tabs tabBar={props => <CustomTabBar customTabBarProp={props} />}>
             <Tabs.Screen
                 name="wallet"
                 options={{

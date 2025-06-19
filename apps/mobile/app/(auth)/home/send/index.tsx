@@ -9,7 +9,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AnimatedText from "~/components/AnimatedText";
 import Balance from "~/components/Balance";
 import NumberPad from "~/components/NumberPad";
-import Recipient from "~/components/Recipient";
 import { ThemedText } from "~/components/ThemedText";
 import { ThemedView } from "~/components/ThemedView";
 import Colors from "~/src/constants/Colors";

@@ -1,4 +1,4 @@
-import { AnimatePresence, MotiImage, MotiView } from "moti";
+import { MotiImage, MotiView } from "moti";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 import { Easing } from "react-native-reanimated";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -56,6 +56,56 @@ const truncateString = (str: string, first: number, last: number) => {
     if (strLen <= first + last) return str;
     return `${str.slice(0, first)}...${str.slice(strLen - last)}`;
 };
+
+const AnimatedBackground = React.memo(() => {
+    return (
+        <MotiView
+            key="background-container"
+            from={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+                opacity: {
+                    type: "timing",
+                    duration: 1000,
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                },
+            }}
+            style={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                left: 0,
+                top: 0,
+            }}
+        >
+            <MotiImage
+                key="background-image"
+                source={{ uri: images[3] }}
+                from={{
+                    transform: [{ rotate: "0deg" }, { scale: 1.8 }],
+                }}
+                animate={{
+                    transform: [{ rotate: "360deg" }, { scale: 3 }],
+                }}
+                transition={{
+                    type: "timing",
+                    duration: 8000,
+                    easing: Easing.linear,
+                    loop: true,
+                    repeatReverse: true,
+                }}
+                blurRadius={60}
+                style={{
+                    width: _width * 1.5,
+                    height: _height * 1.5,
+                    resizeMode: "cover",
+                    position: "absolute",
+                    alignSelf: "center",
+                }}
+            />
+        </MotiView>
+    );
+});
 
 const ShimmerButton = ({ width }: { width: number }) => {
     return (
@@ -131,69 +181,7 @@ export default function WalletBalanceCard({
                     padding: _cardPadding,
                 }}
             >
-                <AnimatePresence>
-                    <MotiView
-                        from={{ opacity: 0, scale: 1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 2 }}
-                        transition={{
-                            opacity: {
-                                type: "timing",
-                                duration: 1000,
-                                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-                            },
-                            scale: {
-                                type: "timing",
-                                duration: 1000,
-                                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-                            },
-                        }}
-                        style={{
-                            position: "absolute",
-                            width: "100%",
-                            height: "100%",
-                            left: 0,
-                            top: 0,
-                        }}
-                    >
-                        <MotiImage
-                            source={{ uri: images[3] }}
-                            from={{
-                                transform: [{ rotate: "0deg" }, { scale: 1.8 }],
-                            }}
-                            animate={{
-                                transform: [
-                                    { rotate: "360deg" },
-                                    {
-                                        scale: 3,
-                                    },
-                                ],
-                            }}
-                            transition={{
-                                rotate: {
-                                    type: "timing",
-                                    duration: 8000,
-                                    easing: Easing.linear,
-                                    loop: true,
-                                },
-                                scale: {
-                                    type: "timing",
-                                    duration: 8000,
-                                    easing: Easing.linear,
-                                    loop: true,
-                                },
-                            }}
-                            blurRadius={60}
-                            style={{
-                                width: _width * 1.5,
-                                height: _height * 1.5,
-                                resizeMode: "cover",
-                                position: "absolute",
-                                alignSelf: "center",
-                            }}
-                        />
-                    </MotiView>
-                </AnimatePresence>
+                <AnimatedBackground />
 
                 <View style={{ flex: 1, justifyContent: "space-between" }}>
                     {/* Top Section */}
@@ -216,10 +204,7 @@ export default function WalletBalanceCard({
                             <Text className="font-SpaceGroteskRegular" style={{ color: "white", opacity: 0.7 }}>
                                 Total Balance
                             </Text>
-                            <Text
-                                className="font-SpaceGroteskBold"
-                                style={{ color: "white", fontSize: 32, fontWeight: "600" }}
-                            >
+                            <Text className="font-SpaceGroteskBold" style={{ color: "white", fontSize: 32 }}>
                                 {totalBalance}
                             </Text>
                         </View>

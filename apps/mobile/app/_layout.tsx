@@ -7,6 +7,7 @@ import * as Linking from "expo-linking";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 import { useMultiAccountStore } from "~/src/store/multiAccountStore";
 import { API_CONFIG } from "~/lib/config/api";
@@ -124,10 +125,12 @@ const InitialLayout = () => {
 const RootLayout = () => {
     return (
         <AlertNotificationRoot>
-            <GestureHandlerRootView>
-                <ToastProvider>
-                    <InitialLayout />
-                </ToastProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <BottomSheetModalProvider>
+                    <ToastProvider>
+                        <InitialLayout />
+                    </ToastProvider>
+                </BottomSheetModalProvider>
             </GestureHandlerRootView>
         </AlertNotificationRoot>
     );

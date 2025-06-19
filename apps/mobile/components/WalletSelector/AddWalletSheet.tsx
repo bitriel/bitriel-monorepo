@@ -1,6 +1,6 @@
-import React, { forwardRef, useMemo } from "react";
+import React, { forwardRef, useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import { Plus, Key, X, ArrowRight } from "lucide-react-native";
 
@@ -8,8 +8,15 @@ interface AddWalletSheetProps {
     handleCloseBottomSheet: () => void;
 }
 
-const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleCloseBottomSheet }, ref) => {
-    const snapPoints = useMemo(() => ["35%"], []);
+const AddWalletSheet = forwardRef<BottomSheetModal, AddWalletSheetProps>(({ handleCloseBottomSheet }, ref) => {
+    const snapPoints = useMemo(() => ["60%"], []);
+
+    const renderBackdrop = useCallback(
+        (backdropProps: any) => (
+            <BottomSheetBackdrop {...backdropProps} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.5} />
+        ),
+        []
+    );
 
     const handleCreateSelfCustodyWallet = () => {
         handleCloseBottomSheet();
@@ -30,11 +37,12 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
     };
 
     return (
-        <BottomSheet
+        <BottomSheetModal
             ref={ref}
             snapPoints={snapPoints}
-            enablePanDownToClose
-            index={-1}
+            enablePanDownToClose={true}
+            enableDismissOnClose={true}
+            backdropComponent={renderBackdrop}
             backgroundStyle={{ backgroundColor: "#F9FAFB" }}
             handleIndicatorStyle={{ backgroundColor: "#D1D5DB", width: 40 }}
         >
@@ -192,7 +200,7 @@ const AddWalletSheet = forwardRef<BottomSheet, AddWalletSheetProps>(({ handleClo
                     </Text>
                 </View>
             </BottomSheetView>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 });
 

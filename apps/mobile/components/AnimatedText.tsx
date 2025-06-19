@@ -119,10 +119,10 @@ const styles = StyleSheet.create({
         transform: [
             { scale: 0.45 },
             {
-                translateX: "-5%",
+                translateX: Platform.OS === "ios" ? -2 : 70,
             },
             {
-                translateY: "45%",
+                translateY: 40,
             },
         ],
         transformOrigin: "top right",

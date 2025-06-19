@@ -1,3 +1,4 @@
+import { withLayoutContext } from "expo-router";
 import React from "react";
 import { View, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import Animated, {
@@ -8,16 +9,19 @@ import Animated, {
     withTiming,
     Easing,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemedText } from "../ThemedText";
 import { IconWallet, IconApps, IconTrophy, IconUser } from "@tabler/icons-react-native";
+import Colors from "../../src/constants/Colors";
+
+import { BottomTabBarProps } from "@bottom-tabs/react-navigation";
+import { ParamListBase, RouteProp } from "@react-navigation/native";
 
 // Tab icons mapping with fallbacks
 const getTabIcon = (routeName: string, focused: boolean) => {
     const iconSize = 24;
-    const iconColor = focused ? "#667eea" : "#8E8E93";
+    const iconColor = focused ? Colors.primary : Colors.defaultText;
     const strokeWidth = focused ? 2.5 : 2;
 
     try {
@@ -50,22 +54,12 @@ interface TabBarButtonProps {
     isFocused: boolean;
     onPress: () => void;
     onLongPress: () => void;
-    index: number;
-    tabCount: number;
 }
 
-const TabBarButton: React.FC<TabBarButtonProps> = ({
-    label,
-    routeName,
-    isFocused,
-    onPress,
-    onLongPress,
-    index,
-    tabCount,
-}) => {
+const TabBarButton: React.FC<TabBarButtonProps> = ({ label, routeName, isFocused, onPress, onLongPress }) => {
     const scale = useSharedValue(1);
     const translateY = useSharedValue(0);
-    const opacity = useSharedValue(isFocused ? 1 : 0.6);
+    const opacity = useSharedValue(1);
 
     React.useEffect(() => {
         scale.value = withSpring(isFocused ? 1.1 : 1, {
@@ -78,7 +72,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
             stiffness: 150,
         });
 
-        opacity.value = withTiming(isFocused ? 1 : 0.6, {
+        opacity.value = withTiming(1, {
             duration: 200,
             easing: Easing.bezier(0.4, 0, 0.2, 1),
         });
@@ -94,7 +88,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
     }));
 
     const animatedButtonStyle = useAnimatedStyle(() => ({
-        opacity: opacity.value,
+        opacity: 1,
     }));
 
     const animatedIndicatorStyle = useAnimatedStyle(() => ({
@@ -111,7 +105,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
             {isFocused && (
                 <Animated.View style={[styles.activeIndicator, animatedIndicatorStyle]}>
                     <LinearGradient
-                        colors={["#667eea", "#764ba2"]}
+                        colors={[Colors.primary, Colors.secondary]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.gradientIndicator}
@@ -124,7 +118,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
             </Animated.View>
 
             <Animated.View style={animatedTextStyle}>
-                <ThemedText style={[styles.labelText, { color: isFocused ? "#667eea" : "#8E8E93" }]}>
+                <ThemedText style={[styles.labelText, { color: isFocused ? Colors.primary : Colors.defaultText }]}>
                     {label}
                 </ThemedText>
             </Animated.View>
@@ -133,27 +127,24 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
 };
 
 interface CustomTabBarProps {
-    state: any;
-    descriptors: any;
-    navigation: any;
+    customTabBarProp: BottomTabBarProps;
 }
 
-export const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, navigation }) => {
-    const insets = useSafeAreaInsets();
-
+export const CustomTabBar: React.FC<CustomTabBarProps> = ({ customTabBarProp }) => {
     return (
-        <View style={[styles.container, { paddingBottom: insets.bottom }]}>
-            {Platform.OS === "ios" ? (
-                <BlurView intensity={95} tint="light" style={styles.backgroundContainer}>
-                    <View style={styles.solidBackground} />
-                </BlurView>
-            ) : (
+        <View style={styles.container}>
+            <BlurView
+                intensity={95}
+                tint="light"
+                experimentalBlurMethod="dimezisBlurView"
+                style={styles.backgroundContainer}
+            >
                 <View style={styles.solidBackground} />
-            )}
+            </BlurView>
 
             <View style={styles.tabContainer}>
-                {state.routes.map((route: any, index: number) => {
-                    const { options } = descriptors[route.key];
+                {customTabBarProp.state.routes.map((route: RouteProp<ParamListBase, string>, index: number) => {
+                    const { options } = customTabBarProp.descriptors[route.key];
                     const label =
                         options.tabBarLabel !== undefined
                             ? options.tabBarLabel
@@ -161,22 +152,22 @@ export const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, 
                               ? options.title
                               : route.name;
 
-                    const isFocused = state.index === index;
+                    const isFocused = customTabBarProp.state.index === index;
 
                     const onPress = () => {
-                        const event = navigation.emit({
+                        const event = customTabBarProp.navigation.emit({
                             type: "tabPress",
                             target: route.key,
                             canPreventDefault: true,
                         });
 
                         if (!isFocused && !event.defaultPrevented) {
-                            navigation.navigate(route.name, route.params);
+                            customTabBarProp.navigation.navigate(route.name, route.params);
                         }
                     };
 
                     const onLongPress = () => {
-                        navigation.emit({
+                        customTabBarProp.navigation.emit({
                             type: "tabLongPress",
                             target: route.key,
                         });
@@ -190,8 +181,6 @@ export const CustomTabBar: React.FC<CustomTabBarProps> = ({ state, descriptors, 
                             isFocused={isFocused}
                             onPress={onPress}
                             onLongPress={onLongPress}
-                            index={index}
-                            tabCount={state.routes.length}
                         />
                     );
                 })}
@@ -215,14 +204,14 @@ const styles = StyleSheet.create({
     },
     solidBackground: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: "#ffffff",
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
     },
     tabContainer: {
         flexDirection: "row",
         paddingTop: 12,
         paddingHorizontal: 16,
-        paddingBottom: 8,
-        minHeight: 80,
+        paddingBottom: Platform.OS === "ios" ? 20 : 0,
+        minHeight: Platform.OS === "ios" ? 80 : 60,
     },
     tabButton: {
         flex: 1,
@@ -248,13 +237,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    iconText: {
-        fontSize: 24,
-        lineHeight: 28,
-    },
     labelText: {
         fontSize: 12,
-        fontWeight: "600",
+        fontFamily: "SpaceGrotesk-SemiBold",
         textAlign: "center",
         letterSpacing: 0.5,
     },
