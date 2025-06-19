@@ -7,11 +7,11 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
 import { RefreshCw, ArrowDownUp } from "lucide-react-native";
 import { BlurView } from "expo-blur";
-import { SwapButton } from "~/components/swap/SwapButton";
-import { SwapInput } from "~/components/swap/SwapInput";
-import { SwapRate } from "~/components/swap/SwapRate";
-import { SwapSettings } from "~/components/swap/SwapSettings";
-import { SwapTokenSelector } from "~/components/swap/SwapTokenSelector";
+import { SwapButton } from "~/components/Swap/SwapButton";
+import { SwapInput } from "~/components/Swap/SwapInput";
+import { SwapRate } from "~/components/Swap/SwapRate";
+import { SwapSettings } from "~/components/Swap/SwapSettings";
+import { SwapTokenSelector } from "~/components/Swap/SwapTokenSelector";
 
 export default function SwapScreen() {
     const { walletState, currentNetwork, refreshWalletState } = useWalletStore();
