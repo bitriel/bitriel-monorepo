@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, TouchableOpacity, ScrollView, Platform }
 import * as Clipboard from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
 import { KeyboardAvoidingView } from "react-native";
-import { validateMnemonic } from "@bitriel/wallet-sdk/src/utils/mnemonic";
+import { validateMnemonic } from "@bitriel/wallet-sdk";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import Colors from "~/src/constants/Colors";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";

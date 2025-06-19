@@ -5,3 +5,4 @@ export * from "./config/networks";
 export * from "./wallet/substrate";
 export * from "./wallet/evm";
 export * from "./utils/amount";
+export * from "./utils/mnemonic";

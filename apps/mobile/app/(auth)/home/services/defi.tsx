@@ -199,7 +199,7 @@ const DeFiScreen = () => {
                     <Text style={styles.poolStatLabel}>TVL</Text>
                 </View>
                 <View style={styles.poolStat}>
-                    <View style={[styles.riskBadge, styles[`risk${pool.risk}` as keyof typeof styles]]}>
+                    <View style={styles.riskBadge}>
                         <Text style={styles.riskText}>{pool.risk}</Text>
                     </View>
                 </View>

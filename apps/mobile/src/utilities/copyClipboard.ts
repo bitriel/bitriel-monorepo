@@ -1,16 +1,14 @@
 import * as Clipboard from "expo-clipboard";
-import { toast as TingToast } from "@baronha/ting";
-import Colors from "../constants/Colors";
 
-const copyAddress = (address: string) => {
+const copyAddress = (
+    address: string,
+    showToast?: (message: string, type?: "success" | "error" | "info" | "warning", title?: string) => void
+) => {
     Clipboard.setStringAsync(address);
 
-    TingToast({
-        backgroundColor: Colors.offWhite,
-        title: "Success",
-        message: "Address copied to clipboard",
-        preset: "done",
-    });
+    if (showToast) {
+        showToast("Address copied to clipboard", "success", "Success");
+    }
 };
 
 export default copyAddress;

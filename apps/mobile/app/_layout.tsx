@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 import { useMultiAccountStore } from "~/src/store/multiAccountStore";
 import { API_CONFIG } from "~/lib/config/api";
+import { ToastProvider } from "~/hooks/useToast";
 
 const InitialLayout = () => {
     const [fontsLoaded] = useFonts({
@@ -50,7 +51,7 @@ const InitialLayout = () => {
 
                 // Navigate to the auth callback route with params
                 router.push({
-                    pathname: "/auth/callback" as any,
+                    pathname: "/auth/callback",
                     params,
                 });
                 return;
@@ -124,7 +125,9 @@ const RootLayout = () => {
     return (
         <AlertNotificationRoot>
             <GestureHandlerRootView>
-                <InitialLayout />
+                <ToastProvider>
+                    <InitialLayout />
+                </ToastProvider>
             </GestureHandlerRootView>
         </AlertNotificationRoot>
     );

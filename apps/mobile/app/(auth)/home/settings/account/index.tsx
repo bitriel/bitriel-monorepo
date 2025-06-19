@@ -1,8 +1,8 @@
+import React from "react";
 import helpers from "~/src/helpers";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 import { router } from "expo-router";
 import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Image } from "react-native";
-import { Iconify } from "react-native-iconify";
 import { settingStyles } from "../index";
 import Colors from "~/src/constants/Colors";
 import { useWalletDataListStore } from "~/src/store/walletDataStore";

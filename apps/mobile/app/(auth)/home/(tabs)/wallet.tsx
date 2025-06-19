@@ -131,7 +131,7 @@ export default function WalletScreen() {
                       {
                           icon: "SWAP" as IconType,
                           label: "Swap",
-                          onPress: () => router.navigate({ pathname: "/(auth)/home/(tabs)/swap" }),
+                          onPress: () => router.navigate({ pathname: "/(auth)/home/swap" }),
                       },
                   ]
                 : []),

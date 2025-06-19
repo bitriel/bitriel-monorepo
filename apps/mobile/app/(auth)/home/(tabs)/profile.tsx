@@ -68,7 +68,7 @@ interface ProfileMenuItem {
 const ProfileScreen = () => {
     const { activeWallet } = useMultiWalletStore();
     const { signOut } = useAuth();
-    const user = helpers.activeUser();
+    const { user } = useAuth();
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [biometricEnabled, setBiometricEnabled] = useState(true);
@@ -322,7 +322,13 @@ const ProfileScreen = () => {
             <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.profileGradient}>
                 <View style={styles.profileInfo}>
                     <View style={styles.avatarContainer}>
-                        <Image source={{ uri: user.avatar }} style={styles.profileAvatar} />
+                        {user?.profile ? (
+                            <Image source={{ uri: user.profile }} style={styles.profileAvatar} />
+                        ) : (
+                            <View style={[styles.profileAvatar, styles.avatarPlaceholder]}>
+                                <User size={40} color="#8E8E93" />
+                            </View>
+                        )}
                         <TouchableOpacity
                             style={styles.cameraButton}
                             onPress={() => router.push("/(auth)/home/profile/edit-photo" as any)}
@@ -331,8 +337,8 @@ const ProfileScreen = () => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.profileDetails}>
-                        <Text style={styles.profileName}>{user.fullName || "User"}</Text>
-                        <Text style={styles.profileEmail}>{user.email || "user@bitriel.com"}</Text>
+                        <Text style={styles.profileName}>{user?.fullname || "User"}</Text>
+                        <Text style={styles.profileEmail}>{user?.email || "user@bitriel.com"}</Text>
                         <View style={styles.verificationBadge}>
                             <Crown size={14} color="#FFD700" />
                             <Text style={styles.verificationText}>{profileStats.verificationLevel}</Text>
@@ -503,6 +509,11 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         borderWidth: 3,
         borderColor: "white",
+    },
+    avatarPlaceholder: {
+        backgroundColor: "#F2F2F7",
+        justifyContent: "center",
+        alignItems: "center",
     },
     cameraButton: {
         position: "absolute",

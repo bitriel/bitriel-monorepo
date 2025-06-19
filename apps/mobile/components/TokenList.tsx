@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useWalletStore } from "~/src/store/useWalletStore";
 import { Image } from "expo-image";
-import { Iconify } from "react-native-iconify";
+import { IconCoin } from "@tabler/icons-react-native";
 
 export const TokenList = () => {
     const { walletState, currentNetwork, isLoading, error, formatBalance } = useWalletStore();
@@ -63,7 +63,7 @@ export const TokenList = () => {
                             />
                         ) : (
                             <View className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center">
-                                <Iconify icon="mingcute:coin-3-fill" size={24} color="#666666" />
+                                <IconCoin size={24} color="#666666" />
                             </View>
                         )}
 
