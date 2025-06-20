@@ -1,14 +1,35 @@
-# Turborepo starter
+# Bitriel Digital Ecosystem
 
-This Turborepo starter is maintained by the Turborepo core team.
+Bitriel is a comprehensive digital ecosystem app that goes beyond traditional crypto wallets. Built similar to Binance or Alipay, it offers a super-app experience with financial services, marketplace integrations, entertainment, gaming, and an extensive loyalty rewards program - all powered by cryptocurrency and Web3 technology.
 
-## Using this example
+## 🚀 Features
 
-Run the following command:
+### 🏠 Dashboard & Portfolio
 
-```sh
-npx create-turbo@latest
-```
+- Personalized home dashboard with portfolio overview
+- Real-time balance tracking and performance metrics
+- Quick access to essential financial functions
+
+### 🌐 Comprehensive Ecosystem
+
+- **Financial Services**: DeFi, staking, lending, savings
+- **Marketplace**: Bill payments, shopping, travel booking
+- **Entertainment**: Web3 games, NFT marketplace, streaming
+- **Tools**: Mini apps, analytics, developer APIs
+
+### 🏆 Loyalty & Rewards
+
+- Points-based loyalty system with tier benefits
+- Achievement tracking and gamification
+- Cashback rewards and referral programs
+- Extensive reward catalog for redemptions
+
+### 👤 Advanced Profile Management
+
+- Multi-wallet support with secure backup
+- KYC verification and tier progression
+- Comprehensive security settings
+- Integrated support system
 
 ## What's inside?
 
@@ -16,11 +37,14 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `mobile`: React Native app with Expo (Main ecosystem app)
+- `api`: Node.js backend with authentication and wallet services
+- `web`: Next.js web application
+- `docs`: Documentation site
+- `@bitriel/wallet-sdk`: Comprehensive wallet SDK with multi-chain support
+- `@repo/ui`: Shared React component library
+- `@repo/eslint-config`: ESLint configurations
+- `@repo/typescript-config`: TypeScript configurations
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 

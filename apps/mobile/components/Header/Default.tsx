@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import getHeaderContainerStyle from "./getHeaderContainerStyle";
 import Colors from "~/src/constants/Colors";
 import { router } from "expo-router";
-import { Iconify } from "react-native-iconify";
+import { IconSettings, IconChevronDown, IconQrcode } from "@tabler/icons-react-native";
 import { Image } from "expo-image";
 interface Props {
     nomargin?: boolean | undefined;
@@ -36,7 +36,7 @@ const MainHeader: React.FC<Props> = ({
         ]}
     >
         <TouchableOpacity onPress={() => router.push({ pathname: "/(auth)/home/settings" })}>
-            <Iconify icon="solar:settings-line-duotone" size={28} color={Colors.secondary} />
+            <IconSettings size={28} color={Colors.secondary} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -57,7 +57,7 @@ const MainHeader: React.FC<Props> = ({
                     {selectedNetworkLabel || networkChainName}
                 </Text>
 
-                <Iconify icon="solar:alt-arrow-down-line-duotone" color={Colors.blackText} size={18} />
+                <IconChevronDown color={Colors.blackText} size={18} />
             </View>
         </TouchableOpacity>
 
@@ -65,7 +65,7 @@ const MainHeader: React.FC<Props> = ({
             <TouchableOpacity
                 onPress={() => router.push({ pathname: "/(auth)/home/qrScanner", params: { from: "home" } })}
             >
-                <Iconify icon="solar:scanner-line-duotone" size={28} color={Colors.secondary} />
+                <IconQrcode size={28} color={Colors.secondary} />
             </TouchableOpacity>
         </>
     </View>

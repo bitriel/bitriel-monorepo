@@ -1,5 +1,5 @@
 import React, { forwardRef, useCallback, useMemo, useState } from "react";
-import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetBackdrop, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import Colors from "~/src/constants/Colors";
 import { BackHandler, TouchableOpacity, View, Text, TextInput } from "react-native";
 import { useFocusEffect, router } from "expo-router";
@@ -16,7 +16,7 @@ interface BottomSheetProps {
     networkName: string;
 }
 
-type Ref = BottomSheet;
+type Ref = BottomSheetModal;
 
 const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
     const { formatBalance } = useWalletStore();
@@ -127,17 +127,18 @@ const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
     );
 
     return (
-        <BottomSheet
+        <BottomSheetModal
             ref={ref}
             snapPoints={snapPoints}
-            index={-1}
-            onChange={idx => {
-                setIsShowing(idx > -1);
-                if (idx === -1) {
-                    setSearchQuery("");
-                }
+            index={1}
+            onDismiss={() => {
+                setIsShowing(false);
+                setSearchQuery("");
+                handleBottomSheetClose();
             }}
-            onClose={handleBottomSheetClose}
+            onAnimate={(fromIndex, toIndex) => {
+                setIsShowing(toIndex > -1);
+            }}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
@@ -202,20 +203,10 @@ const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
                                 ? "Try searching with a different name"
                                 : "Buy or Receive tokens to your account."}
                         </Text>
-                        {/* {searchQuery.length === 0 && (
-              <TouchableOpacity
-                className="py-2 px-4"
-                onPress={() => {
-                  handleBottomSheetClose();
-                  router.navigate({ pathname: "/(auth)/home/buy" });
-                }}>
-                <Text className="text-blue-500 font-SpaceGroteskBold">Buy tokens</Text>
-              </TouchableOpacity>
-            )} */}
                     </View>
                 )}
             </BottomSheetScrollView>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 });
 

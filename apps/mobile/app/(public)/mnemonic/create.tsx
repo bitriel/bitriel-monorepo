@@ -4,19 +4,22 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator, Animated } from "react-native";
 import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import type BottomSheet from "@gorhom/bottom-sheet";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { BitrielWalletSDK } from "@bitriel/wallet-sdk";
 import { Shield, Copy } from "lucide-react-native";
 
 import MnemonicBox from "~/components/Mnemonic/MnemonicBox";
 import Colors from "~/src/constants/Colors";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
+import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 
 export default function SecretPhraseScreen() {
+    const { fromWalletManagement } = useLocalSearchParams<{ fromWalletManagement?: string }>();
     const [mnemonic, setMnemonic] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
     const [hasConfirmed, setHasConfirmed] = useState(false);
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const { addWallet, wallets } = useMultiWalletStore();
 
     const generateMnemonic = useCallback(() => {
         try {
@@ -41,18 +44,35 @@ export default function SecretPhraseScreen() {
 
     const handleConfirmBackup = useCallback(async () => {
         if (hasConfirmed) {
-            // Since passcode is already created and confirmed in the initial flow,
-            // store the mnemonic and go directly to the wallet
-            await ExpoSecureStoreAdapter.setItem("wallet_mnemonic", mnemonic);
+            try {
+                // Add the non-custodial wallet to the multi-wallet store
+                const walletName = `Wallet ${wallets.length + 1}`;
+                await addWallet({
+                    name: walletName,
+                    type: "non-custodial",
+                    mnemonic: mnemonic,
+                    isActive: true,
+                });
 
-            router.replace({
-                pathname: "/(auth)/home/(tabs)/wallet",
-                params: { mnemonicParam: mnemonic },
-            });
+                // Navigate based on where we came from
+                if (fromWalletManagement === "true") {
+                    // Go back to wallet management if we came from there
+                    router.replace("/(auth)/home/settings/wallets");
+                } else {
+                    // Navigate to wallet screen for normal onboarding flow
+                    router.replace({
+                        pathname: "/(auth)/home/(tabs)/wallet",
+                        params: { mnemonicParam: mnemonic },
+                    });
+                }
+            } catch (error) {
+                Alert.alert("Error", "Failed to create wallet. Please try again.");
+                console.error("Failed to create wallet:", error);
+            }
         } else {
             setHasConfirmed(true);
         }
-    }, [mnemonic, hasConfirmed]);
+    }, [mnemonic, hasConfirmed, addWallet, wallets.length]);
 
     useEffect(() => {
         generateMnemonic();

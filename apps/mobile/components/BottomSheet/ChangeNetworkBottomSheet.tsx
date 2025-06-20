@@ -1,5 +1,6 @@
 import React, { forwardRef, useCallback, useMemo, useRef, useState } from "react";
-import BottomSheet, {
+import {
+    BottomSheetModal,
     BottomSheetBackdrop,
     BottomSheetFlatList,
     BottomSheetFlatListMethods,
@@ -11,7 +12,7 @@ import { SUPPORTED_NETWORKS } from "@bitriel/wallet-sdk";
 import { useWalletStore } from "~/src/store/useWalletStore";
 import { Image } from "expo-image";
 
-type Ref = BottomSheet;
+type Ref = BottomSheetModal;
 
 interface BottomSheetProps {
     handleCloseBottomSheet: () => void;
@@ -53,7 +54,8 @@ const NetworkListItem = ({
 );
 
 const ChangeNetworkBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp, ref) => {
-    const snapPoints = useMemo(() => ["50%"], []);
+    // Use optimized snap points for better list performance
+    const snapPoints = useMemo(() => ["40%"], []);
     const [isShowing, setIsShowing] = useState<boolean>(false);
     const flatListRef = useRef<BottomSheetFlatListMethods>(null);
     const { currentNetwork, connectToNetwork } = useWalletStore();
@@ -99,11 +101,14 @@ const ChangeNetworkBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
     const keyExtractor = useCallback((item: (typeof SUPPORTED_NETWORKS)[0]) => item.chainId.toString(), []);
 
     return (
-        <BottomSheet
+        <BottomSheetModal
             ref={ref}
             snapPoints={snapPoints}
-            onChange={idx => setIsShowing(idx > -1)}
-            index={-1}
+            index={1}
+            onDismiss={() => setIsShowing(false)}
+            onAnimate={(fromIndex, toIndex) => {
+                setIsShowing(toIndex > -1);
+            }}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
@@ -120,7 +125,7 @@ const ChangeNetworkBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
                 keyExtractor={keyExtractor}
                 contentContainerStyle={{ paddingBottom: 20 }}
             />
-        </BottomSheet>
+        </BottomSheetModal>
     );
 });
 

@@ -1,51 +1,52 @@
-import Colors from "~/src/constants/Colors";
-import { Tabs } from "expo-router";
-import { Iconify } from "react-native-iconify";
+import { withLayoutContext } from "expo-router";
+import {
+    createNativeBottomTabNavigator,
+    NativeBottomTabNavigationOptions,
+    NativeBottomTabNavigationEventMap,
+} from "@bottom-tabs/react-navigation";
+import { ParamListBase, TabNavigationState } from "@react-navigation/native";
+import { CustomTabBar } from "../../../../components/Tabbar/CustomTabbar";
 
-const TabsPage = () => {
+const BottomTabNavigator = createNativeBottomTabNavigator().Navigator;
+
+const Tabs = withLayoutContext<
+    NativeBottomTabNavigationOptions,
+    typeof BottomTabNavigator,
+    TabNavigationState<ParamListBase>,
+    NativeBottomTabNavigationEventMap
+>(BottomTabNavigator);
+
+export default function TabLayout() {
     return (
-        <Tabs
-            screenOptions={{
-                tabBarActiveTintColor: Colors.primary,
-            }}
-        >
+        <Tabs tabBar={props => <CustomTabBar customTabBarProp={props} />}>
             <Tabs.Screen
                 name="wallet"
                 options={{
-                    headerShown: false,
-                    headerTitle: "Wallet",
-                    tabBarIcon: ({ color, size }) => (
-                        <Iconify icon="solar:wallet-money-bold-duotone" size={size} color={color} />
-                    ),
+                    title: "Wallet",
                     tabBarLabel: "Wallet",
                 }}
             />
-
             <Tabs.Screen
-                name="swap"
+                name="services"
                 options={{
-                    headerTitle: "Swap Tokens",
-                    tabBarIcon: ({ color, size }) => (
-                        <Iconify icon="solar:square-transfer-vertical-bold-duotone" size={size} color={color} />
-                    ),
-                    tabBarLabel: "Swap",
-                    href: null,
+                    title: "Services",
+                    tabBarLabel: "Services",
                 }}
             />
-
             <Tabs.Screen
-                name="dApps"
+                name="rewards"
                 options={{
-                    headerTitle: "DApps",
-                    tabBarIcon: ({ color, size }) => (
-                        <Iconify icon="solar:shield-network-bold-duotone" size={size} color={color} />
-                    ),
-                    tabBarLabel: "DApps",
-                    href: null,
+                    title: "Rewards",
+                    tabBarLabel: "Rewards",
+                }}
+            />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    title: "Profile",
+                    tabBarLabel: "Profile",
                 }}
             />
         </Tabs>
     );
-};
-
-export default TabsPage;
+}

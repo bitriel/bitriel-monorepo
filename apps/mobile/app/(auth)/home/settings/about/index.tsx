@@ -1,6 +1,7 @@
+import React from "react";
 import { router } from "expo-router";
 import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Switch, Image } from "react-native";
-import { Iconify } from "react-native-iconify";
+import { IconChevronRight } from "@tabler/icons-react-native";
 import { settingStyles } from "../index";
 import * as Linking from "expo-linking";
 
@@ -32,7 +33,7 @@ export default function AboutPage() {
 
                                     <View style={settingStyles.rowSpacer} />
 
-                                    <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
+                                    <IconChevronRight color="#bcbcbc" size={19} />
                                 </TouchableOpacity>
                             </View>
 
@@ -47,7 +48,7 @@ export default function AboutPage() {
 
                                     <View style={settingStyles.rowSpacer} />
 
-                                    <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
+                                    <IconChevronRight color="#bcbcbc" size={19} />
                                 </TouchableOpacity>
                             </View>
                         </View>

@@ -1,8 +1,8 @@
+import React from "react";
 import helpers from "~/src/helpers";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 import { router } from "expo-router";
 import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Image } from "react-native";
-import { Iconify } from "react-native-iconify";
 import { settingStyles } from "../index";
 import Colors from "~/src/constants/Colors";
 import { useWalletDataListStore } from "~/src/store/walletDataStore";
@@ -36,25 +36,6 @@ export default function AccountPage() {
                             source={{ uri: user.avatar }}
                             style={{ height: 100, width: 100, borderRadius: 50, backgroundColor: Colors.white }}
                         />
-                    </View>
-
-                    <View style={settingStyles.section}>
-                        <View style={settingStyles.sectionBody}>
-                            <View style={[settingStyles.rowWrapper, settingStyles.rowFirst, settingStyles.rowLast]}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        router.push({ pathname: "/(auth)/home/settings/account/recovery/warnMsg" });
-                                    }}
-                                    style={settingStyles.row}
-                                >
-                                    <Text style={settingStyles.rowLabel}>Show Secret Recovery Phrase</Text>
-
-                                    <View style={settingStyles.rowSpacer} />
-
-                                    <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
                     </View>
 
                     <View style={settingStyles.section}>

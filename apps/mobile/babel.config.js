@@ -3,7 +3,6 @@ module.exports = function (api) {
     return {
         presets: [["babel-preset-expo", { jsxImportSource: "nativewind" }], "nativewind/babel"],
         plugins: [
-            "react-native-iconify/plugin",
             "react-native-reanimated/plugin",
             "@babel/plugin-transform-flow-strip-types",
             "@babel/plugin-transform-class-static-block",

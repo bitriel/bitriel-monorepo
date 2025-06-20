@@ -8,7 +8,11 @@ import { GetListingCoinsInfo } from "~/src/api/infoApi";
 import LottieView from "lottie-react-native";
 import BottomSheet from "@gorhom/bottom-sheet";
 
-const TopCryptoListing = () => {
+interface TopCryptoListingProps {
+    onCloseBottomSheet: () => void;
+}
+
+const TopCryptoListing = ({ onCloseBottomSheet }: TopCryptoListingProps) => {
     const [coins, setCoins] = useState<Coins[]>([]);
     const [coinInfo, setCoinInfo] = useState<Record<string, any>>({});
     const [loading, setLoading] = useState(true);
@@ -59,38 +63,43 @@ const TopCryptoListing = () => {
                     <Text className="font-SpaceGroteskBold mx-5 mb-2 text-xl">Top Tokens</Text>
                     <View style={{ marginHorizontal: 10, padding: 14, gap: 20 }}>
                         {coins.map((coin: Coins) => (
-                            <Link href={`/home/crypto/${coin.id}`} key={coin.id} asChild>
-                                <TouchableOpacity style={{ flexDirection: "row", gap: 14, alignItems: "center" }}>
-                                    <Image
-                                        source={{ uri: coinInfo?.[coin.id]?.["logo"] }}
-                                        style={{ width: 40, height: 40 }}
-                                    />
-                                    <View style={{ flex: 1, gap: 6 }}>
-                                        <Text className="font-SpaceGroteskBold text-secondary">{coin.name}</Text>
-                                        <Text className="font-SpaceGroteskRegular text-defaultText">{coin.symbol}</Text>
-                                    </View>
-                                    <View style={{ gap: 6, alignItems: "flex-end" }}>
-                                        <Text className="font-SpaceGroteskBold text-secondary">
-                                            {coin.quote.USD.price.toFixed(2)} $
+                            <TouchableOpacity
+                                key={coin.id}
+                                style={{ flexDirection: "row", gap: 14, alignItems: "center" }}
+                                onPress={() => {
+                                    onCloseBottomSheet();
+                                    router.push(`/home/crypto/${coin.id}`);
+                                }}
+                            >
+                                <Image
+                                    source={{ uri: coinInfo?.[coin.id]?.["logo"] }}
+                                    style={{ width: 40, height: 40 }}
+                                />
+                                <View style={{ flex: 1, gap: 6 }}>
+                                    <Text className="font-SpaceGroteskBold text-secondary">{coin.name}</Text>
+                                    <Text className="font-SpaceGroteskRegular text-defaultText">{coin.symbol}</Text>
+                                </View>
+                                <View style={{ gap: 6, alignItems: "flex-end" }}>
+                                    <Text className="font-SpaceGroteskBold text-secondary">
+                                        {coin.quote.USD.price.toFixed(2)} $
+                                    </Text>
+                                    <View className="gap-1 flex-row items-center">
+                                        <Ionicons
+                                            name={coin.quote.USD.percent_change_1h > 0 ? "caret-up" : "caret-down"}
+                                            size={16}
+                                            color={coin.quote.USD.percent_change_1h > 0 ? "green" : "red"}
+                                        />
+                                        <Text
+                                            style={{
+                                                fontFamily: "SpaceGrotesk-Regular",
+                                                color: coin.quote.USD.percent_change_1h > 0 ? "green" : "red",
+                                            }}
+                                        >
+                                            {coin.quote.USD.percent_change_1h.toFixed(2)} %
                                         </Text>
-                                        <View className="gap-1 flex-row items-center">
-                                            <Ionicons
-                                                name={coin.quote.USD.percent_change_1h > 0 ? "caret-up" : "caret-down"}
-                                                size={16}
-                                                color={coin.quote.USD.percent_change_1h > 0 ? "green" : "red"}
-                                            />
-                                            <Text
-                                                style={{
-                                                    fontFamily: "SpaceGrotesk-Regular",
-                                                    color: coin.quote.USD.percent_change_1h > 0 ? "green" : "red",
-                                                }}
-                                            >
-                                                {coin.quote.USD.percent_change_1h.toFixed(2)} %
-                                            </Text>
-                                        </View>
                                     </View>
-                                </TouchableOpacity>
-                            </Link>
+                                </View>
+                            </TouchableOpacity>
                         ))}
                     </View>
                 </ScrollView>

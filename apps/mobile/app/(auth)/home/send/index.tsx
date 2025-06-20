@@ -4,19 +4,18 @@ import { useLocalSearchParams, router } from "expo-router";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { PixelRatio, Pressable, ScrollView, StyleSheet, TextInput, TouchableOpacity, View, Text } from "react-native";
 import { Dialog, ALERT_TYPE } from "react-native-alert-notification";
-import { Iconify } from "react-native-iconify";
 import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AnimatedText from "~/components/AnimatedText";
 import Balance from "~/components/Balance";
 import NumberPad from "~/components/NumberPad";
-import Recipient from "~/components/Recipient";
 import { ThemedText } from "~/components/ThemedText";
 import { ThemedView } from "~/components/ThemedView";
 import Colors from "~/src/constants/Colors";
 import useNumber from "~/src/hooks/useNumber";
 import { useThemeColor } from "~/src/hooks/useThemeColor";
 import { useWalletStore, useWalletTransactions } from "~/src/store/useWalletStore";
+import { IconArrowLeft } from "@tabler/icons-react-native";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -320,8 +319,11 @@ export default function TransferScreen() {
         <SafeAreaView className="flex-1 bg-white">
             <ThemedView style={styles.container}>
                 <View className="flex-row items-center px-4 py-3 border-b border-gray-100">
-                    <TouchableOpacity onPress={() => router.back()}>
-                        <Iconify icon="solar:arrow-left-linear" size={24} color={Colors.secondary} />
+                    <TouchableOpacity
+                        onPress={() => router.back()}
+                        className="bg-white rounded-full p-2 h-12 w-12 justify-center items-center"
+                    >
+                        <IconArrowLeft size={24} color={Colors.secondary} />
                     </TouchableOpacity>
                     <Text className="ml-4 text-xl font-SpaceGroteskBold text-gray-900">
                         Send {tokenName} on {currentNetwork || "Network"}

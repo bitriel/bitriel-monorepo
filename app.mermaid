@@ -1,0 +1,105 @@
+graph TB
+    subgraph "🏠 Main App"
+        Home["🏠 Home<br/>Dashboard"]
+        Home --> |Quick Actions| QA[Quick Actions Grid]
+        QA --> Send[💸 Send Money]
+        QA --> Receive[💰 Receive Money] 
+        QA --> Scan[📱 QR Scanner]
+        QA --> Pay[💳 Pay Bills]
+    end
+
+    subgraph "💰 Financial Services"
+        Wallet[👛 Wallet]
+        Swap[🔄 Token Swap]
+        DeFi[🏦 DeFi Hub]
+        Savings[💎 Savings]
+        Loans[🏛️ Loans]
+        Insurance[🛡️ Insurance]
+        
+        Wallet --> Portfolio[📊 Portfolio Analytics]
+        Wallet --> Staking[⚡ Staking Rewards]
+        DeFi --> Farming[🌾 Yield Farming]
+        DeFi --> Pools[🏊 Liquidity Pools]
+    end
+
+    subgraph "🎮 Ecosystem & Entertainment"
+        MiniApps[📱 Mini Apps]
+        Games[🎮 Web3 Games]
+        NFT[🖼️ NFT Marketplace]
+        Social[👥 Social Features]
+        
+        MiniApps --> Shopping[🛒 Shopping]
+        MiniApps --> Travel[✈️ Travel Booking]
+        MiniApps --> Food[🍕 Food Delivery]
+        MiniApps --> Ride[🚗 Ride Sharing]
+        
+        Games --> P2E[💰 Play-to-Earn]
+        Games --> Tournaments[🏆 Tournaments]
+        
+        Social --> Friends[👫 Friends]
+        Social --> Groups[👥 Communities]
+        Social --> Chat[💬 Messaging]
+    end
+
+    subgraph "🏆 Rewards & Loyalty"
+        Points[⭐ Bitriel Points]
+        Rewards[🎁 Rewards Center]
+        Cashback[💰 Cashback]
+        Referral[📢 Referral Program]
+        
+        Points --> Earn[📈 Earn Points]
+        Points --> Redeem[🎯 Redeem Rewards]
+        Rewards --> Vouchers[🎫 Vouchers]
+        Rewards --> Discounts[🏷️ Discounts]
+    end
+
+    subgraph "🛍️ Marketplace"
+        Store[🏪 Bitriel Store]
+        Services[⚙️ Services]
+        Bills[📋 Bill Payments]
+        Prepaid[📞 Mobile Prepaid]
+        
+        Store --> Digital[💾 Digital Goods]
+        Store --> Physical[📦 Physical Products]
+        Services --> Utilities[⚡ Utilities]
+        Services --> Subscriptions[📺 Subscriptions]
+    end
+
+    subgraph "📊 Analytics & Insights"
+        Analytics[📈 Portfolio Analytics]
+        Reports[📑 Financial Reports]
+        Goals[🎯 Financial Goals]
+        Education[📚 Learn & Earn]
+        
+        Analytics --> Performance[📊 Performance]
+        Analytics --> Predictions[🔮 AI Insights]
+        Education --> Courses[🎓 Crypto Courses]
+        Education --> News[📰 Market News]
+    end
+
+    subgraph "⚙️ Settings & Security"
+        Profile[👤 Profile]
+        Security[🔒 Security Center]
+        Preferences[⚙️ Preferences]
+        Support[🆘 Support]
+        
+        Security --> Biometric[👆 Biometric Auth]
+        Security --> MultiSig[🔐 Multi-Signature]
+        Profile --> KYC[✅ KYC Verification]
+        Profile --> Tiers[🏅 Tier System]
+    end
+
+    %% Main Navigation Flow
+    Home --> Wallet
+    Home --> MiniApps
+    Home --> Points
+    Home --> Store
+    Home --> Analytics
+    Home --> Profile
+
+    %% Cross-feature Integration
+    Points -.-> Wallet
+    Points -.-> Store
+    Points -.-> Games
+    Cashback -.-> Wallet
+    Referral -.-> Points

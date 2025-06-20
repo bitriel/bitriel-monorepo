@@ -1,8 +1,9 @@
+import React from "react";
 import Colors from "~/src/constants/Colors";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Text, View, SafeAreaView, TouchableOpacity, Modal } from "react-native";
-import { Iconify } from "react-native-iconify";
+import { IconShieldHeart } from "@tabler/icons-react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 export default function WarnMsgRecoveryPage() {
@@ -28,7 +29,7 @@ export default function WarnMsgRecoveryPage() {
             <View className="items-center flex-1">
                 <View className="p-5 items-center">
                     <View className="bg-red-300/25 p-2 rounded-full m-5">
-                        <Iconify icon="solar:shield-warning-bold-duotone" color={Colors.red} size={50} />
+                        <IconShieldHeart color={Colors.red} size={50} />
                     </View>
 
                     <Text className="text-center text-2xl px-2 font-SpaceGroteskBold">Show secret phrase</Text>

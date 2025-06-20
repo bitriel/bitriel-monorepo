@@ -15,10 +15,10 @@ import Colors from "~/src/constants/Colors";
 import QRCode from "react-native-qrcode-svg";
 import ViewShot, { captureRef } from "react-native-view-shot";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
-import { alert as TingAlert } from "@baronha/ting";
 import copyAddress from "~/src/utilities/copyClipboard";
-import { Iconify } from "react-native-iconify";
+import { IconAlertCircle, IconPlaystationX, IconCopy, IconHash, IconShare } from "@tabler/icons-react-native";
 import { useWalletStore } from "~/src/store/useWalletStore";
+import { useToast } from "~/hooks/useToast";
 
 const saveQrToImage = async (qrRef: React.RefObject<View>) => {
     try {
@@ -83,15 +83,11 @@ const shareQRCode = async (qrRef: React.RefObject<View>, address: string, amount
 
 const HeaderWarnMsg = ({ networkName }: { networkName: string }) => {
     return (
-        <View>
-            <View className="bg-primary/10 p-3 justify-between flex-row items-center rounded-xl">
-                <View className="flex-row">
-                    <Iconify icon="solar:danger-circle-line-duotone" size={18} color={Colors.secondary} />
-                    <Text className="text-secondary break-all w-11/12 ml-1 font-SpaceGroteskMedium bottom-[2px]">
-                        Only send {networkName} network to this address. Other assets will be lost forever.
-                    </Text>
-                </View>
-            </View>
+        <View className="px-3 py-2 mx-2 rounded-xl bg-[#ffebcd] flex-row mb-5 justify-center items-center">
+            <IconAlertCircle size={18} color={Colors.secondary} />
+            <Text className="text-center text-blackText font-SpaceGroteskMedium">
+                Only send {networkName} assets to this address
+            </Text>
         </View>
     );
 };
@@ -111,7 +107,17 @@ const TokenDisplay = ({ logo, name }: { logo: string; name: string }) => {
     );
 };
 
-const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
+const QrCode = ({
+    address,
+    symbol,
+    showAlert,
+    showToast,
+}: {
+    address: string;
+    symbol: string;
+    showAlert: (options: { title: string; message: string; preset?: "error" | "success" | "info" | "warning" }) => void;
+    showToast: (message: string, type?: "success" | "error" | "info" | "warning", title?: string) => void;
+}) => {
     const qrRef = useRef<View>(null);
     let logoFromFile = require("~Assets/icon.png");
     const [amount, setAmount] = useState("");
@@ -134,7 +140,7 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
 
     const handleConfirmAmount = (inputAmount: string) => {
         if (inputAmount === "" || parseFloat(inputAmount) === 0) {
-            TingAlert({
+            showAlert({
                 title: "Invalid Amount",
                 message: "Please enter a valid amount greater than 0.",
                 preset: "error",
@@ -185,11 +191,7 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
                                         animateText(0);
                                     }}
                                 >
-                                    <Iconify
-                                        icon="solar:close-circle-line-duotone"
-                                        size={20}
-                                        color={Colors.secondary}
-                                    />
+                                    <IconPlaystationX size={20} color={Colors.secondary} />
                                 </TouchableOpacity>
                             </View>
                         </Animated.View>
@@ -211,10 +213,10 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
                     <TouchableOpacity
                         className="bg-primary justify-center items-center w-12 h-12 rounded-3xl mx-1"
                         onPress={() => {
-                            copyAddress(address!);
+                            copyAddress(address!, showToast);
                         }}
                     >
-                        <Iconify icon="solar:copy-bold" color={Colors.white} size={22} />
+                        <IconCopy color={Colors.white} size={22} />
                     </TouchableOpacity>
 
                     <Text className="mt-2 font-SpaceGroteskMedium">Copy</Text>
@@ -225,7 +227,7 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
                         className="bg-primary justify-center items-center w-12 h-12 rounded-3xl mx-1"
                         onPress={() => setVisible(true)}
                     >
-                        <Iconify icon="solar:hashtag-bold" color={Colors.white} size={22} />
+                        <IconHash color={Colors.white} size={22} />
                     </TouchableOpacity>
 
                     <Text className="mt-2 font-SpaceGroteskMedium">Set Amount</Text>
@@ -236,7 +238,7 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
                         className="bg-primary justify-center items-center w-12 h-12 rounded-3xl mx-1"
                         onPress={() => shareQRCode(qrRef, address!, amount, symbol)}
                     >
-                        <Iconify icon="solar:square-share-line-bold" color={Colors.white} size={22} />
+                        <IconShare color={Colors.white} size={22} />
                     </TouchableOpacity>
 
                     <Text className="mt-2 font-SpaceGroteskMedium">Share</Text>
@@ -284,13 +286,19 @@ const QrCode = ({ address, symbol }: { address: string; symbol: string }) => {
 
 const ReceiveScreen = () => {
     const { walletState } = useWalletStore();
+    const { showToast, showAlert } = useToast();
 
     return (
         <SafeAreaView className="flex-1">
             <View className="py-5 mx-3">
                 <HeaderWarnMsg networkName={walletState?.network?.name!} />
                 {/* <TokenDisplay logo={walletState?.balances.tokens.} name={networkName!} /> */}
-                <QrCode address={walletState?.address!} symbol={walletState?.network?.nativeCurrency.symbol!} />
+                <QrCode
+                    address={walletState?.address!}
+                    symbol={walletState?.network?.nativeCurrency.symbol!}
+                    showAlert={showAlert}
+                    showToast={showToast}
+                />
             </View>
         </SafeAreaView>
     );

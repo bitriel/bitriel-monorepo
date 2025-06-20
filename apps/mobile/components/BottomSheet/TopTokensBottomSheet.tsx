@@ -1,5 +1,5 @@
 import React, { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
-import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetBackdrop, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import Colors from "~/src/constants/Colors";
 import { BlurView } from "expo-blur";
 import TopCryptoListing from "~/app/(auth)/home/crypto";
@@ -10,7 +10,7 @@ interface BottomSheetProps {
     handleCloseBottomSheet: () => void;
 }
 
-type Ref = BottomSheet;
+type Ref = BottomSheetModal;
 
 const TopTokensBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp, ref) => {
     const snapPoints = useMemo(() => ["100%"], []);
@@ -40,13 +40,18 @@ const TopTokensBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp,
     );
 
     return (
-        <BottomSheet
+        <BottomSheetModal
             ref={ref}
             snapPoints={snapPoints}
-            index={-1}
-            onChange={idx => setIsShowing(idx > -1)}
+            index={1}
+            onDismiss={() => {
+                setIsShowing(false);
+                handleBottomSheetClose();
+            }}
+            onAnimate={(fromIndex, toIndex) => {
+                setIsShowing(toIndex > -1);
+            }}
             enablePanDownToClose={true}
-            onClose={handleBottomSheetClose}
             backdropComponent={renderBackdrop}
             handleIndicatorStyle={{ marginTop: 50, backgroundColor: Colors.secondary }}
             backgroundStyle={{ backgroundColor: "#ffffff99" }}
@@ -54,15 +59,15 @@ const TopTokensBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp,
                 <BlurView
                     tint="light"
                     experimentalBlurMethod="dimezisBlurView"
-                    intensity={30}
+                    intensity={90}
                     style={[style, { borderRadius: 20, overflow: "hidden" }]}
                 />
             )}
         >
             <BottomSheetScrollView>
-                <TopCryptoListing />
+                <TopCryptoListing onCloseBottomSheet={handleBottomSheetClose} />
             </BottomSheetScrollView>
-        </BottomSheet>
+        </BottomSheetModal>
     );
 });
 

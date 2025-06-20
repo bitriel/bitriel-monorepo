@@ -1,7 +1,8 @@
+import React from "react";
 import helpers from "~/src/helpers";
 import { router } from "expo-router";
 import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
-import { Iconify } from "react-native-iconify";
+import { IconChevronRight, IconShare } from "@tabler/icons-react-native";
 import * as Linking from "expo-linking";
 
 export default function SettingPage() {
@@ -31,7 +32,7 @@ export default function SettingPage() {
                                     <Text style={settingStyles.profileName}>{user.fullName}</Text>
                                 </View>
 
-                                <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={22} />
+                                <IconChevronRight color="#bcbcbc" size={22} />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -39,6 +40,21 @@ export default function SettingPage() {
                     <View style={settingStyles.section}>
                         <View style={settingStyles.sectionBody}>
                             <View style={[settingStyles.rowWrapper, settingStyles.rowFirst]}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        router.push({ pathname: "/(auth)/home/settings/wallets" });
+                                    }}
+                                    style={settingStyles.row}
+                                >
+                                    <Text style={settingStyles.rowLabel}>Manage Wallets</Text>
+
+                                    <View style={settingStyles.rowSpacer} />
+
+                                    <IconChevronRight color="#bcbcbc" size={19} />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={settingStyles.rowWrapper}>
                                 <TouchableOpacity
                                     onPress={() => {
                                         Linking.openURL("https://t.me/selendranetwork");
@@ -49,7 +65,7 @@ export default function SettingPage() {
 
                                     <View style={settingStyles.rowSpacer} />
 
-                                    <Iconify color="#bcbcbc" icon="solar:share-bold-duotone" size={19} />
+                                    <IconShare color="#bcbcbc" size={19} />
                                 </TouchableOpacity>
                             </View>
 
@@ -64,7 +80,7 @@ export default function SettingPage() {
 
                                     <View style={settingStyles.rowSpacer} />
 
-                                    <Iconify color="#bcbcbc" icon="solar:alt-arrow-right-line-duotone" size={19} />
+                                    <IconChevronRight color="#bcbcbc" size={19} />
                                 </TouchableOpacity>
                             </View>
                         </View>
