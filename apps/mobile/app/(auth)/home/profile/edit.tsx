@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     SafeAreaView,
     StyleSheet,
-    StatusBar,
     TextInput,
     Alert,
     Image,
@@ -40,8 +39,6 @@ const ProfileEditScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                     <ArrowLeft size={24} color="#1A1A1A" />

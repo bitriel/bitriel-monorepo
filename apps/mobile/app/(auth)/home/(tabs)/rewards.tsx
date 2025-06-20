@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-    View,
-    Text,
-    ScrollView,
-    TouchableOpacity,
-    SafeAreaView,
-    StyleSheet,
-    StatusBar,
-    Dimensions,
-    FlatList,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StyleSheet, Dimensions, FlatList } from "react-native";
 import { router } from "expo-router";
 import { Gift, Star, Check, Clock, Crown, Plus, Share } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -211,8 +201,6 @@ const RewardsScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
             {/* Header */}
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Rewards Center</Text>

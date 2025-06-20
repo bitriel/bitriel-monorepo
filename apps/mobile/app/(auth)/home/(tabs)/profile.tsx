@@ -1,16 +1,5 @@
-import React, { useState } from "react";
-import {
-    View,
-    Text,
-    ScrollView,
-    TouchableOpacity,
-    SafeAreaView,
-    StyleSheet,
-    StatusBar,
-    Switch,
-    Alert,
-    Image,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StyleSheet, Switch, Alert, Image } from "react-native";
 import { router } from "expo-router";
 import {
     User,
@@ -33,22 +22,15 @@ import {
     Info,
     LogOut,
     ChevronRight,
-    Settings,
     Camera,
-    Star,
-    CreditCard,
     FileText,
-    Phone,
-    Mail,
     Edit3,
 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "~/src/constants/Colors";
-import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 import { useAuth } from "~/lib/hooks/useAuth";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 import { useWalletDataListStore } from "~/src/store/walletDataStore";
-import helpers from "~/src/helpers";
 
 interface ProfileMenuItem {
     id: string;
@@ -66,7 +48,6 @@ interface ProfileMenuItem {
 }
 
 const ProfileScreen = () => {
-    const { activeWallet } = useMultiWalletStore();
     const { signOut } = useAuth();
     const { user } = useAuth();
 
@@ -425,8 +406,6 @@ const ProfileScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#667eea" />
-
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                 {renderProfileHeader()}
 

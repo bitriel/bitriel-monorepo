@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StatusBar, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { CameraView, BarcodeScanningResult, Camera } from "expo-camera";
 import { router, useLocalSearchParams } from "expo-router";
 import { Linking } from "react-native";
@@ -7,8 +7,6 @@ import QRIndicator from "~/components/Camera/QRIndicator";
 import QRFooterButton from "~/components/Camera/QRFooterButton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
-
-const { width, height } = Dimensions.get("window");
 
 const QRScanner: React.FC = () => {
     const { from } = useLocalSearchParams<{ from: string }>();

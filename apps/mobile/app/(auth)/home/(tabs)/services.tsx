@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     SafeAreaView,
     StyleSheet,
-    StatusBar,
     Dimensions,
     TextInput,
 } from "react-native";
@@ -415,8 +414,6 @@ const ServicesScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
             {/* Header */}
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Services</Text>

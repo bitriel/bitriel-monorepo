@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native";
 import { useWalletStore } from "~/src/store/useWalletStore";
 import { router, useLocalSearchParams } from "expo-router";
@@ -20,6 +20,7 @@ export default function WalletScreen() {
     const { mnemonicParam } = useLocalSearchParams<{ mnemonicParam: string }>();
     const { initializeWallet, refreshWalletState, isLoading, currentNetwork, walletState } = useWalletStore();
     const { activeWallet, loadWallets, addWallet, wallets, isInitialized: walletsInitialized } = useMultiWalletStore();
+    // Status bar is now handled automatically by NavigationStatusBarProvider
 
     // Find the current network details from SUPPORTED_NETWORKS
     const selectedNetwork = SUPPORTED_NETWORKS.find(network => network.chainId === currentNetwork?.chainId);
@@ -112,6 +113,8 @@ export default function WalletScreen() {
             isMounted = false;
         };
     }, [activeWallet, mnemonicParam, initializeWallet, currentMnemonic, walletsInitialized]);
+
+    // Status bar is handled automatically by NavigationStatusBarProvider
 
     // Memoize quick actions to prevent unnecessary re-creations
     const quickActions: QuickAction[] = React.useMemo(

@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     SafeAreaView,
     StyleSheet,
-    StatusBar,
     TextInput,
     Alert,
     Switch,
@@ -215,8 +214,6 @@ const PersonalInfoScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
             {renderHeader()}
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>

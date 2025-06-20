@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
 import { Text, View, SafeAreaView, TouchableOpacity, Dimensions, Platform } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
@@ -175,8 +174,6 @@ export default function TokenDetailScreen() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1, backgroundColor: "#F9FAFB" }}>
-                <StatusBar style="dark" />
-
                 {/* Balance & Action Buttons */}
                 <View>
                     {/* Balance Card */}

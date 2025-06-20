@@ -1,22 +1,9 @@
 import React, { useState } from "react";
-import {
-    View,
-    Text,
-    ScrollView,
-    TouchableOpacity,
-    SafeAreaView,
-    StyleSheet,
-    StatusBar,
-    Dimensions,
-    TextInput,
-    FlatList,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StyleSheet, TextInput } from "react-native";
 import { router } from "expo-router";
-import { ArrowLeft, Search, Filter, Star, ShoppingCart, Zap, Shield, Heart, Eye } from "lucide-react-native";
+import { ArrowLeft, Search, Filter, Star, ShoppingCart, Zap, Shield, Heart } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "~/src/constants/Colors";
-
-const { width } = Dimensions.get("window");
 
 interface Product {
     id: string;
@@ -312,8 +299,6 @@ const MarketplaceScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#667eea" />
-
             <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.headerGradient}>
                 {renderHeader()}
                 {renderStats()}

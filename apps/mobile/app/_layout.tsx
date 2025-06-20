@@ -12,6 +12,7 @@ import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 import { useMultiAccountStore } from "~/src/store/multiAccountStore";
 import { API_CONFIG } from "~/lib/config/api";
 import { ToastProvider } from "~/hooks/useToast";
+import { NavigationStatusBarProvider } from "~/src/context/NavigationStatusBarProvider";
 
 const InitialLayout = () => {
     const [fontsLoaded] = useFonts({
@@ -125,13 +126,15 @@ const InitialLayout = () => {
 const RootLayout = () => {
     return (
         <AlertNotificationRoot>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-                <BottomSheetModalProvider>
-                    <ToastProvider>
-                        <InitialLayout />
-                    </ToastProvider>
-                </BottomSheetModalProvider>
-            </GestureHandlerRootView>
+            <NavigationStatusBarProvider defaultStyle="default">
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                    <BottomSheetModalProvider>
+                        <ToastProvider>
+                            <InitialLayout />
+                        </ToastProvider>
+                    </BottomSheetModalProvider>
+                </GestureHandlerRootView>
+            </NavigationStatusBarProvider>
         </AlertNotificationRoot>
     );
 };

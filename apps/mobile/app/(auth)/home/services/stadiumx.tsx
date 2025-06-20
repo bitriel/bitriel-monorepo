@@ -1,17 +1,8 @@
 import React, { useState, useRef } from "react";
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    SafeAreaView,
-    StyleSheet,
-    StatusBar,
-    Alert,
-    ActivityIndicator,
-} from "react-native";
+import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import { WebView } from "react-native-webview";
-import { ArrowLeft, ExternalLink, RefreshCw, Share, Heart, Star, Trophy, MapPin } from "lucide-react-native";
+import { ArrowLeft, RefreshCw, Heart, Star, Trophy, MapPin } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "~/src/constants/Colors";
 
@@ -19,38 +10,12 @@ const StadiumXScreen = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [canGoBack, setCanGoBack] = useState(false);
     const [canGoForward, setCanGoForward] = useState(false);
-    const [currentUrl, setCurrentUrl] = useState("http://stadiumx.asia");
+    const [currentUrl, setCurrentUrl] = useState("https://stadiumx.asia");
     const [isFavorite, setIsFavorite] = useState(false);
     const webViewRef = useRef<WebView>(null);
 
     const handleRefresh = () => {
         webViewRef.current?.reload();
-    };
-
-    const handleShare = () => {
-        Alert.alert("Share StadiumX Asia", "Share this amazing sports platform with your friends!", [
-            { text: "Cancel", style: "cancel" },
-            {
-                text: "Share Link",
-                onPress: () => {
-                    // In a real app, you would use the Share API
-                    Alert.alert("Shared!", "Link shared successfully!");
-                },
-            },
-        ]);
-    };
-
-    const handleExternalOpen = () => {
-        Alert.alert("Open in Browser", "Do you want to open StadiumX Asia in your default browser?", [
-            { text: "Cancel", style: "cancel" },
-            {
-                text: "Open",
-                onPress: () => {
-                    // In a real app, you would use Linking.openURL
-                    Alert.alert("Opened!", "Opening in external browser...");
-                },
-            },
-        ]);
     };
 
     const toggleFavorite = () => {
@@ -122,14 +87,6 @@ const StadiumXScreen = () => {
             <TouchableOpacity style={styles.controlButton} onPress={handleRefresh}>
                 <RefreshCw size={20} color={Colors.primary} />
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.controlButton} onPress={handleShare}>
-                <Share size={20} color={Colors.primary} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.controlButton} onPress={handleExternalOpen}>
-                <ExternalLink size={20} color={Colors.primary} />
-            </TouchableOpacity>
         </View>
     );
 
@@ -155,10 +112,7 @@ const StadiumXScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#667eea" />
-
             {renderHeader()}
-            {renderControls()}
 
             <View style={styles.webViewContainer}>
                 {isLoading && (
@@ -195,6 +149,8 @@ const StadiumXScreen = () => {
                     userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1 BitrielApp/2.1.0"
                 />
             </View>
+
+            {renderControls()}
         </SafeAreaView>
     );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, SafeAreaView, Text, Dimensions, StatusBar, TouchableOpacity, StyleSheet } from "react-native";
+import { View, SafeAreaView, Text, Dimensions, TouchableOpacity, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 
@@ -9,7 +9,6 @@ const windowHeight = Dimensions.get("window").height;
 const Welcome = () => {
     return (
         <SafeAreaView className="flex-1 bg-[#1a1a1a]">
-            <StatusBar barStyle="light-content" />
             <Image source={require("~Assets/svg/modern-crypto-bg.svg")} style={styles.artwork} contentFit="cover" />
 
             <View className="flex-1 p-6 justify-between">
