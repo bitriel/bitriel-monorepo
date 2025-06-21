@@ -2,15 +2,148 @@
 module.exports = {
     content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
     presets: [require("nativewind/preset")],
+    darkMode: "class",
     theme: {
         extend: {
             colors: {
                 white: "#FFFFFF",
                 primary: "#FFAC30",
-                secondary: "#3a4276",
+                secondary: "#3A4276",
                 defaultText: "#7B7F9E",
                 blackText: "#1B1D28",
                 offWhite: "#F1F3F6",
+                brand: {
+                    primary: {
+                        50: "#FFF9E6",
+                        100: "#FFF5D5",
+                        200: "#FFE7AC",
+                        300: "#FFD782",
+                        400: "#FFC763",
+                        500: "#FFAC30",
+                        600: "#DB8923",
+                        700: "#B76A18",
+                        800: "#934E0F",
+                        900: "#7A3A09",
+                        DEFAULT: "#FFAC30",
+                    },
+                    secondary: {
+                        50: "#F4F5F8",
+                        100: "#E8EAF0",
+                        200: "#D1D5E1",
+                        300: "#A8B0C7",
+                        400: "#7B85A8",
+                        500: "#3A4276",
+                        600: "#2F3660",
+                        700: "#252A4A",
+                        800: "#1A1E34",
+                        900: "#10121E",
+                        DEFAULT: "#3A4276",
+                    },
+                },
+                success: {
+                    50: "#F0FDE4",
+                    100: "#DEFCCA",
+                    200: "#C6F8AD",
+                    300: "#ADF196",
+                    400: "#89E874",
+                    500: "#60C754",
+                    600: "#3DA73A",
+                    700: "#258629",
+                    800: "#166F21",
+                    900: "#0F4F18",
+                    DEFAULT: "#60C754",
+                },
+                warning: {
+                    50: "#FEFBD1",
+                    100: "#FDF6A4",
+                    200: "#FBEE76",
+                    300: "#F7E654",
+                    400: "#F2D91D",
+                    500: "#D0B715",
+                    600: "#AE970E",
+                    700: "#8C7809",
+                    800: "#746105",
+                    900: "#5C4D04",
+                    DEFAULT: "#D0B715",
+                },
+                danger: {
+                    50: "#FFEADF",
+                    100: "#FFD0C0",
+                    200: "#FFB1A1",
+                    300: "#FF948A",
+                    400: "#FF6363",
+                    500: "#DB4855",
+                    600: "#B73149",
+                    700: "#931F3D",
+                    800: "#7A1336",
+                    900: "#610F2B",
+                    DEFAULT: "#DB4855",
+                },
+                info: {
+                    50: "#D8F2FE",
+                    100: "#B2E2FE",
+                    200: "#8CCEFD",
+                    300: "#6FBAFB",
+                    400: "#409AF9",
+                    500: "#2E78D6",
+                    600: "#2059B3",
+                    700: "#143E90",
+                    800: "#0C2B77",
+                    900: "#081D5A",
+                    DEFAULT: "#2E78D6",
+                },
+                text: {
+                    primary: "#11181C",
+                    secondary: "#7B7F9E",
+                    tertiary: "#A1A1AA",
+                    disabled: "#D4D4D8",
+                    inverse: "#FFFFFF",
+                    link: "#0a7ea4",
+                    accent: "#FFAC30",
+                },
+                background: {
+                    primary: "#FFFFFF",
+                    secondary: "#F8F9FA",
+                    tertiary: "#F1F3F6",
+                    inverse: "#11181C",
+                    overlay: "rgba(0, 0, 0, 0.5)",
+                    card: "#FFFFFF",
+                    surface: "#F8F9FA",
+                },
+                border: {
+                    primary: "#E5E5E7",
+                    secondary: "#F1F3F6",
+                    accent: "#FFAC30",
+                    focus: "#FFC763",
+                    error: "#DB4855",
+                },
+                dark: {
+                    text: {
+                        primary: "#ECEDEE",
+                        secondary: "#A1A1AA",
+                        tertiary: "#71717A",
+                        disabled: "#52525B",
+                        inverse: "#11181C",
+                        link: "#60A5FA",
+                        accent: "#FFC763",
+                    },
+                    background: {
+                        primary: "#030003",
+                        secondary: "#110F11",
+                        tertiary: "#1C1C1E",
+                        inverse: "#FFFFFF",
+                        overlay: "rgba(0, 0, 0, 0.7)",
+                        card: "#1C1C1E",
+                        surface: "#2C2C2E",
+                    },
+                    border: {
+                        primary: "#48484A",
+                        secondary: "#2C2C2E",
+                        accent: "#FFC763",
+                        focus: "#FFD782",
+                        error: "#FF6363",
+                    },
+                },
             },
             fontFamily: {
                 SpaceGroteskBold: ["SpaceGrotesk-Bold"],
@@ -19,7 +152,61 @@ module.exports = {
                 SpaceGroteskRegular: ["SpaceGrotesk-Regular"],
                 SpaceGroteskSemiBold: ["SpaceGrotesk-SemiBold"],
             },
+            spacing: {
+                '18': '4.5rem',
+                '88': '22rem',
+            },
+            borderRadius: {
+                '4xl': '2rem',
+            },
+            boxShadow: {
+                'soft': '0 2px 8px rgba(0, 0, 0, 0.1)',
+                'medium': '0 4px 16px rgba(0, 0, 0, 0.15)',
+                'strong': '0 8px 32px rgba(0, 0, 0, 0.2)',
+            },
         },
     },
-    plugins: [],
+    plugins: [
+        function ({ addUtilities, theme }) {
+            const newUtilities = {
+                '.text-theme-primary': {
+                    color: theme('colors.text.primary'),
+                    '@media (prefers-color-scheme: dark)': {
+                        color: theme('colors.dark.text.primary'),
+                    },
+                },
+                '.text-theme-secondary': {
+                    color: theme('colors.text.secondary'),
+                    '@media (prefers-color-scheme: dark)': {
+                        color: theme('colors.dark.text.secondary'),
+                    },
+                },
+                '.bg-theme-primary': {
+                    backgroundColor: theme('colors.background.primary'),
+                    '@media (prefers-color-scheme: dark)': {
+                        backgroundColor: theme('colors.dark.background.primary'),
+                    },
+                },
+                '.bg-theme-secondary': {
+                    backgroundColor: theme('colors.background.secondary'),
+                    '@media (prefers-color-scheme: dark)': {
+                        backgroundColor: theme('colors.dark.background.secondary'),
+                    },
+                },
+                '.bg-theme-card': {
+                    backgroundColor: theme('colors.background.card'),
+                    '@media (prefers-color-scheme: dark)': {
+                        backgroundColor: theme('colors.dark.background.card'),
+                    },
+                },
+                '.border-theme-primary': {
+                    borderColor: theme('colors.border.primary'),
+                    '@media (prefers-color-scheme: dark)': {
+                        borderColor: theme('colors.dark.border.primary'),
+                    },
+                },
+            };
+            addUtilities(newUtilities);
+        },
+    ],
 };

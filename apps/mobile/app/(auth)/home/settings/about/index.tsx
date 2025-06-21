@@ -9,7 +9,7 @@ export default function AboutPage() {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
             <View style={settingStyles.container}>
-                <ScrollView contentContainerStyle={settingStyles.content}>
+                <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
                     <View className="items-center m-5">
                         <Image source={require("~Assets/bitriel-logo.png")} style={{ width: 100, height: 100 }} />
 

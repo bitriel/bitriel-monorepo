@@ -13,25 +13,11 @@ import { useMultiAccountStore } from "~/src/store/multiAccountStore";
 import { API_CONFIG } from "~/lib/config/api";
 import { ToastProvider } from "~/hooks/useToast";
 import { NavigationStatusBarProvider } from "~/src/context/NavigationStatusBarProvider";
+import ThemeProvider from "~/src/context/ThemeProvider";
 
 const InitialLayout = () => {
-    const [fontsLoaded] = useFonts({
-        "SpaceGrotesk-Bold": require("./../assets/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf"),
-        "SpaceGrotesk-Light": require("./../assets/fonts/SpaceGrotesk/SpaceGrotesk-Light.ttf"),
-        "SpaceGrotesk-Medium": require("./../assets/fonts/SpaceGrotesk/SpaceGrotesk-Medium.ttf"),
-        "SpaceGrotesk-Regular": require("./../assets/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf"),
-        "SpaceGrotesk-SemiBold": require("./../assets/fonts/SpaceGrotesk/SpaceGrotesk-SemiBold.ttf"),
-    });
-
     const { loadWallets, activeWallet } = useMultiWalletStore();
     const { loadAccounts } = useMultiAccountStore();
-
-    // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-    useEffect(() => {
-        if (fontsLoaded) {
-            SplashScreen.hideAsync();
-        }
-    }, [fontsLoaded]);
 
     useEffect(() => {
         (async () => {
@@ -124,18 +110,38 @@ const InitialLayout = () => {
 };
 
 const RootLayout = () => {
+    const [fontsLoaded] = useFonts({
+        "SpaceGrotesk-Bold": require("../assets/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf"),
+        "SpaceGrotesk-Light": require("../assets/fonts/SpaceGrotesk/SpaceGrotesk-Light.ttf"),
+        "SpaceGrotesk-Medium": require("../assets/fonts/SpaceGrotesk/SpaceGrotesk-Medium.ttf"),
+        "SpaceGrotesk-Regular": require("../assets/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf"),
+        "SpaceGrotesk-SemiBold": require("../assets/fonts/SpaceGrotesk/SpaceGrotesk-SemiBold.ttf"),
+    });
+
+    useEffect(() => {
+        if (fontsLoaded) {
+            SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded]);
+
+    if (!fontsLoaded) {
+        return null;
+    }
+
     return (
-        <AlertNotificationRoot>
-            <NavigationStatusBarProvider defaultStyle="default">
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                    <BottomSheetModalProvider>
-                        <ToastProvider>
-                            <InitialLayout />
-                        </ToastProvider>
-                    </BottomSheetModalProvider>
-                </GestureHandlerRootView>
-            </NavigationStatusBarProvider>
-        </AlertNotificationRoot>
+        <ThemeProvider defaultTheme="system">
+            <AlertNotificationRoot>
+                <NavigationStatusBarProvider defaultStyle="default">
+                    <GestureHandlerRootView style={{ flex: 1 }}>
+                        <BottomSheetModalProvider>
+                            <ToastProvider>
+                                <InitialLayout />
+                            </ToastProvider>
+                        </BottomSheetModalProvider>
+                    </GestureHandlerRootView>
+                </NavigationStatusBarProvider>
+            </AlertNotificationRoot>
+        </ThemeProvider>
     );
 };
 

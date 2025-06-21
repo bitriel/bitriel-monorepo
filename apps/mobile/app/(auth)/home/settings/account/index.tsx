@@ -30,7 +30,7 @@ export default function AccountPage() {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
             <View style={settingStyles.container}>
-                <ScrollView contentContainerStyle={settingStyles.content}>
+                <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
                     <View className="items-center m-5">
                         <Image
                             source={{ uri: user.avatar }}

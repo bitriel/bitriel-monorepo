@@ -59,7 +59,7 @@ export default function SecurityPage() {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
             <View style={settingStyles.container}>
-                <ScrollView contentContainerStyle={settingStyles.content}>
+                <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
                     <View style={[settingStyles.section, { paddingTop: 15 }]}>
                         <View style={settingStyles.sectionBody}>
                             <View style={[settingStyles.rowWrapper, settingStyles.rowFirst, settingStyles.rowLast]}>

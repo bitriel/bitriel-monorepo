@@ -4,14 +4,30 @@ import { router } from "expo-router";
 import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { IconChevronRight, IconShare } from "@tabler/icons-react-native";
 import * as Linking from "expo-linking";
+import { ThemedView } from "~/components/ThemedView";
+import { ThemedText } from "~/components/ThemedText";
+import { ThemeToggle } from "~/components/ThemeToggle";
+import { ThemeSettings } from "~/components/ThemeSettings";
+import { useAppTheme } from "~/src/context/ThemeProvider";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function SettingPage() {
     const user = helpers.activeUser();
+    const { isDark } = useAppTheme();
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
-            <View style={settingStyles.container}>
-                <ScrollView contentContainerStyle={settingStyles.content}>
+            <ThemedView variant="primary" style={settingStyles.container}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={settingStyles.header}>
+                        <ThemedText variant="primary" style={settingStyles.title}>
+                            Settings
+                        </ThemedText>
+                        <ThemedText variant="secondary" style={settingStyles.subtitle}>
+                            Customize your Bitriel experience
+                        </ThemedText>
+                    </View>
+
                     <View style={[settingStyles.section, { paddingTop: 15 }]}>
                         <View style={settingStyles.sectionBody}>
                             <TouchableOpacity
@@ -85,52 +101,97 @@ export default function SettingPage() {
                             </View>
                         </View>
                     </View>
+
+                    <View style={settingStyles.section}>
+                        <ThemedText variant="secondary" style={settingStyles.sectionTitle}>
+                            APPEARANCE
+                        </ThemedText>
+                        <ThemeSettings />
+                    </View>
+
+                    <View style={settingStyles.section}>
+                        <ThemedText variant="secondary" style={settingStyles.sectionTitle}>
+                            THEME DEMO
+                        </ThemedText>
+
+                        <ThemedView variant="card" style={settingStyles.demoCard}>
+                            <ThemedText variant="primary" style={settingStyles.demoTitle}>
+                                Live Preview
+                            </ThemedText>
+                            <ThemedText variant="secondary" style={settingStyles.demoText}>
+                                This card automatically adapts to your theme preference. Try switching themes to see the
+                                colors change!
+                            </ThemedText>
+
+                            <View style={settingStyles.demoButtons}>
+                                <View style={[settingStyles.primaryButton, { backgroundColor: "#FFAC30" }]}>
+                                    <ThemedText variant="inverse" style={settingStyles.buttonText}>
+                                        Primary Button
+                                    </ThemedText>
+                                </View>
+
+                                <ThemedView variant="surface" style={settingStyles.secondaryButton}>
+                                    <ThemedText variant="primary" style={settingStyles.buttonText}>
+                                        Secondary Button
+                                    </ThemedText>
+                                </ThemedView>
+                            </View>
+                        </ThemedView>
+                    </View>
+
+                    <View style={settingStyles.section}>
+                        <ThemedText variant="secondary" style={settingStyles.sectionTitle}>
+                            TOGGLE SIZES
+                        </ThemedText>
+
+                        <ThemedView variant="card" style={settingStyles.sizesCard}>
+                            <View style={settingStyles.sizeRow}>
+                                <ThemedText variant="primary" style={settingStyles.sizeLabel}>
+                                    Small
+                                </ThemedText>
+                                <ThemeToggle size="small" showLabel={true} />
+                            </View>
+
+                            <View style={settingStyles.sizeRow}>
+                                <ThemedText variant="primary" style={settingStyles.sizeLabel}>
+                                    Medium
+                                </ThemedText>
+                                <ThemeToggle size="medium" showLabel={true} />
+                            </View>
+
+                            <View style={settingStyles.sizeRow}>
+                                <ThemedText variant="primary" style={settingStyles.sizeLabel}>
+                                    Large
+                                </ThemedText>
+                                <ThemeToggle size="large" showLabel={true} />
+                            </View>
+                        </ThemedView>
+                    </View>
                 </ScrollView>
-            </View>
+            </ThemedView>
         </SafeAreaView>
     );
 }
 
 export const settingStyles = StyleSheet.create({
     container: {
-        padding: 0,
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: 0,
+        flex: 1,
+        padding: 16,
     },
-    /** Header */
     header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        paddingHorizontal: 16,
+        marginBottom: 24,
     },
-    headerAction: {
-        width: 40,
-        height: 40,
-        alignItems: "flex-start",
-        justifyContent: "center",
+    title: {
+        fontSize: 32,
+        fontFamily: "SpaceGroteskBold",
+        marginBottom: 4,
     },
-    headerTitle: {
-        fontSize: 19,
-        fontWeight: "600",
-        color: "#000",
+    subtitle: {
+        fontSize: 16,
+        fontFamily: "SpaceGroteskRegular",
     },
-    /** Content */
-    content: {
-        paddingHorizontal: 16,
-    },
-    contentFooter: {
-        marginTop: 24,
-        fontSize: 13,
-        fontWeight: "500",
-        textAlign: "center",
-        color: "#a69f9f",
-    },
-    /** Section */
     section: {
-        paddingVertical: 12,
+        marginBottom: 24,
     },
     sectionBody: {
         borderRadius: 12,
@@ -144,7 +205,6 @@ export const settingStyles = StyleSheet.create({
         elevation: 2,
         backgroundColor: "#fff",
     },
-    /** Profile */
     profile: {
         padding: 12,
         backgroundColor: "#fff",
@@ -173,7 +233,6 @@ export const settingStyles = StyleSheet.create({
         fontWeight: "400",
         color: "#858585",
     },
-    /** Row */
     row: {
         height: 44,
         width: "100%",
@@ -217,5 +276,66 @@ export const settingStyles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "600",
         color: "#dc2626",
+    },
+    sectionTitle: {
+        fontSize: 12,
+        fontFamily: "SpaceGroteskSemiBold",
+        letterSpacing: 0.5,
+        marginBottom: 12,
+        textTransform: "uppercase",
+    },
+    demoCard: {
+        padding: 16,
+        borderRadius: 12,
+    },
+    demoTitle: {
+        fontSize: 18,
+        fontFamily: "SpaceGroteskBold",
+        marginBottom: 8,
+    },
+    demoText: {
+        fontSize: 14,
+        fontFamily: "SpaceGroteskRegular",
+        lineHeight: 20,
+        marginBottom: 16,
+    },
+    demoButtons: {
+        flexDirection: "row",
+        gap: 12,
+    },
+    primaryButton: {
+        flex: 1,
+        paddingVertical: 12,
+        borderRadius: 8,
+        justifyContent: "center" as const,
+        alignItems: "center" as const,
+    },
+    secondaryButton: {
+        flex: 1,
+        paddingVertical: 12,
+        borderRadius: 8,
+        justifyContent: "center" as const,
+        alignItems: "center" as const,
+        borderWidth: 1,
+        borderColor: "#E5E5E7",
+    },
+    buttonText: {
+        fontSize: 14,
+        fontFamily: "SpaceGroteskSemiBold",
+    },
+    sizesCard: {
+        padding: 16,
+        borderRadius: 12,
+    },
+    sizeRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingVertical: 12,
+    },
+    sizeLabel: {
+        fontSize: 16,
+        fontFamily: "SpaceGroteskMedium",
+        minWidth: 80,
     },
 });
