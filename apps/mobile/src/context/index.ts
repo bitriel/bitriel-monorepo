@@ -7,7 +7,6 @@ export {
     DynamicStatusBar,
     DefaultStatusBar,
     PrimaryStatusBar,
-    GradientStatusBar,
     TransparentStatusBar,
     withDynamicStatusBar,
 } from "../../components/StatusBar/DynamicStatusBar";

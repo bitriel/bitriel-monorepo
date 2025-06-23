@@ -13,15 +13,16 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemedText } from "../ThemedText";
 import { IconWallet, IconApps, IconTrophy, IconUser } from "@tabler/icons-react-native";
-import Colors from "../../src/constants/Colors";
+import { BITRIEL_COLORS } from "../../src/constants/Colors";
+import { useAppTheme } from "../../src/context/ThemeProvider";
 
 import { BottomTabBarProps } from "@bottom-tabs/react-navigation";
 import { ParamListBase, RouteProp } from "@react-navigation/native";
 
 // Tab icons mapping with fallbacks
-const getTabIcon = (routeName: string, focused: boolean) => {
+const getTabIcon = (routeName: string, focused: boolean, getColor: (path: string) => string) => {
     const iconSize = 24;
-    const iconColor = focused ? Colors.primary : Colors.defaultText;
+    const iconColor = focused ? getColor("primary.main") : getColor("text.tertiary");
     const strokeWidth = focused ? 2.5 : 2;
 
     try {
@@ -60,6 +61,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({ label, routeName, isFocused
     const scale = useSharedValue(1);
     const translateY = useSharedValue(0);
     const opacity = useSharedValue(1);
+    const { getColor } = useAppTheme();
 
     React.useEffect(() => {
         scale.value = withSpring(isFocused ? 1.1 : 1, {
@@ -105,7 +107,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({ label, routeName, isFocused
             {isFocused && (
                 <Animated.View style={[styles.activeIndicator, animatedIndicatorStyle]}>
                     <LinearGradient
-                        colors={[Colors.primary, Colors.secondary]}
+                        colors={[getColor("primary.main"), getColor("secondary.main")]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.gradientIndicator}
@@ -114,11 +116,16 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({ label, routeName, isFocused
             )}
 
             <Animated.View style={[styles.iconContainer, animatedIconStyle]}>
-                {getTabIcon(routeName, isFocused)}
+                {getTabIcon(routeName, isFocused, getColor)}
             </Animated.View>
 
             <Animated.View style={animatedTextStyle}>
-                <ThemedText style={[styles.labelText, { color: isFocused ? Colors.primary : Colors.defaultText }]}>
+                <ThemedText
+                    style={[
+                        styles.labelText,
+                        { color: isFocused ? getColor("primary.main") : getColor("text.tertiary") },
+                    ]}
+                >
                     {label}
                 </ThemedText>
             </Animated.View>

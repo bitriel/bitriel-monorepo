@@ -1,14 +1,15 @@
 import React, { forwardRef, useCallback, useMemo, useState } from "react";
 import { BottomSheetModal, BottomSheetBackdrop, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import Colors from "~/src/constants/Colors";
-import { BackHandler, TouchableOpacity, View, Text, TextInput } from "react-native";
+import { BackHandler, TouchableOpacity, View, TextInput } from "react-native";
 import { useFocusEffect, router } from "expo-router";
 import { TokenBalance } from "@bitriel/wallet-sdk";
 import { Image } from "expo-image";
-import CustomAvatar from "~/components/Avatars/AvatarSymbol";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useWalletStore } from "~/src/store/useWalletStore";
 import TokenLogo from "../Avatars/TokenLogo";
+import { ThemedView } from "~/components/ThemedView";
+import { ThemedText } from "~/components/ThemedText";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 interface BottomSheetProps {
     handleCloseBottomSheet: () => void;
@@ -20,6 +21,7 @@ type Ref = BottomSheetModal;
 
 const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
     const { formatBalance } = useWalletStore();
+    const { getColor, getBrandColor, isDark } = useAppTheme();
 
     const snapPoints = useMemo(() => ["93%"], []);
     const [searchQuery, setSearchQuery] = useState("");
@@ -98,32 +100,90 @@ const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
 
     const renderTokenItem = useCallback(
         (token: TokenBalance) => (
-            <TouchableOpacity
-                key={token.token.address}
-                className="flex-row items-center justify-between px-4 py-3 active:bg-gray-50"
-                onPress={() => handleTokenSelect(token)}
-            >
-                <View className="flex-row items-center">
-                    <View className="w-10 h-10 rounded-full overflow-hidden justify-center items-center bg-gray-100">
-                        <TokenLogo logoURI={token.token.logoURI} size={40} />
-                    </View>
-                    <View className="ml-3">
-                        <Text className="font-SpaceGroteskSemiBold text-base text-gray-900">{token.token.symbol}</Text>
-                        <View className="flex-row items-center">
-                            <Text className="font-SpaceGroteskRegular text-sm text-gray-500">${0}</Text>
-                            <Text className="font-SpaceGroteskRegular text-sm text-green-500 ml-1">+0%</Text>
+            <TouchableOpacity key={token.token.address} onPress={() => handleTokenSelect(token)} activeOpacity={0.7}>
+                <ThemedView
+                    variant="card"
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        paddingHorizontal: 16,
+                        paddingVertical: 12,
+                        borderBottomWidth: 1,
+                        borderBottomColor: getColor("border.secondary"),
+                    }}
+                >
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <View
+                            style={{
+                                width: 40,
+                                height: 40,
+                                borderRadius: 20,
+                                overflow: "hidden",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                backgroundColor: getColor("background.surface"),
+                            }}
+                        >
+                            <TokenLogo logoURI={token.token.logoURI} size={40} />
+                        </View>
+                        <View style={{ marginLeft: 12 }}>
+                            <ThemedText
+                                variant="primary"
+                                style={{
+                                    fontFamily: "SpaceGrotesk-SemiBold",
+                                    fontSize: 16,
+                                }}
+                            >
+                                {token.token.symbol}
+                            </ThemedText>
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <ThemedText
+                                    variant="secondary"
+                                    style={{
+                                        fontFamily: "SpaceGrotesk-Regular",
+                                        fontSize: 14,
+                                    }}
+                                >
+                                    ${0}
+                                </ThemedText>
+                                <ThemedText
+                                    style={{
+                                        fontFamily: "SpaceGrotesk-Regular",
+                                        fontSize: 14,
+                                        color: getBrandColor("success", 500),
+                                        marginLeft: 4,
+                                    }}
+                                >
+                                    +0%
+                                </ThemedText>
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View className="items-end">
-                    <Text className="font-SpaceGroteskBold text-base text-gray-900">
-                        {formatBalance(token.balance, token.token.decimals)}
-                    </Text>
-                    <Text className="font-SpaceGroteskRegular text-sm text-gray-500">${0}</Text>
-                </View>
+                    <View style={{ alignItems: "flex-end" }}>
+                        <ThemedText
+                            variant="primary"
+                            style={{
+                                fontFamily: "SpaceGrotesk-Bold",
+                                fontSize: 16,
+                            }}
+                        >
+                            {formatBalance(token.balance, token.token.decimals)}
+                        </ThemedText>
+                        <ThemedText
+                            variant="secondary"
+                            style={{
+                                fontFamily: "SpaceGrotesk-Regular",
+                                fontSize: 14,
+                            }}
+                        >
+                            ${0}
+                        </ThemedText>
+                    </View>
+                </ThemedView>
             </TouchableOpacity>
         ),
-        [formatBalance, handleTokenSelect]
+        [formatBalance, handleTokenSelect, getColor, getBrandColor]
     );
 
     return (
@@ -141,69 +201,169 @@ const TokenListBottomSheet = forwardRef<Ref, BottomSheetProps>((props, ref) => {
             }}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
-            handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
-            backgroundStyle={{ backgroundColor: "white" }}
+            handleIndicatorStyle={{ backgroundColor: getColor("border.primary") }}
+            backgroundStyle={{ backgroundColor: getColor("background.card") }}
         >
-            <View className="flex-row items-center justify-between px-4 py-2 border-b border-gray-100">
+            <ThemedView
+                variant="card"
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
+                    borderBottomWidth: 1,
+                    borderBottomColor: getColor("border.secondary"),
+                }}
+            >
                 <TouchableOpacity onPress={handleBottomSheetClose}>
-                    <MaterialIcons name="close" size={24} color={Colors.secondary} />
+                    <MaterialIcons name="close" size={24} color={getColor("text.secondary")} />
                 </TouchableOpacity>
-                <Text className="text-xl font-SpaceGroteskBold text-gray-900">Send</Text>
+                <ThemedText
+                    variant="primary"
+                    style={{
+                        fontSize: 20,
+                        fontFamily: "SpaceGrotesk-Bold",
+                    }}
+                >
+                    Send
+                </ThemedText>
                 <View style={{ width: 24 }} />
-            </View>
-            <View className="px-4 py-2">
-                <View className="flex-row items-center bg-gray-100 rounded-lg px-3 py-2">
-                    <MaterialIcons name="search" size={20} color={Colors.secondary} />
+            </ThemedView>
+
+            <ThemedView variant="card" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        backgroundColor: getColor("background.surface"),
+                        borderRadius: 8,
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                    }}
+                >
+                    <MaterialIcons name="search" size={20} color={getColor("text.secondary")} />
                     <TextInput
-                        className="flex-1 ml-2 text-gray-900 font-SpaceGroteskRegular"
+                        style={{
+                            flex: 1,
+                            marginLeft: 8,
+                            color: getColor("text.primary"),
+                            fontFamily: "SpaceGrotesk-Regular",
+                        }}
                         placeholder="Search by network or token"
-                        placeholderTextColor="gray"
+                        placeholderTextColor={getColor("text.tertiary")}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                     />
                     {searchQuery.length > 0 && (
                         <TouchableOpacity onPress={() => setSearchQuery("")}>
-                            <MaterialIcons name="close" size={20} color={Colors.secondary} />
+                            <MaterialIcons name="close" size={20} color={getColor("text.secondary")} />
                         </TouchableOpacity>
                     )}
                 </View>
-            </View>
+            </ThemedView>
+
             <BottomSheetScrollView>
                 {filteredTokens.length > 0 ? (
                     Object.entries(groupedTokens).map(([network, tokens]) => (
                         <View key={network}>
-                            <View className="flex-row items-center px-4 py-3">
-                                <View className="w-8 h-8 rounded-lg bg-gray-100 justify-center items-center mr-2">
-                                    <MaterialIcons name="token" size={20} color={Colors.secondary} />
+                            <ThemedView
+                                variant="card"
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    paddingHorizontal: 16,
+                                    paddingVertical: 12,
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width: 32,
+                                        height: 32,
+                                        borderRadius: 8,
+                                        backgroundColor: getColor("background.surface"),
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        marginRight: 8,
+                                    }}
+                                >
+                                    <MaterialIcons name="token" size={20} color={getColor("text.secondary")} />
                                 </View>
-                                <Text className="text-gray-500 text-base font-SpaceGroteskMedium uppercase">
+                                <ThemedText
+                                    variant="secondary"
+                                    style={{
+                                        fontSize: 16,
+                                        fontFamily: "SpaceGrotesk-Medium",
+                                        textTransform: "uppercase",
+                                    }}
+                                >
                                     {network}
-                                </Text>
-                                <Text className="ml-auto text-gray-500">$0</Text>
-                            </View>
+                                </ThemedText>
+                                <ThemedText
+                                    variant="secondary"
+                                    style={{
+                                        marginLeft: "auto",
+                                    }}
+                                >
+                                    $0
+                                </ThemedText>
+                            </ThemedView>
                             {tokens.map(renderTokenItem)}
                         </View>
                     ))
                 ) : (
-                    <View className="flex-1 items-center justify-center px-6 py-12">
-                        <View className="w-16 h-16 mb-4 items-center justify-center">
+                    <ThemedView
+                        variant="card"
+                        style={{
+                            flex: 1,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            paddingHorizontal: 24,
+                            paddingVertical: 48,
+                        }}
+                    >
+                        <View
+                            style={{
+                                width: 64,
+                                height: 64,
+                                marginBottom: 16,
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
                             <MaterialIcons
                                 name={searchQuery.length > 0 ? "search" : "public"}
                                 size={48}
-                                color={Colors.secondary}
+                                color={getColor("text.tertiary")}
                             />
                         </View>
-                        <Text className="text-lg text-gray-400 font-SpaceGroteskMedium text-center mb-2">
+                        <ThemedText
+                            variant="secondary"
+                            style={{
+                                fontSize: 18,
+                                fontFamily: "SpaceGrotesk-Medium",
+                                textAlign: "center",
+                                marginBottom: 8,
+                            }}
+                        >
                             {searchQuery.length > 0
                                 ? "No network or tokens with entered name were found."
                                 : "You don't have tokens to send."}
-                        </Text>
-                        <Text className="text-base text-gray-400 font-SpaceGroteskRegular text-center mb-6">
-                            {searchQuery.length > 0
-                                ? "Try searching with a different name"
-                                : "Buy or Receive tokens to your account."}
-                        </Text>
-                    </View>
+                        </ThemedText>
+                        {searchQuery.length === 0 && (
+                            <ThemedText
+                                variant="tertiary"
+                                style={{
+                                    fontSize: 14,
+                                    fontFamily: "SpaceGrotesk-Regular",
+                                    textAlign: "center",
+                                    lineHeight: 20,
+                                }}
+                            >
+                                You need to have tokens with a positive balance to be able to send them.
+                            </ThemedText>
+                        )}
+                    </ThemedView>
                 )}
             </BottomSheetScrollView>
         </BottomSheetModal>

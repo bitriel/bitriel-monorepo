@@ -17,7 +17,7 @@ interface NumberPadProps {
 
 const NumberPad: React.FC<NumberPadProps> = memo(({ onPress, onDelete, onClear, onDot, showDot = true }) => {
     const scaleFont = useScaleFont();
-    const ripple = useThemeColor({}, "ripple");
+    const ripple = useThemeColor("interactive.ripple");
 
     const renderButton = React.useCallback(
         (value: string) => {

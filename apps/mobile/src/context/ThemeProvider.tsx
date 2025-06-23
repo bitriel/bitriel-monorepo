@@ -102,9 +102,23 @@ export function ThemeProvider({ children, defaultTheme = "system", storageKey = 
         return isDark ? "#FFFFFF" : "#000000";
     };
 
-    const getBrandColor = (color: string, shade: number = 500): string => {
-        const brandColors = theme.brand as any;
-        return brandColors[color]?.[shade] || theme.brand.primary[500];
+    const getBrandColor = (color: string, shade: number = 600): string => {
+        // Use BITRIEL_COLORS for direct access to full color palettes
+        const { BITRIEL_COLORS } = require("../constants/Colors");
+
+        if (color === "blue" || color === "primary") {
+            return BITRIEL_COLORS.blue[shade] || BITRIEL_COLORS.blue[600];
+        }
+        if (color === "gold" || color === "secondary") {
+            return BITRIEL_COLORS.gold[shade] || BITRIEL_COLORS.gold[600];
+        }
+        if (color === "forest" || color === "tertiary") {
+            // Map forest to neutral since forest doesn't exist in new system
+            return BITRIEL_COLORS.neutral[shade] || BITRIEL_COLORS.neutral[700];
+        }
+
+        // Fallback to primary brand color
+        return BITRIEL_COLORS.blue[600];
     };
 
     // NativeWind class generation utilities
@@ -114,30 +128,30 @@ export function ThemeProvider({ children, defaultTheme = "system", storageKey = 
 
     const getTextClass = (variant: "primary" | "secondary" | "tertiary" | "accent" = "primary"): string => {
         const baseClasses = {
-            primary: "text-text-primary dark:text-dark-text-primary",
-            secondary: "text-text-secondary dark:text-dark-text-secondary",
-            tertiary: "text-text-tertiary dark:text-dark-text-tertiary",
-            accent: "text-text-accent dark:text-dark-text-accent",
+            primary: "text-theme-primary",
+            secondary: "text-theme-secondary",
+            tertiary: "text-theme-tertiary",
+            accent: "text-theme-accent",
         };
         return baseClasses[variant];
     };
 
     const getBackgroundClass = (variant: "primary" | "secondary" | "card" | "surface" = "primary"): string => {
         const baseClasses = {
-            primary: "bg-background-primary dark:bg-dark-background-primary",
-            secondary: "bg-background-secondary dark:bg-dark-background-secondary",
-            card: "bg-background-card dark:bg-dark-background-card",
-            surface: "bg-background-surface dark:bg-dark-background-surface",
+            primary: "bg-theme-primary",
+            secondary: "bg-theme-secondary",
+            card: "bg-surface-primary dark:bg-dark-surface-primary",
+            surface: "bg-surface-elevated dark:bg-dark-surface-elevated",
         };
         return baseClasses[variant];
     };
 
     const getBorderClass = (variant: "primary" | "secondary" | "accent" | "focus" = "primary"): string => {
         const baseClasses = {
-            primary: "border-border-primary dark:border-dark-border-primary",
-            secondary: "border-border-secondary dark:border-dark-border-secondary",
-            accent: "border-border-accent dark:border-dark-border-accent",
-            focus: "border-border-focus dark:border-dark-border-focus",
+            primary: "border-theme-primary",
+            secondary: "border-theme-secondary",
+            accent: "border-theme-accent",
+            focus: "border-theme-brand",
         };
         return baseClasses[variant];
     };

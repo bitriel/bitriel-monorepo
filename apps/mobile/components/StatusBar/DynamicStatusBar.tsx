@@ -37,10 +37,6 @@ export const PrimaryStatusBar: React.FC<{ children?: React.ReactNode }> = ({ chi
     <DynamicStatusBar style="primary">{children}</DynamicStatusBar>
 );
 
-export const GradientStatusBar: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
-    <DynamicStatusBar style="gradient">{children}</DynamicStatusBar>
-);
-
 export const TransparentStatusBar: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
     <DynamicStatusBar style="transparent" translucent>
         {children}

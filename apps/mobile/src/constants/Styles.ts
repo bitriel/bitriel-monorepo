@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
-import Colors from "./Colors";
+import { BITRIEL_COLORS } from "./Colors";
 
 export const defaultStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.white,
+        backgroundColor: BITRIEL_COLORS.neutral[0],
         padding: 16,
     },
     header: {
@@ -19,14 +19,14 @@ export const defaultStyles = StyleSheet.create({
         alignItems: "center",
     },
     textLink: {
-        color: Colors.primary,
+        color: BITRIEL_COLORS.blue[600],
         fontSize: 18,
         fontWeight: "500",
     },
     descriptionText: {
         fontSize: 18,
         marginTop: 20,
-        color: Colors.defaultText,
+        color: BITRIEL_COLORS.neutral[700],
     },
     buttonText: {
         color: "#fff",

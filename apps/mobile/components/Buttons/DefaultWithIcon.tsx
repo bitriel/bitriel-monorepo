@@ -1,25 +1,41 @@
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
-import Colors from "~/src/constants/Colors";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 type FontAwesomeIconName = React.ComponentProps<typeof FontAwesome>["name"];
 
-interface Props {
-    label: string;
+interface DefaultWithIconProps {
+    title: string;
     icon: FontAwesomeIconName;
     onPress: () => void;
 }
 
-const DefaultWithIcon: React.FC<Props> = ({ label, icon, onPress }) => {
+const DefaultWithIcon: React.FC<DefaultWithIconProps> = ({ title, icon, onPress }) => {
+    const { getColor } = useAppTheme();
+
     return (
-        <TouchableOpacity
-            className="bg-primary flex-row py-4 justify-center items-center flex-1 rounded-lg mx-1"
-            onPress={() => (onPress ? onPress() : {})}
-        >
-            <Text className="font-SpaceGroteskBold mr-2 text-secondary">{label}</Text>
-            <FontAwesome name={icon} color={Colors.secondary} />
+        <TouchableOpacity style={[styles.button, { backgroundColor: getColor("primary.main") }]} onPress={onPress}>
+            <FontAwesome name={icon} color={getColor("text.inverse")} size={16} />
+            <Text style={[styles.text, { color: getColor("text.inverse") }]}>{title}</Text>
         </TouchableOpacity>
     );
 };
+
+const styles = StyleSheet.create({
+    button: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        gap: 8,
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: "600",
+    },
+});
+
 export default DefaultWithIcon;

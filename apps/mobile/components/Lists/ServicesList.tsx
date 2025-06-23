@@ -1,42 +1,57 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import Colors from "~/src/constants/Colors";
-import { ServicesItem } from "~/src/data/DataService";
-import { router } from "expo-router";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
-interface Props {
-    list: Array<ServicesItem>;
+interface Service {
+    id: string;
+    name: string;
+    icon: string;
+    onPress: () => void;
 }
 
-const ServicesList: React.FC<Props> = ({ list }) => {
-    const handleServicePress = (route: string) => {
-        // Use the router to push the specified route
-        router.push(route as never);
-    };
+interface ServicesListProps {
+    services: Service[];
+}
+
+const ServicesList: React.FC<ServicesListProps> = ({ services }) => {
+    const { getColor } = useAppTheme();
+
+    const renderServiceItem = ({ item }: { item: Service }) => (
+        <TouchableOpacity
+            style={{
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 16,
+                backgroundColor: getColor("surface.primary"),
+                marginVertical: 4,
+                marginHorizontal: 16,
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: getColor("border.primary"),
+            }}
+            onPress={item.onPress}
+        >
+            <FontAwesome5 name={item.icon} size={30} color={getColor("secondary.main")} />
+            <Text
+                style={{
+                    marginLeft: 16,
+                    fontSize: 16,
+                    fontWeight: "600",
+                    color: getColor("text.primary"),
+                }}
+            >
+                {item.name}
+            </Text>
+        </TouchableOpacity>
+    );
 
     return (
         <FlatList
-            contentContainerStyle={{
-                justifyContent: "center",
-                alignItems: "center",
-            }}
-            scrollEnabled={false}
-            data={list}
-            renderItem={({ item, index }) => (
-                <TouchableOpacity
-                    className="w-16 items-center mx-4 mb-5"
-                    onPress={() => handleServicePress(item.route)}
-                >
-                    <View className="bg-offWhite w-16 h-16 justify-center items-center rounded-2xl mb-3">
-                        <FontAwesome5 name={item.icon} size={30} color={Colors.secondary} />
-                    </View>
-                    <Text className="text-center text-xs text-secondary font-SpaceGroteskRegular capitalize">
-                        {item.name}
-                    </Text>
-                </TouchableOpacity>
-            )}
-            numColumns={4}
+            data={services}
+            renderItem={renderServiceItem}
+            keyExtractor={item => item.id}
+            showsVerticalScrollIndicator={false}
         />
     );
 };

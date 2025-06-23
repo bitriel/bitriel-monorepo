@@ -1,5 +1,5 @@
 import React from "react";
-import Colors from "~/src/constants/Colors";
+import { BITRIEL_COLORS } from "~/src/constants/Colors";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Text, View, SafeAreaView, TouchableOpacity, Modal } from "react-native";
@@ -29,7 +29,7 @@ export default function WarnMsgRecoveryPage() {
             <View className="items-center flex-1">
                 <View className="p-5 items-center">
                     <View className="bg-red-300/25 p-2 rounded-full m-5">
-                        <IconShieldHeart color={Colors.red} size={50} />
+                        <IconShieldHeart color={BITRIEL_COLORS.error[500]} size={50} />
                     </View>
 
                     <Text className="text-center text-2xl px-2 font-SpaceGroteskBold">Show secret phrase</Text>
@@ -45,8 +45,8 @@ export default function WarnMsgRecoveryPage() {
                     <View className="bg-gray-50 p-4 rounded-xl">
                         <BouncyCheckbox
                             size={25}
-                            fillColor={Colors.primary}
-                            unFillColor={Colors.white}
+                            fillColor={BITRIEL_COLORS.blue[600]}
+                            unFillColor={BITRIEL_COLORS.neutral[0]}
                             text="Your secret phrase is the only way to recover your wallet. "
                             innerIconStyle={{ borderWidth: 2 }}
                             textStyle={{
@@ -62,8 +62,8 @@ export default function WarnMsgRecoveryPage() {
                     <View className="bg-gray-50 p-4 rounded-xl">
                         <BouncyCheckbox
                             size={25}
-                            fillColor={Colors.primary}
-                            unFillColor={Colors.white}
+                            fillColor={BITRIEL_COLORS.blue[600]}
+                            unFillColor={BITRIEL_COLORS.neutral[0]}
                             text="Do not let anyone see your secret phrase"
                             innerIconStyle={{ borderWidth: 2 }}
                             textStyle={{
@@ -79,8 +79,8 @@ export default function WarnMsgRecoveryPage() {
                     <View className="bg-gray-50 p-4 rounded-xl">
                         <BouncyCheckbox
                             size={25}
-                            fillColor={Colors.primary}
-                            unFillColor={Colors.white}
+                            fillColor={BITRIEL_COLORS.blue[600]}
+                            unFillColor={BITRIEL_COLORS.neutral[0]}
                             text="Never share your secret phrase with anyone"
                             innerIconStyle={{ borderWidth: 2 }}
                             textStyle={{

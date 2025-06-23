@@ -2,7 +2,8 @@ import { View, Text, TouchableOpacity, FlatList, BackHandler, StyleSheet } from 
 import React, { forwardRef, useCallback, useMemo, useState } from "react";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { SvgXml } from "react-native-svg";
-import Colors from "~/src/constants/Colors";
+import { BITRIEL_COLORS } from "~/src/constants/Colors";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SVG from "~/src/constants/AssetSVG";
 import { useFocusEffect } from "expo-router";
@@ -15,6 +16,7 @@ type Ref = BottomSheet;
 
 const NeverShareMsgBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp, ref) => {
     const snapPoints = useMemo(() => ["95%"], []);
+    const { getColor } = useAppTheme();
 
     const renderBackdrop = useCallback(
         (props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />,
@@ -65,13 +67,15 @@ const NeverShareMsgBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
             onChange={idx => setIsShowing(idx > -1)}
-            handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
-            backgroundStyle={{ backgroundColor: Colors.white }}
+            handleIndicatorStyle={{ backgroundColor: getColor("primary.main") }}
+            backgroundStyle={{ backgroundColor: getColor("background.primary") }}
         >
-            <View style={styles.container}>
+            <View style={[styles.container, { backgroundColor: getColor("background.primary") }]}>
                 <View style={styles.header}>
                     <SvgXml xml={SVG.SecuritySVG} width={150} height={150} />
-                    <Text style={styles.headerText}>Never Share Your Secret Phrase</Text>
+                    <Text style={[styles.headerText, { color: getColor("text.primary") }]}>
+                        Never Share Your Secret Phrase
+                    </Text>
                 </View>
 
                 <View>
@@ -81,17 +85,20 @@ const NeverShareMsgBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
                         data={dataMsg}
                         renderItem={({ item }) => (
                             <View style={styles.item}>
-                                <View style={styles.circle}>
-                                    <Text style={styles.key}>{item.key}</Text>
+                                <View style={[styles.circle, { backgroundColor: getColor("surface.secondary") }]}>
+                                    <Text style={[styles.key, { color: getColor("primary.main") }]}>{item.key}</Text>
                                 </View>
-                                <Text style={styles.text}>{item.text}</Text>
+                                <Text style={[styles.text, { color: getColor("text.secondary") }]}>{item.text}</Text>
                             </View>
                         )}
                     />
 
                     <SafeAreaView>
-                        <TouchableOpacity style={styles.button} onPress={bottomSheetProp.handleCloseBottomSheet}>
-                            <Text style={styles.buttonText}>Continue</Text>
+                        <TouchableOpacity
+                            style={[styles.button, { backgroundColor: getColor("primary.main") }]}
+                            onPress={bottomSheetProp.handleCloseBottomSheet}
+                        >
+                            <Text style={[styles.buttonText, { color: BITRIEL_COLORS.neutral[0] }]}>Continue</Text>
                         </TouchableOpacity>
                     </SafeAreaView>
                 </View>
@@ -99,10 +106,10 @@ const NeverShareMsgBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
         </BottomSheet>
     );
 });
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.white,
         paddingHorizontal: 20,
     },
     header: {
@@ -126,30 +133,25 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
         borderRadius: 12,
-        backgroundColor: Colors.offWhite,
         justifyContent: "center",
         alignItems: "center",
         marginRight: 10,
     },
     key: {
-        color: Colors.secondary,
         fontWeight: "bold",
     },
     text: {
         flex: 1,
-        color: Colors.secondary,
     },
     safeArea: {
         marginVertical: 20,
         alignItems: "center",
     },
     button: {
-        backgroundColor: Colors.primary,
         padding: 15,
         borderRadius: 10,
     },
     buttonText: {
-        color: Colors.secondary,
         fontSize: 16,
         fontWeight: "bold",
         textAlign: "center",

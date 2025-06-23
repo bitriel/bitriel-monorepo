@@ -1,57 +1,72 @@
-// note(bacon): Purposefully skip using the themed icons since we want the icons to change color based on toggle state.
-import Colors from "~/src/constants/Colors";
-import Ionicons from "@expo/vector-icons/build/Ionicons";
-import { BlurView } from "expo-blur";
-import * as Haptics from "expo-haptics";
 import React from "react";
-import { StyleSheet } from "react-native";
-// @ts-expect-error
-import TouchableBounce from "react-native/Libraries/Components/Touchable/TouchableBounce";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
-const size = 64;
-const slop = 40;
+type IoniconsName = React.ComponentProps<typeof Ionicons>["name"];
 
-const hitSlop = { top: slop, bottom: slop, right: slop, left: slop };
-
-export default function QRFooterButton({
-    onPress,
-    isActive = false,
-    iconName,
-    iconSize = 36,
-}: {
-    onPress: () => void;
+interface QRFooterButtonProps {
+    title?: string;
     isActive?: boolean;
-    iconName: React.ComponentProps<typeof Ionicons>["name"];
+    onPress: () => void;
+    icon?: React.ReactNode;
+    // Legacy props for backward compatibility
+    iconName?: IoniconsName;
     iconSize?: number;
-}) {
-    const tint = isActive ? "default" : "dark";
-    const iconColor = isActive ? Colors.primary : "#ffffff";
-
-    const onPressIn = React.useCallback(() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }, []);
-
-    const onPressButton = React.useCallback(() => {
-        onPress();
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }, [onPress]);
-
-    return (
-        <TouchableBounce hitSlop={hitSlop} onPressIn={onPressIn} onPress={onPressButton}>
-            <BlurView intensity={100} style={styles.container} tint={tint}>
-                <Ionicons name={iconName} size={iconSize} color={iconColor} />
-            </BlurView>
-        </TouchableBounce>
-    );
 }
 
+const QRFooterButton: React.FC<QRFooterButtonProps> = ({
+    title,
+    isActive = false,
+    onPress,
+    icon,
+    iconName,
+    iconSize = 24,
+}) => {
+    const { getColor } = useAppTheme();
+
+    const buttonColor = isActive ? getColor("primary.main") : "transparent";
+    const iconColor = isActive ? getColor("text.inverse") : "#FFFFFF";
+    const textColor = isActive ? getColor("text.inverse") : "#FFFFFF";
+    const borderColor = isActive ? getColor("primary.main") : "rgba(255, 255, 255, 0.3)";
+
+    // Use provided icon or create one from iconName
+    const displayIcon = icon || (iconName && <Ionicons name={iconName} size={iconSize} color={iconColor} />);
+
+    return (
+        <TouchableOpacity
+            style={[
+                styles.button,
+                {
+                    backgroundColor: buttonColor,
+                    borderColor: borderColor,
+                },
+            ]}
+            onPress={onPress}
+        >
+            {displayIcon}
+            {title && <Text style={[styles.text, { color: textColor }]}>{title}</Text>}
+        </TouchableOpacity>
+    );
+};
+
 const styles = StyleSheet.create({
-    container: {
-        width: size,
-        height: size,
-        overflow: "hidden",
-        borderRadius: size / 2,
-        justifyContent: "center",
+    button: {
+        flexDirection: "row",
         alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 50,
+        borderWidth: 1,
+        minWidth: 60,
+        minHeight: 60,
+    },
+    text: {
+        fontSize: 14,
+        fontWeight: "600",
+        marginLeft: 8,
     },
 });
+
+export default QRFooterButton;

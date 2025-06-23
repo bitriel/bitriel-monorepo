@@ -31,7 +31,10 @@ import {
     Code,
 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Colors from "~/src/constants/Colors";
+import { BITRIEL_COLORS } from "~/src/constants/Colors";
+import { useAppTheme, useThemeColors } from "~/src/context/ThemeProvider";
+import { ThemedView } from "~/components/ThemedView";
+import { ThemedText } from "~/components/ThemedText";
 
 const { width } = Dimensions.get("window");
 
@@ -258,6 +261,8 @@ const serviceCategories: ServiceCategory[] = [
 ];
 
 const ServicesScreen = () => {
+    const { isDark, getColor } = useAppTheme();
+    const colors = useThemeColors();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -275,16 +280,90 @@ const ServicesScreen = () => {
 
     const newServices = serviceCategories.flatMap(category => category.services).filter(service => service.isNew);
 
+    const dynamicStyles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: colors.background.primary,
+        },
+        searchInputContainer: {
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: colors.background.secondary,
+            borderRadius: 12,
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+        },
+        searchInput: {
+            flex: 1,
+            marginLeft: 10,
+            fontSize: 16,
+            color: colors.text.primary,
+        },
+        categoryHeader: {
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            paddingVertical: 16,
+            backgroundColor: colors.background.primary,
+        },
+        serviceCard: {
+            width: "48%",
+            backgroundColor: colors.background.card,
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 16,
+            borderWidth: 1,
+            borderColor: colors.border.primary,
+            shadowColor: colors.text.primary,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: isDark ? 0.3 : 0.1,
+            shadowRadius: 4,
+            elevation: 2,
+        },
+        serviceIconContainer: {
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            backgroundColor: colors.background.secondary,
+            justifyContent: "center",
+            alignItems: "center",
+        },
+        newServiceCard: {
+            width: 140,
+            backgroundColor: colors.background.card,
+            borderRadius: 12,
+            padding: 16,
+            marginRight: 12,
+            marginLeft: 20,
+            borderWidth: 1,
+            borderColor: colors.border.primary,
+            shadowColor: colors.text.primary,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: isDark ? 0.3 : 0.1,
+            shadowRadius: 4,
+            elevation: 2,
+        },
+        newServiceIcon: {
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            backgroundColor: colors.background.secondary,
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 12,
+        },
+    });
+
     const renderSearchBar = () => (
         <View style={styles.searchContainer}>
-            <View style={styles.searchInputContainer}>
-                <Search size={20} color="#8E8E93" />
+            <View style={dynamicStyles.searchInputContainer}>
+                <Search size={20} color={colors.text.tertiary} />
                 <TextInput
-                    style={styles.searchInput}
+                    style={dynamicStyles.searchInput}
                     placeholder="Search services..."
                     value={searchQuery}
                     onChangeText={setSearchQuery}
-                    placeholderTextColor="#8E8E93"
+                    placeholderTextColor={colors.text.tertiary}
                 />
             </View>
         </View>
@@ -308,20 +387,24 @@ const ServicesScreen = () => {
 
     const renderCategoryHeader = (category: ServiceCategory) => (
         <TouchableOpacity
-            style={styles.categoryHeader}
+            style={dynamicStyles.categoryHeader}
             onPress={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
         >
             <LinearGradient colors={category.gradient} style={styles.categoryIcon}>
                 <Settings size={24} color="white" />
             </LinearGradient>
             <View style={styles.categoryInfo}>
-                <Text style={styles.categoryTitle}>{category.title}</Text>
-                <Text style={styles.categoryDescription}>{category.description}</Text>
+                <ThemedText variant="primary" style={styles.categoryTitle}>
+                    {category.title}
+                </ThemedText>
+                <ThemedText variant="secondary" style={styles.categoryDescription}>
+                    {category.description}
+                </ThemedText>
             </View>
             {selectedCategory === category.id ? (
-                <ChevronUp size={20} color="#8E8E93" />
+                <ChevronUp size={20} color={colors.text.tertiary} />
             ) : (
-                <ChevronDown size={20} color="#8E8E93" />
+                <ChevronDown size={20} color={colors.text.tertiary} />
             )}
         </TouchableOpacity>
     );
@@ -331,17 +414,21 @@ const ServicesScreen = () => {
             {services.map((service, index) => (
                 <TouchableOpacity
                     key={service.id}
-                    style={[styles.serviceCard, { marginRight: index % 2 === 0 ? 8 : 0 }]}
+                    style={[dynamicStyles.serviceCard, { marginRight: index % 2 === 0 ? 8 : 0 }]}
                     onPress={() => router.push(service.route as any)}
                 >
                     <View style={styles.serviceCardHeader}>
-                        <View style={styles.serviceIconContainer}>
-                            <Zap size={20} color={Colors.primary} />
+                        <View style={dynamicStyles.serviceIconContainer}>
+                            <Zap size={20} color={BITRIEL_COLORS.blue[500]} />
                         </View>
                         {renderServiceBadges(service)}
                     </View>
-                    <Text style={styles.serviceTitle}>{service.title}</Text>
-                    <Text style={styles.serviceSubtitle}>{service.subtitle}</Text>
+                    <ThemedText variant="primary" style={styles.serviceTitle}>
+                        {service.title}
+                    </ThemedText>
+                    <ThemedText variant="secondary" style={styles.serviceSubtitle}>
+                        {service.subtitle}
+                    </ThemedText>
                 </TouchableOpacity>
             ))}
         </View>
@@ -361,7 +448,9 @@ const ServicesScreen = () => {
 
         return (
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Quick Access</Text>
+                <ThemedText variant="primary" style={styles.sectionTitle}>
+                    Quick Access
+                </ThemedText>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickAccessContainer}>
                     {orderedQuickAccess.map(service => (
                         <TouchableOpacity
@@ -386,23 +475,31 @@ const ServicesScreen = () => {
     const renderNewServicesSection = () => (
         <View style={styles.section}>
             <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>New Services</Text>
+                <ThemedText variant="primary" style={styles.sectionTitle}>
+                    New Services
+                </ThemedText>
                 <TouchableOpacity onPress={() => router.push("/services/new" as any)}>
-                    <Text style={styles.seeAllText}>See All</Text>
+                    <ThemedText variant="accent" style={styles.seeAllText}>
+                        See All
+                    </ThemedText>
                 </TouchableOpacity>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {newServices.map(service => (
                     <TouchableOpacity
                         key={service.id}
-                        style={styles.newServiceCard}
+                        style={dynamicStyles.newServiceCard}
                         onPress={() => router.push(service.route as any)}
                     >
-                        <View style={styles.newServiceIcon}>
-                            <Zap size={18} color={Colors.primary} />
+                        <View style={dynamicStyles.newServiceIcon}>
+                            <Zap size={18} color={BITRIEL_COLORS.blue[500]} />
                         </View>
-                        <Text style={styles.newServiceTitle}>{service.title}</Text>
-                        <Text style={styles.newServiceSubtitle}>{service.subtitle}</Text>
+                        <ThemedText variant="primary" style={styles.newServiceTitle}>
+                            {service.title}
+                        </ThemedText>
+                        <ThemedText variant="secondary" style={styles.newServiceSubtitle}>
+                            {service.subtitle}
+                        </ThemedText>
                         <View style={styles.newBadge}>
                             <Text style={styles.newBadgeText}>NEW</Text>
                         </View>
@@ -413,11 +510,15 @@ const ServicesScreen = () => {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={dynamicStyles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Services</Text>
-                <Text style={styles.headerSubtitle}>Discover what you can do with Bitriel</Text>
+                <ThemedText variant="primary" style={styles.headerTitle}>
+                    Services
+                </ThemedText>
+                <ThemedText variant="secondary" style={styles.headerSubtitle}>
+                    Discover what you can do with Bitriel
+                </ThemedText>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -432,7 +533,9 @@ const ServicesScreen = () => {
 
                 {searchQuery ? (
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Search Results</Text>
+                        <ThemedText variant="primary" style={styles.sectionTitle}>
+                            Search Results
+                        </ThemedText>
                         {renderServiceGrid(filteredServices)}
                     </View>
                 ) : (
@@ -449,10 +552,6 @@ const ServicesScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#FFFFFF",
-    },
     header: {
         paddingHorizontal: 20,
         paddingTop: 20,
@@ -461,12 +560,10 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 28,
         fontWeight: "bold",
-        color: "#1A1A1A",
         marginBottom: 4,
     },
     headerSubtitle: {
         fontSize: 16,
-        color: "#8E8E93",
     },
     scrollContent: {
         paddingBottom: 20,
@@ -474,20 +571,6 @@ const styles = StyleSheet.create({
     searchContainer: {
         paddingHorizontal: 20,
         marginBottom: 20,
-    },
-    searchInputContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#F2F2F7",
-        borderRadius: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-    },
-    searchInput: {
-        flex: 1,
-        marginLeft: 10,
-        fontSize: 16,
-        color: "#1A1A1A",
     },
     section: {
         marginBottom: 24,
@@ -502,13 +585,11 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 20,
         fontWeight: "600",
-        color: "#1A1A1A",
         paddingHorizontal: 20,
         marginBottom: 12,
     },
     seeAllText: {
         fontSize: 14,
-        color: Colors.primary,
         fontWeight: "500",
     },
     quickAccessContainer: {
@@ -540,50 +621,17 @@ const styles = StyleSheet.create({
         top: 8,
         right: 8,
     },
-    newServiceCard: {
-        width: 140,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 12,
-        padding: 16,
-        marginRight: 12,
-        marginLeft: 20,
-        borderWidth: 1,
-        borderColor: "#F2F2F7",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    newServiceIcon: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: "#F2F2F7",
-        justifyContent: "center",
-        alignItems: "center",
-        marginBottom: 12,
-    },
     newServiceTitle: {
         fontSize: 14,
         fontWeight: "600",
-        color: "#1A1A1A",
         marginBottom: 4,
     },
     newServiceSubtitle: {
         fontSize: 12,
-        color: "#8E8E93",
         marginBottom: 8,
     },
     categorySection: {
         marginBottom: 16,
-    },
-    categoryHeader: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        backgroundColor: "#FFFFFF",
     },
     categoryIcon: {
         width: 48,
@@ -599,12 +647,10 @@ const styles = StyleSheet.create({
     categoryTitle: {
         fontSize: 16,
         fontWeight: "600",
-        color: "#1A1A1A",
         marginBottom: 2,
     },
     categoryDescription: {
         fontSize: 14,
-        color: "#8E8E93",
     },
     serviceGrid: {
         flexDirection: "row",
@@ -612,33 +658,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 8,
     },
-    serviceCard: {
-        width: "48%",
-        backgroundColor: "#FFFFFF",
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 16,
-        borderWidth: 1,
-        borderColor: "#F2F2F7",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-    },
     serviceCardHeader: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "flex-start",
         marginBottom: 12,
-    },
-    serviceIconContainer: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: "#F2F2F7",
-        justifyContent: "center",
-        alignItems: "center",
     },
     serviceBadges: {
         alignItems: "flex-end",
@@ -646,12 +670,10 @@ const styles = StyleSheet.create({
     serviceTitle: {
         fontSize: 14,
         fontWeight: "600",
-        color: "#1A1A1A",
         marginBottom: 4,
     },
     serviceSubtitle: {
         fontSize: 12,
-        color: "#8E8E93",
         lineHeight: 16,
     },
     newBadge: {

@@ -7,7 +7,8 @@ import {
     IconInfoCircle,
     IconSquareX,
 } from "@tabler/icons-react-native";
-import Colors from "~/src/constants/Colors";
+import { BITRIEL_COLORS } from "~/src/constants/Colors";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 interface ToastProps {
     visible: boolean;
@@ -23,6 +24,7 @@ const { width } = Dimensions.get("window");
 export const CustomToast: React.FC<ToastProps> = ({ visible, message, title, type, onHide, duration = 3000 }) => {
     const translateY = useRef(new Animated.Value(-100)).current;
     const opacity = useRef(new Animated.Value(0)).current;
+    const { getColor, isDark } = useAppTheme();
 
     useEffect(() => {
         if (visible) {
@@ -84,45 +86,45 @@ export const CustomToast: React.FC<ToastProps> = ({ visible, message, title, typ
     const getBackgroundColor = () => {
         switch (type) {
             case "success":
-                return Colors.offWhite;
+                return getColor("surface.secondary");
             case "error":
-                return "#FF6B6B";
+                return BITRIEL_COLORS.error[500];
             case "warning":
-                return "#FFD93D";
+                return BITRIEL_COLORS.warning[500];
             case "info":
-                return "#74C0FC";
+                return BITRIEL_COLORS.info[500];
             default:
-                return Colors.offWhite;
+                return getColor("surface.secondary");
         }
     };
 
     const getTextColor = () => {
         switch (type) {
             case "success":
-                return Colors.blackText;
+                return getColor("text.primary");
             case "error":
-                return Colors.white;
+                return BITRIEL_COLORS.neutral[0];
             case "warning":
-                return Colors.blackText;
+                return getColor("text.primary");
             case "info":
-                return Colors.white;
+                return BITRIEL_COLORS.neutral[0];
             default:
-                return Colors.blackText;
+                return getColor("text.primary");
         }
     };
 
     const getIconColor = () => {
         switch (type) {
             case "success":
-                return Colors.primary;
+                return BITRIEL_COLORS.success[600];
             case "error":
-                return Colors.white;
+                return BITRIEL_COLORS.neutral[0];
             case "warning":
-                return "#F59E0B";
+                return BITRIEL_COLORS.warning[700];
             case "info":
-                return Colors.white;
+                return BITRIEL_COLORS.neutral[0];
             default:
-                return Colors.primary;
+                return getColor("primary.main");
         }
     };
 

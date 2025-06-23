@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Text, View, TouchableOpacity, Vibration, Animated } from "react-native";
-import Colors from "~/src/constants/Colors";
+import { BITRIEL_COLORS } from "~/src/constants/Colors";
 import copyAddress from "~/src/utilities/copyClipboard";
 import { Copy, Check, Eye, EyeOff } from "lucide-react-native";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 type MnemonicBoxProps = {
     mnemonic: string;
@@ -51,6 +52,7 @@ const SkeletonWord: React.FC = () => {
 const MnemonicBox: React.FC<MnemonicBoxProps> = ({ mnemonic }) => {
     const [isCopied, setIsCopied] = useState(false);
     const [isRevealed, setIsRevealed] = useState(false);
+    const { getColor } = useAppTheme();
 
     const copyToClipboard = useCallback(async () => {
         try {
@@ -82,9 +84,9 @@ const MnemonicBox: React.FC<MnemonicBoxProps> = ({ mnemonic }) => {
                     className="flex-row items-center bg-gray-100 px-3 py-2 rounded-lg"
                 >
                     {isRevealed ? (
-                        <EyeOff size={16} color={Colors.secondary} />
+                        <EyeOff size={16} color={getColor("secondary.main")} />
                     ) : (
-                        <Eye size={16} color={Colors.secondary} />
+                        <Eye size={16} color={getColor("secondary.main")} />
                     )}
                     <Text className="ml-2 text-sm text-gray-600 font-medium">{isRevealed ? "Hide" : "Reveal"}</Text>
                 </TouchableOpacity>
@@ -132,12 +134,12 @@ const MnemonicBox: React.FC<MnemonicBoxProps> = ({ mnemonic }) => {
             >
                 {isCopied ? (
                     <>
-                        <Check size={18} color={Colors.primary} />
+                        <Check size={18} color={getColor("primary.main")} />
                         <Text className="ml-2 font-semibold text-primary">Copied to Clipboard!</Text>
                     </>
                 ) : (
                     <>
-                        <Copy size={18} color={isRevealed ? Colors.primary : Colors.secondary} />
+                        <Copy size={18} color={isRevealed ? getColor("primary.main") : getColor("secondary.main")} />
                         <Text className={`ml-2 font-semibold ${isRevealed ? "text-primary" : "text-gray-400"}`}>
                             {isRevealed ? "Copy to Clipboard" : "Reveal to Copy"}
                         </Text>

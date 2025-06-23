@@ -15,11 +15,14 @@ import WalletBalanceCard from "~/components/Card/WalletBalanceCard";
 import { QuickAction, IconType } from "~/src/types/quick.action.types";
 import { useMultiWalletStore } from "~/src/store/multiWalletStore";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
+import { ThemedView } from "~/components/ThemedView";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 export default function WalletScreen() {
     const { mnemonicParam } = useLocalSearchParams<{ mnemonicParam: string }>();
     const { initializeWallet, refreshWalletState, isLoading, currentNetwork, walletState } = useWalletStore();
     const { activeWallet, loadWallets, addWallet, wallets, isInitialized: walletsInitialized } = useMultiWalletStore();
+    const { isDark } = useAppTheme();
     // Status bar is now handled automatically by NavigationStatusBarProvider
 
     // Find the current network details from SUPPORTED_NETWORKS
@@ -169,36 +172,41 @@ export default function WalletScreen() {
 
     return (
         <GestureHandlerRootView className="flex-1">
-            <SafeAreaView className="flex-1 bg-white">
-                <Header.Default
-                    networkChainImage={selectedNetwork?.logo || null}
-                    networkChainName={selectedNetwork?.name || null}
-                    handleOpenBottomSheet={handleOpenSwitchNetworkSheet}
-                    selectedNetworkLabel={selectedNetwork?.name || null}
-                    selectedNetworkImage={selectedNetwork?.logo || null}
-                />
+            <SafeAreaView className="flex-1">
+                <ThemedView variant="primary" className="flex-1">
+                    <Header.Default
+                        networkChainImage={selectedNetwork?.logo || null}
+                        networkChainName={selectedNetwork?.name || null}
+                        handleOpenBottomSheet={handleOpenSwitchNetworkSheet}
+                        selectedNetworkLabel={selectedNetwork?.name || null}
+                        selectedNetworkImage={selectedNetwork?.logo || null}
+                    />
 
-                <WalletBalanceCard
-                    address={walletState?.address}
-                    totalBalance={"≈$" + 0}
-                    onCopyAddress={copyAddress}
-                    quickActions={quickActions}
-                    networkName={selectedNetwork?.name}
-                />
+                    <WalletBalanceCard
+                        address={walletState?.address}
+                        totalBalance={"≈$" + 0}
+                        onCopyAddress={copyAddress}
+                        quickActions={quickActions}
+                        networkName={selectedNetwork?.name}
+                    />
 
-                <AnimatedWalletList tokens={allTokens} onRefresh={refreshWalletState} isRefreshing={isLoading} />
+                    <AnimatedWalletList tokens={allTokens} onRefresh={refreshWalletState} isRefreshing={isLoading} />
 
-                <ChangeNetworkBottomSheet
-                    ref={bottomSheetSwitchNetworkRef}
-                    handleCloseBottomSheet={handleCloseSwitchNetworkSheet}
-                />
-                <TopTokensBottomSheet ref={bottomSheetTopTokenRef} handleCloseBottomSheet={handleCloseTopTokenModal} />
-                <TokenListBottomSheet
-                    ref={bottomSheetTokenListRef}
-                    networkName={currentNetwork?.name!}
-                    handleCloseBottomSheet={handleCloseTokenListSheet}
-                    tokens={allTokens}
-                />
+                    <ChangeNetworkBottomSheet
+                        ref={bottomSheetSwitchNetworkRef}
+                        handleCloseBottomSheet={handleCloseSwitchNetworkSheet}
+                    />
+                    <TopTokensBottomSheet
+                        ref={bottomSheetTopTokenRef}
+                        handleCloseBottomSheet={handleCloseTopTokenModal}
+                    />
+                    <TokenListBottomSheet
+                        ref={bottomSheetTokenListRef}
+                        networkName={currentNetwork?.name!}
+                        handleCloseBottomSheet={handleCloseTokenListSheet}
+                        tokens={allTokens}
+                    />
+                </ThemedView>
             </SafeAreaView>
         </GestureHandlerRootView>
     );

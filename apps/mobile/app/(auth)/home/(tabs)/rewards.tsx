@@ -3,7 +3,10 @@ import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StyleSheet, Dim
 import { router } from "expo-router";
 import { Gift, Star, Check, Clock, Crown, Plus, Share } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Colors from "~/src/constants/Colors";
+import { BITRIEL_COLORS } from "~/src/constants/Colors";
+import { useAppTheme, useThemeColors } from "~/src/context/ThemeProvider";
+import { ThemedView } from "~/components/ThemedView";
+import { ThemedText } from "~/components/ThemedText";
 
 const { width } = Dimensions.get("window");
 
@@ -123,6 +126,8 @@ const mockAchievements: Achievement[] = [
 ];
 
 const RewardsScreen = () => {
+    const { isDark, getColor } = useAppTheme();
+    const colors = useThemeColors();
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [userPoints] = useState(1500);
     const [userTier] = useState("Gold");
@@ -131,11 +136,118 @@ const RewardsScreen = () => {
     const filteredRewards =
         selectedCategory === "All" ? mockRewards : mockRewards.filter(reward => reward.category === selectedCategory);
 
+    const dynamicStyles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: colors.background.secondary,
+        },
+        header: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            paddingVertical: 16,
+            backgroundColor: colors.background.primary,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border.primary,
+        },
+        tabContainer: {
+            flexDirection: "row",
+            backgroundColor: colors.background.primary,
+            marginHorizontal: 20,
+            borderRadius: 12,
+            padding: 4,
+            marginBottom: 20,
+        },
+        tab: {
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingVertical: 12,
+            borderRadius: 8,
+            gap: 6,
+        },
+        activeTab: {
+            backgroundColor: colors.background.secondary,
+        },
+        categoryChip: {
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            backgroundColor: colors.background.primary,
+            borderRadius: 20,
+            borderWidth: 1,
+            borderColor: colors.border.primary,
+        },
+        activeCategoryChip: {
+            backgroundColor: BITRIEL_COLORS.blue[500],
+            borderColor: BITRIEL_COLORS.blue[500],
+        },
+        rewardCard: {
+            width: (width - 56) / 2,
+            backgroundColor: colors.background.primary,
+            borderRadius: 16,
+            padding: 16,
+            marginBottom: 16,
+            shadowColor: colors.text.primary,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: isDark ? 0.3 : 0.1,
+            shadowRadius: 4,
+            elevation: 2,
+        },
+        rewardImagePlaceholder: {
+            width: 48,
+            height: 48,
+            backgroundColor: colors.background.secondary,
+            borderRadius: 24,
+            alignItems: "center",
+            justifyContent: "center",
+        },
+        redeemButton: {
+            backgroundColor: BITRIEL_COLORS.blue[500],
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+            borderRadius: 12,
+        },
+        achievementCard: {
+            backgroundColor: colors.background.primary,
+            borderRadius: 16,
+            padding: 20,
+            shadowColor: colors.text.primary,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: isDark ? 0.3 : 0.1,
+            shadowRadius: 4,
+            elevation: 2,
+        },
+        progressBar: {
+            flex: 1,
+            height: 8,
+            backgroundColor: colors.background.secondary,
+            borderRadius: 4,
+            overflow: "hidden",
+        },
+        progressFill: {
+            height: "100%",
+            backgroundColor: BITRIEL_COLORS.blue[500],
+            borderRadius: 4,
+        },
+        historyContainer: {
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 40,
+            paddingVertical: 60,
+        },
+    });
+
     const renderRewardCard = ({ item }: { item: RewardItem }) => (
-        <TouchableOpacity style={styles.rewardCard} onPress={() => router.push(`/rewards/details/${item.id}` as any)}>
+        <TouchableOpacity
+            style={dynamicStyles.rewardCard}
+            onPress={() => router.push(`/rewards/details/${item.id}` as any)}
+        >
             <View style={styles.rewardHeader}>
-                <View style={styles.rewardImagePlaceholder}>
-                    <Gift size={24} color={Colors.primary} />
+                <View style={dynamicStyles.rewardImagePlaceholder}>
+                    <Gift size={24} color={BITRIEL_COLORS.blue[500]} />
                 </View>
                 <View style={styles.rewardBadges}>
                     {item.isLimited && (
@@ -150,15 +262,21 @@ const RewardsScreen = () => {
                     )}
                 </View>
             </View>
-            <Text style={styles.rewardTitle}>{item.title}</Text>
-            <Text style={styles.rewardSubtitle}>{item.subtitle}</Text>
+            <ThemedText variant="primary" style={styles.rewardTitle}>
+                {item.title}
+            </ThemedText>
+            <ThemedText variant="secondary" style={styles.rewardSubtitle}>
+                {item.subtitle}
+            </ThemedText>
             <View style={styles.rewardFooter}>
                 <View style={styles.pointsContainer}>
                     <Star size={16} color="#FFD700" />
-                    <Text style={styles.pointsText}>{item.points} points</Text>
+                    <ThemedText variant="primary" style={styles.pointsText}>
+                        {item.points} points
+                    </ThemedText>
                 </View>
                 <TouchableOpacity
-                    style={[styles.redeemButton, { opacity: userPoints >= item.points ? 1 : 0.5 }]}
+                    style={[dynamicStyles.redeemButton, { opacity: userPoints >= item.points ? 1 : 0.5 }]}
                     disabled={userPoints < item.points}
                 >
                     <Text style={styles.redeemButtonText}>Redeem</Text>
@@ -168,7 +286,7 @@ const RewardsScreen = () => {
     );
 
     const renderAchievement = (achievement: Achievement) => (
-        <TouchableOpacity key={achievement.id} style={styles.achievementCard}>
+        <TouchableOpacity key={achievement.id} style={dynamicStyles.achievementCard}>
             <View style={styles.achievementHeader}>
                 {/* Achievement icon placeholder */}
                 {achievement.completed && (
@@ -177,20 +295,24 @@ const RewardsScreen = () => {
                     </View>
                 )}
             </View>
-            <Text style={styles.achievementTitle}>{achievement.title}</Text>
-            <Text style={styles.achievementDescription}>{achievement.description}</Text>
+            <ThemedText variant="primary" style={styles.achievementTitle}>
+                {achievement.title}
+            </ThemedText>
+            <ThemedText variant="secondary" style={styles.achievementDescription}>
+                {achievement.description}
+            </ThemedText>
             <View style={styles.progressContainer}>
-                <View style={styles.progressBar}>
+                <View style={dynamicStyles.progressBar}>
                     <View
                         style={[
-                            styles.progressFill,
+                            dynamicStyles.progressFill,
                             { width: `${(achievement.progress / achievement.maxProgress) * 100}%` },
                         ]}
                     />
                 </View>
-                <Text style={styles.progressText}>
+                <ThemedText variant="secondary" style={styles.progressText}>
                     {achievement.progress}/{achievement.maxProgress}
-                </Text>
+                </ThemedText>
             </View>
             <View style={styles.rewardInfo}>
                 <Star size={14} color="#FFD700" />
@@ -200,12 +322,14 @@ const RewardsScreen = () => {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={dynamicStyles.container}>
             {/* Header */}
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Rewards Center</Text>
+            <View style={dynamicStyles.header}>
+                <ThemedText variant="primary" style={styles.headerTitle}>
+                    Rewards Center
+                </ThemedText>
                 <TouchableOpacity onPress={() => router.push("/rewards/history" as any)}>
-                    <Clock size={24} color={Colors.primary} />
+                    <Clock size={24} color={BITRIEL_COLORS.blue[500]} />
                 </TouchableOpacity>
             </View>
 
@@ -256,7 +380,7 @@ const RewardsScreen = () => {
                 </View>
 
                 {/* Tab Navigation */}
-                <View style={styles.tabContainer}>
+                <View style={dynamicStyles.tabContainer}>
                     {[
                         { key: "rewards", label: "Rewards", icon: "solar:gift-bold-duotone" },
                         { key: "achievements", label: "Achievements", icon: "solar:medal-star-bold-duotone" },
@@ -264,21 +388,33 @@ const RewardsScreen = () => {
                     ].map(tab => (
                         <TouchableOpacity
                             key={tab.key}
-                            style={[styles.tab, currentTab === tab.key && styles.activeTab]}
+                            style={[dynamicStyles.tab, currentTab === tab.key && dynamicStyles.activeTab]}
                             onPress={() => setCurrentTab(tab.key as any)}
                         >
                             {tab.key === "rewards" && (
-                                <Gift size={20} color={currentTab === tab.key ? Colors.primary : "#8E8E93"} />
+                                <Gift
+                                    size={20}
+                                    color={currentTab === tab.key ? BITRIEL_COLORS.blue[500] : colors.text.tertiary}
+                                />
                             )}
                             {tab.key === "achievements" && (
-                                <Star size={20} color={currentTab === tab.key ? Colors.primary : "#8E8E93"} />
+                                <Star
+                                    size={20}
+                                    color={currentTab === tab.key ? BITRIEL_COLORS.blue[500] : colors.text.tertiary}
+                                />
                             )}
                             {tab.key === "history" && (
-                                <Clock size={20} color={currentTab === tab.key ? Colors.primary : "#8E8E93"} />
+                                <Clock
+                                    size={20}
+                                    color={currentTab === tab.key ? BITRIEL_COLORS.blue[500] : colors.text.tertiary}
+                                />
                             )}
-                            <Text style={[styles.tabText, currentTab === tab.key && styles.activeTabText]}>
+                            <ThemedText
+                                variant={currentTab === tab.key ? "accent" : "secondary"}
+                                style={[styles.tabText, currentTab === tab.key && styles.activeTabText]}
+                            >
                                 {tab.label}
-                            </Text>
+                            </ThemedText>
                         </TouchableOpacity>
                     ))}
                 </View>
@@ -297,19 +433,20 @@ const RewardsScreen = () => {
                                 <TouchableOpacity
                                     key={category}
                                     style={[
-                                        styles.categoryChip,
-                                        selectedCategory === category && styles.activeCategoryChip,
+                                        dynamicStyles.categoryChip,
+                                        selectedCategory === category && dynamicStyles.activeCategoryChip,
                                     ]}
                                     onPress={() => setSelectedCategory(category)}
                                 >
-                                    <Text
+                                    <ThemedText
+                                        variant={selectedCategory === category ? "inverse" : "secondary"}
                                         style={[
                                             styles.categoryChipText,
                                             selectedCategory === category && styles.activeCategoryChipText,
                                         ]}
                                     >
                                         {category}
-                                    </Text>
+                                    </ThemedText>
                                 </TouchableOpacity>
                             ))}
                         </ScrollView>
@@ -336,11 +473,13 @@ const RewardsScreen = () => {
                 )}
 
                 {currentTab === "history" && (
-                    <View style={styles.historyContainer}>
-                        <Text style={styles.emptyText}>No redemption history yet</Text>
-                        <Text style={styles.emptySubtext}>
+                    <View style={dynamicStyles.historyContainer}>
+                        <ThemedText variant="secondary" style={styles.emptyText}>
+                            No redemption history yet
+                        </ThemedText>
+                        <ThemedText variant="tertiary" style={styles.emptySubtext}>
                             Start earning and redeeming rewards to see your history here
-                        </Text>
+                        </ThemedText>
                     </View>
                 )}
             </ScrollView>
@@ -349,24 +488,9 @@ const RewardsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#F8F9FA",
-    },
-    header: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        backgroundColor: "white",
-        borderBottomWidth: 1,
-        borderBottomColor: "#E5E5E7",
-    },
     headerTitle: {
         fontSize: 24,
         fontWeight: "bold",
-        color: "#1C1C1E",
         fontFamily: "SpaceGrotesk-Bold",
     },
     scrollContent: {
@@ -452,33 +576,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#4ECDC4",
         borderRadius: 3,
     },
-    tabContainer: {
-        flexDirection: "row",
-        backgroundColor: "white",
-        marginHorizontal: 20,
-        borderRadius: 12,
-        padding: 4,
-        marginBottom: 20,
-    },
-    tab: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 12,
-        borderRadius: 8,
-        gap: 6,
-    },
-    activeTab: {
-        backgroundColor: "#F2F2F7",
-    },
     tabText: {
         fontSize: 14,
-        color: "#8E8E93",
         fontFamily: "SpaceGrotesk-Medium",
     },
     activeTabText: {
-        color: Colors.primary,
         fontFamily: "SpaceGrotesk-SemiBold",
     },
     categoryScroll: {
@@ -488,21 +590,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         gap: 12,
     },
-    categoryChip: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        backgroundColor: "white",
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: "#E5E5E7",
-    },
-    activeCategoryChip: {
-        backgroundColor: Colors.primary,
-        borderColor: Colors.primary,
-    },
     categoryChipText: {
         fontSize: 14,
-        color: "#8E8E93",
         fontFamily: "SpaceGrotesk-Medium",
     },
     activeCategoryChipText: {
@@ -515,26 +604,11 @@ const styles = StyleSheet.create({
     rewardRow: {
         justifyContent: "space-between",
     },
-    rewardCard: {
-        width: (width - 56) / 2,
-        backgroundColor: "white",
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 16,
-    },
     rewardHeader: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "flex-start",
         marginBottom: 12,
-    },
-    rewardImagePlaceholder: {
-        width: 48,
-        height: 48,
-        backgroundColor: "#F2F2F7",
-        borderRadius: 24,
-        alignItems: "center",
-        justifyContent: "center",
     },
     rewardBadges: {
         gap: 4,
@@ -566,13 +640,11 @@ const styles = StyleSheet.create({
     rewardTitle: {
         fontSize: 16,
         fontWeight: "bold",
-        color: "#1C1C1E",
         marginBottom: 4,
         fontFamily: "SpaceGrotesk-Bold",
     },
     rewardSubtitle: {
         fontSize: 12,
-        color: "#8E8E93",
         marginBottom: 12,
         fontFamily: "SpaceGrotesk-Regular",
     },
@@ -589,14 +661,7 @@ const styles = StyleSheet.create({
     pointsText: {
         fontSize: 12,
         fontWeight: "600",
-        color: "#1C1C1E",
         fontFamily: "SpaceGrotesk-SemiBold",
-    },
-    redeemButton: {
-        backgroundColor: Colors.primary,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 12,
     },
     redeemButtonText: {
         fontSize: 12,
@@ -607,11 +672,6 @@ const styles = StyleSheet.create({
     achievementsContainer: {
         paddingHorizontal: 20,
         gap: 16,
-    },
-    achievementCard: {
-        backgroundColor: "white",
-        borderRadius: 16,
-        padding: 20,
     },
     achievementHeader: {
         flexDirection: "row",
@@ -627,13 +687,11 @@ const styles = StyleSheet.create({
     achievementTitle: {
         fontSize: 18,
         fontWeight: "bold",
-        color: "#1C1C1E",
         marginBottom: 4,
         fontFamily: "SpaceGrotesk-Bold",
     },
     achievementDescription: {
         fontSize: 14,
-        color: "#8E8E93",
         marginBottom: 16,
         fontFamily: "SpaceGrotesk-Regular",
     },
@@ -643,22 +701,9 @@ const styles = StyleSheet.create({
         gap: 12,
         marginBottom: 12,
     },
-    progressBar: {
-        flex: 1,
-        height: 8,
-        backgroundColor: "#F2F2F7",
-        borderRadius: 4,
-        overflow: "hidden",
-    },
-    progressFill: {
-        height: "100%",
-        backgroundColor: Colors.primary,
-        borderRadius: 4,
-    },
     progressText: {
         fontSize: 12,
         fontWeight: "600",
-        color: "#8E8E93",
         fontFamily: "SpaceGrotesk-SemiBold",
     },
     rewardInfo: {
@@ -672,24 +717,15 @@ const styles = StyleSheet.create({
         color: "#FFD700",
         fontFamily: "SpaceGrotesk-SemiBold",
     },
-    historyContainer: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingHorizontal: 40,
-        paddingVertical: 60,
-    },
     emptyText: {
         fontSize: 18,
         fontWeight: "bold",
-        color: "#8E8E93",
         textAlign: "center",
         marginBottom: 8,
         fontFamily: "SpaceGrotesk-Bold",
     },
     emptySubtext: {
         fontSize: 14,
-        color: "#C7C7CC",
         textAlign: "center",
         lineHeight: 20,
         fontFamily: "SpaceGrotesk-Regular",

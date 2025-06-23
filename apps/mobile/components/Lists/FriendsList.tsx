@@ -23,7 +23,7 @@ const FriendsList: React.FC<Props> = ({ list }) => {
                 renderItem={({ item, index }) => (
                     <View>
                         {index === 0 ? (
-                            <AddNew key={item.fullName} onPress={() => {}} />
+                            <AddNew key={item.fullName} title="Add Friend" onPress={() => {}} />
                         ) : (
                             <TouchableOpacity
                                 key={item.id}

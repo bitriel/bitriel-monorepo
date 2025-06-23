@@ -45,10 +45,7 @@ export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children, 
                         finalBackgroundColor = StatusBarPresets.primary.backgroundColor;
                         finalBarStyle = StatusBarPresets.primary.barStyle;
                         break;
-                    case "gradient":
-                        finalBackgroundColor = StatusBarPresets.gradient.backgroundColor;
-                        finalBarStyle = StatusBarPresets.gradient.barStyle;
-                        break;
+
                     case "transparent":
                         finalBackgroundColor = StatusBarPresets.transparent.backgroundColor;
                         finalBarStyle = StatusBarPresets.transparent.barStyle;
@@ -147,7 +144,7 @@ export const useGlobalStatusBar = () => {
 
     const setDefault = useCallback(() => setStatusBarStyle("default"), [setStatusBarStyle]);
     const setPrimary = useCallback(() => setStatusBarStyle("primary"), [setStatusBarStyle]);
-    const setGradient = useCallback(() => setStatusBarStyle("gradient"), [setStatusBarStyle]);
+
     const setTransparent = useCallback(() => setStatusBarStyle("transparent"), [setStatusBarStyle]);
 
     const setCustom = useCallback(
@@ -163,7 +160,6 @@ export const useGlobalStatusBar = () => {
         isTransitioning,
         setDefault,
         setPrimary,
-        setGradient,
         setTransparent,
         setCustom,
         setStatusBarStyle,

@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack, router } from "expo-router";
-import Colors from "~/src/constants/Colors";
+import { BITRIEL_COLORS } from "~/src/constants/Colors";
 import { TouchableOpacity, Pressable } from "react-native";
 import { IconArrowLeft } from "@tabler/icons-react-native";
 
@@ -64,7 +64,7 @@ const AuthLayout = () => {
                                 }}
                                 style={{ marginLeft: 13 }}
                             >
-                                <IconArrowLeft size={34} color={Colors.secondary} />
+                                <IconArrowLeft size={34} color={BITRIEL_COLORS.gold[600]} />
                             </Pressable>
                         ) : undefined,
                     headerShown: true,
@@ -72,7 +72,7 @@ const AuthLayout = () => {
                     headerLargeTitle: true,
                     headerTransparent: true,
                     headerStyle: {
-                        backgroundColor: Colors.offWhite,
+                        backgroundColor: BITRIEL_COLORS.gold[50],
                     },
                 }}
             />

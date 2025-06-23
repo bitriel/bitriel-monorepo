@@ -1,21 +1,39 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import Colors from "~/src/constants/Colors";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
-interface Props {
+interface AddNewProps {
     onPress: () => void;
+    title: string;
 }
 
-const AddNew: React.FC<Props> = ({ onPress }) => {
+const AddNew: React.FC<AddNewProps> = ({ onPress, title }) => {
+    const { getColor } = useAppTheme();
+
     return (
-        <TouchableOpacity
-            className="bg-primary justify-center items-center w-12 h-12 rounded-3xl mx-1"
-            onPress={onPress}
-        >
-            <Feather name="plus" color={Colors.blackText} size={20} />
+        <TouchableOpacity style={[styles.container, { borderColor: getColor("border.primary") }]} onPress={onPress}>
+            <Feather name="plus" color={getColor("text.primary")} size={20} />
+            <Text style={[styles.text, { color: getColor("text.primary") }]}>{title}</Text>
         </TouchableOpacity>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        borderWidth: 2,
+        borderStyle: "dashed",
+        borderRadius: 12,
+        gap: 8,
+    },
+    text: {
+        fontSize: 16,
+        fontWeight: "600",
+    },
+});
 
 export default AddNew;

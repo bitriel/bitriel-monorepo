@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useMemo, forwardRef } from "react";
+import React, { useState, useCallback, useMemo, forwardRef, useImperativeHandle } from "react";
 import { View, Text, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { BottomSheetModal, BottomSheetView, BottomSheetScrollView, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { Shield, AlertTriangle, X, Eye } from "lucide-react-native";
 import { MultiWallet } from "~/src/store/multiWalletStore";
 import MnemonicBox from "~/components/Mnemonic/MnemonicBox";
-import Colors from "~/src/constants/Colors";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 interface WalletRecoverySheetProps {
     wallet: MultiWallet | null;
@@ -13,6 +13,7 @@ interface WalletRecoverySheetProps {
 
 const WalletRecoverySheet = forwardRef<BottomSheetModal, WalletRecoverySheetProps>(({ wallet, onClose }, ref) => {
     const [hasConfirmed, setHasConfirmed] = useState(false);
+    const { getColor } = useAppTheme();
 
     // Bottom sheet snap points
     const snapPoints = useMemo(() => ["85%"], []);
@@ -181,7 +182,7 @@ const WalletRecoverySheet = forwardRef<BottomSheetModal, WalletRecoverySheetProp
                                     {/* Reveal Button */}
                                     <TouchableOpacity
                                         style={{
-                                            backgroundColor: Colors.primary,
+                                            backgroundColor: getColor("primary.main"),
                                             borderRadius: 12,
                                             padding: 16,
                                             flexDirection: "row",

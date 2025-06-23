@@ -1,11 +1,13 @@
 import { MotiImage, MotiView } from "moti";
-import { Dimensions, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, TouchableOpacity, View } from "react-native";
 import { Easing } from "react-native-reanimated";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { QuickAction, IconType } from "~/src/types/quick.action.types";
 import { LinearGradient } from "expo-linear-gradient";
-import Colors from "~/src/constants/Colors";
 import React from "react";
+import { ThemedText } from "~/components/ThemedText";
+import { ThemedView } from "~/components/ThemedView";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 const { width } = Dimensions.get("screen");
 
@@ -108,6 +110,8 @@ const AnimatedBackground = React.memo(() => {
 });
 
 const ShimmerButton = ({ width }: { width: number }) => {
+    const { isDark } = useAppTheme();
+
     return (
         <View
             style={{
@@ -115,7 +119,7 @@ const ShimmerButton = ({ width }: { width: number }) => {
                 height: 100,
                 borderRadius: 12,
                 overflow: "hidden",
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(255, 255, 255, 0.1)",
             }}
         >
             <MotiView
@@ -138,7 +142,11 @@ const ShimmerButton = ({ width }: { width: number }) => {
                 }}
             >
                 <LinearGradient
-                    colors={["transparent", "rgba(255, 255, 255, 0.2)", "transparent"]}
+                    colors={
+                        isDark
+                            ? ["transparent", "rgba(255, 255, 255, 0.1)", "transparent"]
+                            : ["transparent", "rgba(255, 255, 255, 0.2)", "transparent"]
+                    }
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={{
@@ -159,6 +167,7 @@ export default function WalletBalanceCard({
     networkName,
 }: WalletBalanceCardProps) {
     const [isLoading, setIsLoading] = React.useState(true);
+    const { getColor, isDark } = useAppTheme();
 
     React.useEffect(() => {
         if (networkName) {
@@ -170,8 +179,10 @@ export default function WalletBalanceCard({
         }
     }, [networkName]);
 
+    const { _buttonWidth } = calculateButtonWidths(quickActions.length);
+
     return (
-        <View style={{ alignItems: "center", marginVertical: 10 }}>
+        <ThemedView variant="primary" style={{ alignItems: "center", marginVertical: 10 }}>
             <View
                 style={{
                     width: _width,
@@ -190,124 +201,91 @@ export default function WalletBalanceCard({
                             style={{ flexDirection: "row", alignItems: "center" }}
                             onPress={() => address && onCopyAddress?.(address)}
                         >
-                            <Text className="font-SpaceGroteskBold text-white text-base" numberOfLines={1}>
+                            <ThemedText
+                                style={{
+                                    fontFamily: "SpaceGrotesk-Bold",
+                                    color: "#FFFFFF",
+                                    fontSize: 16,
+                                }}
+                                numberOfLines={1}
+                            >
                                 {address ? truncateString(address, 9, 9) : "N/A"}
-                            </Text>
+                            </ThemedText>
                             <MaterialCommunityIcons
                                 name="content-copy"
                                 size={16}
-                                color={Colors.white}
+                                color="#FFFFFF"
                                 style={{ marginLeft: 5 }}
                             />
                         </TouchableOpacity>
-                        <View style={{ marginTop: _spacing }}>
-                            <Text className="font-SpaceGroteskRegular" style={{ color: "white", opacity: 0.7 }}>
-                                Total Balance
-                            </Text>
-                            <Text className="font-SpaceGroteskBold" style={{ color: "white", fontSize: 32 }}>
-                                {totalBalance}
-                            </Text>
-                        </View>
+
+                        <ThemedText
+                            style={{
+                                fontFamily: "SpaceGrotesk-Regular",
+                                color: "rgba(255, 255, 255, 0.8)",
+                                fontSize: 12,
+                                marginTop: 2,
+                            }}
+                        >
+                            Total Balance
+                        </ThemedText>
+                        <ThemedText
+                            style={{
+                                fontFamily: "SpaceGrotesk-Bold",
+                                color: "#FFFFFF",
+                                fontSize: 28,
+                                marginTop: 4,
+                            }}
+                        >
+                            {totalBalance}
+                        </ThemedText>
                     </View>
 
-                    {/* Quick Actions */}
-                    {isLoading ? (
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                gap: _spacing,
-                                justifyContent: "center",
-                                paddingHorizontal: quickActions.length === 4 ? _spacing : 0,
-                            }}
-                        >
-                            {quickActions.map((_, index) => {
-                                const { _buttonWidth } = calculateButtonWidths(quickActions.length);
-                                return <ShimmerButton key={`shimmer-${index}`} width={_buttonWidth} />;
-                            })}
-                        </View>
-                    ) : (
-                        <MotiView
-                            key={`quick-actions-${networkName}`}
-                            from={{ opacity: 0, translateY: 20 }}
-                            animate={{ opacity: 1, translateY: 0 }}
-                            transition={{
-                                opacity: {
-                                    type: "timing",
-                                    duration: 1000,
-                                    delay: 500,
-                                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-                                },
-                                translateY: {
-                                    type: "timing",
-                                    duration: 1000,
-                                    delay: 500,
-                                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-                                },
-                            }}
-                            style={{
-                                flexDirection: "row",
-                                gap: _spacing,
-                                justifyContent: "center",
-                                paddingHorizontal: quickActions.length === 4 ? _spacing : 0,
-                            }}
-                        >
-                            {quickActions.map((action, index) => {
-                                const { _buttonWidth } = calculateButtonWidths(quickActions.length);
-
-                                return (
-                                    <MotiView
-                                        key={`${action.label}-${networkName}`}
-                                        from={{ scale: 0.8, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        transition={{
-                                            scale: {
-                                                type: "spring",
-                                                delay: 800 + index * 100,
-                                                damping: 15,
-                                            },
-                                            opacity: {
-                                                type: "timing",
-                                                duration: 300,
-                                                delay: 800 + index * 100,
-                                            },
-                                        }}
-                                        style={{
-                                            width: _buttonWidth,
-                                        }}
-                                    >
-                                        <TouchableOpacity
-                                            onPress={action.onPress}
-                                            style={{
-                                                height: 100,
-                                                borderRadius: 12,
-                                                overflow: "hidden",
-                                            }}
-                                        >
-                                            <View
-                                                style={{
-                                                    flex: 1,
-                                                    padding: _spacing * 1.5,
-                                                    justifyContent: "space-between",
-                                                    backgroundColor: "rgba(255, 255, 255, 0.15)",
-                                                }}
-                                            >
-                                                <MaterialCommunityIcons
-                                                    name={getIconForType(action.icon)}
-                                                    size={30}
-                                                    color={Colors.white}
-                                                />
-                                                <Text className="font-SpaceGroteskBold text-base text-white">
-                                                    {action.label}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </MotiView>
-                                );
-                            })}
-                        </MotiView>
-                    )}
+                    {/* Bottom Section - Action Buttons */}
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            gap: _gapsBetweenButtons,
+                        }}
+                    >
+                        {isLoading
+                            ? quickActions.map((_, index) => <ShimmerButton key={index} width={_buttonWidth} />)
+                            : quickActions.map((action, index) => (
+                                  <TouchableOpacity
+                                      key={index}
+                                      onPress={action.onPress}
+                                      style={{
+                                          width: _buttonWidth,
+                                          height: 100,
+                                          backgroundColor: "rgba(255, 255, 255, 0.15)",
+                                          borderRadius: 12,
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          backdropFilter: "blur(10px)",
+                                      }}
+                                      activeOpacity={0.8}
+                                  >
+                                      <MaterialCommunityIcons
+                                          name={getIconForType(action.icon)}
+                                          size={32}
+                                          color="#FFFFFF"
+                                      />
+                                      <ThemedText
+                                          style={{
+                                              fontFamily: "SpaceGrotesk-Medium",
+                                              color: "#FFFFFF",
+                                              fontSize: 12,
+                                              marginTop: 8,
+                                          }}
+                                      >
+                                          {action.label}
+                                      </ThemedText>
+                                  </TouchableOpacity>
+                              ))}
+                    </View>
                 </View>
             </View>
-        </View>
+        </ThemedView>
     );
 }

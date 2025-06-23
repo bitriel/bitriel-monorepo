@@ -14,9 +14,8 @@ interface BalanceProps {
 }
 
 const Balance: React.FC<BalanceProps> = ({ onPress, balance }) => {
-    const backgroundColor = useThemeColor({}, "foreground");
-    const text = useThemeColor({}, "text");
-    const ripple = useThemeColor({}, "ripple");
+    const backgroundColor = useThemeColor("background.card");
+    const text = useThemeColor("text.primary");
     const scaleFont = useScaleFont();
 
     const formattedBalance = formatDetailedBalance(balance, "transferable");

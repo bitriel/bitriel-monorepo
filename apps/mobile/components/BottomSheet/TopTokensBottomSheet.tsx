@@ -1,10 +1,10 @@
 import React, { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { BottomSheetModal, BottomSheetBackdrop, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import Colors from "~/src/constants/Colors";
 import { BlurView } from "expo-blur";
 import TopCryptoListing from "~/app/(auth)/home/crypto";
 import { BackHandler } from "react-native";
 import { useFocusEffect } from "expo-router";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 interface BottomSheetProps {
     handleCloseBottomSheet: () => void;
@@ -15,6 +15,7 @@ type Ref = BottomSheetModal;
 const TopTokensBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp, ref) => {
     const snapPoints = useMemo(() => ["100%"], []);
     const [isShowing, setIsShowing] = useState<boolean>(false);
+    const { getColor, isDark } = useAppTheme();
 
     const renderBackdrop = useCallback(
         (props: any) => <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.5} />,
@@ -53,11 +54,16 @@ const TopTokensBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp,
             }}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
-            handleIndicatorStyle={{ marginTop: 50, backgroundColor: Colors.secondary }}
-            backgroundStyle={{ backgroundColor: "#ffffff99" }}
+            handleIndicatorStyle={{
+                marginTop: 50,
+                backgroundColor: getColor("border.primary"),
+            }}
+            backgroundStyle={{
+                backgroundColor: isDark ? "rgba(28, 28, 30, 0.6)" : "rgba(255, 255, 255, 0.6)",
+            }}
             backgroundComponent={({ style }) => (
                 <BlurView
-                    tint="light"
+                    tint={isDark ? "dark" : "light"}
                     experimentalBlurMethod="dimezisBlurView"
                     intensity={90}
                     style={[style, { borderRadius: 20, overflow: "hidden" }]}

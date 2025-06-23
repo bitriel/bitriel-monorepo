@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { StatusBar, Platform, AppState } from "react-native";
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { Platform, AppState } from "react-native";
 import { useColorScheme } from "react-native";
 import { useRouter, useSegments, usePathname } from "expo-router";
 import { StatusBarConfig, StatusBarStyle } from "../hooks/useStatusBar";
 import Colors, { StatusBarPresets } from "../constants/Colors";
+import { updateStatusBar, type StatusBarState } from "../utils/statusBarUtils";
 
 interface NavigationStatusBarContextType {
     currentStyle: StatusBarStyle;
@@ -32,12 +33,12 @@ const DEFAULT_ROUTE_CONFIGS: Record<string, RouteStatusBarConfig> = {
     "/(auth)/home/(tabs)/wallet": { style: "default" },
     "/(auth)/home/(tabs)/services": { style: "default" },
     "/(auth)/home/(tabs)/rewards": { style: "default" },
-    "/(auth)/home/(tabs)/profile": { style: "gradient" },
+    "/(auth)/home/(tabs)/profile": { style: "default" },
 
-    // Service routes (special backgrounds)
-    "/(auth)/home/services/stadiumx": { style: "gradient" },
-    "/(auth)/home/services/marketplace": { style: "gradient" },
-    "/(auth)/home/services/defi": { style: "gradient" },
+    // Service routes
+    "/(auth)/home/services/stadiumx": { style: "primary" },
+    "/(auth)/home/services/marketplace": { style: "primary" },
+    "/(auth)/home/services/defi": { style: "primary" },
 
     // Settings and profile routes
     "/(auth)/home/settings": { style: "default" },
@@ -77,7 +78,17 @@ export const NavigationStatusBarProvider: React.FC<NavigationStatusBarProviderPr
         config?: Partial<StatusBarConfig>;
     } | null>(null);
 
-    // Apply status bar configuration
+    // Memoize preset configurations for performance
+    const presetConfigs = useMemo(
+        () => ({
+            default: StatusBarPresets.default(isDark),
+            primary: StatusBarPresets.primary,
+            transparent: StatusBarPresets.transparent,
+        }),
+        [isDark]
+    );
+
+    // Apply status bar configuration with optimized performance
     const applyStatusBarConfig = useCallback(
         (style: StatusBarStyle, config: Partial<StatusBarConfig> = {}) => {
             setIsTransitioning(true);
@@ -85,56 +96,34 @@ export const NavigationStatusBarProvider: React.FC<NavigationStatusBarProviderPr
             let finalBackgroundColor: string;
             let finalBarStyle: "default" | "light-content" | "dark-content";
 
-            // Determine configuration based on style and custom config
+            // Use memoized presets for better performance
             if (config.backgroundColor && config.barStyle) {
                 finalBackgroundColor = config.backgroundColor;
                 finalBarStyle = config.barStyle;
             } else {
-                switch (style) {
-                    case "primary":
-                        finalBackgroundColor = StatusBarPresets.primary.backgroundColor;
-                        finalBarStyle = StatusBarPresets.primary.barStyle;
-                        break;
-                    case "gradient":
-                        finalBackgroundColor = StatusBarPresets.gradient.backgroundColor;
-                        finalBarStyle = StatusBarPresets.gradient.barStyle;
-                        break;
-                    case "transparent":
-                        finalBackgroundColor = StatusBarPresets.transparent.backgroundColor;
-                        finalBarStyle = StatusBarPresets.transparent.barStyle;
-                        break;
-                    case "default":
-                    default:
-                        const defaultPreset = StatusBarPresets.default(isDark);
-                        finalBackgroundColor = defaultPreset.backgroundColor;
-                        finalBarStyle = defaultPreset.barStyle;
-                        break;
-                }
+                const preset = presetConfigs[style as keyof typeof presetConfigs] || presetConfigs.default;
+                finalBackgroundColor = preset.backgroundColor;
+                finalBarStyle = preset.barStyle;
             }
 
-            // Apply with smooth animation
+            // Use optimized status bar utility for better performance
             const animated = config.animated !== false;
+            const animationDuration = animated ? 250 : 0;
 
-            if (Platform.OS === "ios") {
-                StatusBar.setBarStyle(finalBarStyle, animated);
-                if (config.hidden !== undefined) {
-                    StatusBar.setHidden(config.hidden, animated ? "slide" : "none");
-                }
-            } else {
-                StatusBar.setBarStyle(finalBarStyle, animated);
-                StatusBar.setBackgroundColor(finalBackgroundColor, animated);
-                if (config.hidden !== undefined) {
-                    StatusBar.setHidden(config.hidden, animated ? "slide" : "none");
-                }
-                if (config.translucent !== undefined) {
-                    StatusBar.setTranslucent(config.translucent);
-                }
-            }
+            const statusBarState: StatusBarState = {
+                backgroundColor: finalBackgroundColor,
+                barStyle: finalBarStyle,
+                hidden: config.hidden,
+                translucent: config.translucent,
+            };
 
-            // Reset transition state after animation
-            setTimeout(() => setIsTransitioning(false), animated ? 300 : 0);
+            // Apply updates only if needed (utility handles caching)
+            const wasUpdated = updateStatusBar(statusBarState, animated);
+
+            // Reset transition state - faster if no update was needed
+            setTimeout(() => setIsTransitioning(false), wasUpdated ? animationDuration : 0);
         },
-        [isDark]
+        [presetConfigs]
     );
 
     // Find the best matching route configuration
@@ -155,7 +144,7 @@ export const NavigationStatusBarProvider: React.FC<NavigationStatusBarProviderPr
 
             // Special pattern matching
             if (route.includes("/services/")) {
-                return { style: "gradient" };
+                return { style: "primary" };
             }
             if (route.includes("/settings/")) {
                 return { style: "default" };
@@ -216,14 +205,18 @@ export const NavigationStatusBarProvider: React.FC<NavigationStatusBarProviderPr
         }
     }, [pathname, temporaryConfig, findRouteConfig, applyStatusBarConfig]);
 
-    // Apply configuration on theme change
+    // Apply configuration on theme change with debouncing for performance
     useEffect(() => {
-        if (temporaryConfig) {
-            applyStatusBarConfig(temporaryConfig.style, temporaryConfig.config);
-        } else {
-            const routeConfig = findRouteConfig(currentRoute);
-            applyStatusBarConfig(routeConfig.style, routeConfig.config);
-        }
+        const timeoutId = setTimeout(() => {
+            if (temporaryConfig) {
+                applyStatusBarConfig(temporaryConfig.style, temporaryConfig.config);
+            } else {
+                const routeConfig = findRouteConfig(currentRoute);
+                applyStatusBarConfig(routeConfig.style, routeConfig.config);
+            }
+        }, 50); // Small debounce to prevent rapid changes
+
+        return () => clearTimeout(timeoutId);
     }, [isDark, temporaryConfig, currentRoute, findRouteConfig, applyStatusBarConfig]);
 
     // Handle app state changes
@@ -280,7 +273,6 @@ export const useSmartStatusBar = () => {
 
     const setDefault = useCallback(() => setTemporaryStatusBar("default"), [setTemporaryStatusBar]);
     const setPrimary = useCallback(() => setTemporaryStatusBar("primary"), [setTemporaryStatusBar]);
-    const setGradient = useCallback(() => setTemporaryStatusBar("gradient"), [setTemporaryStatusBar]);
     const setTransparent = useCallback(() => setTemporaryStatusBar("transparent"), [setTemporaryStatusBar]);
 
     const setCustom = useCallback(
@@ -324,7 +316,6 @@ export const useSmartStatusBar = () => {
         // Temporary overrides (will be cleared on route change)
         setDefault,
         setPrimary,
-        setGradient,
         setTransparent,
         setCustom,
         setAutoContrast,

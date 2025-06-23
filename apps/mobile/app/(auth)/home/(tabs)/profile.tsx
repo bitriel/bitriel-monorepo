@@ -27,7 +27,8 @@ import {
     Edit3,
 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Colors from "~/src/constants/Colors";
+import { BITRIEL_COLORS, getThemeColor, LIGHT_THEME, DARK_THEME } from "~/src/constants/Colors";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 import { useAuth } from "~/lib/hooks/useAuth";
 import { ExpoSecureStoreAdapter } from "~/src/store/localStorage";
 import { useWalletDataListStore } from "~/src/store/walletDataStore";
@@ -50,6 +51,7 @@ interface ProfileMenuItem {
 const ProfileScreen = () => {
     const { signOut } = useAuth();
     const { user } = useAuth();
+    const { isDark } = useAppTheme();
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [biometricEnabled, setBiometricEnabled] = useState(true);
@@ -300,7 +302,16 @@ const ProfileScreen = () => {
 
     const renderProfileHeader = () => (
         <View style={styles.profileHeader}>
-            <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.profileGradient}>
+            <LinearGradient
+                colors={
+                    isDark
+                        ? [BITRIEL_COLORS.blue[600], BITRIEL_COLORS.gold[600], BITRIEL_COLORS.neutral[700]]
+                        : [BITRIEL_COLORS.blue[500], BITRIEL_COLORS.gold[500], BITRIEL_COLORS.blue[600]]
+                }
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.profileGradient}
+            >
                 <View style={styles.profileInfo}>
                     <View style={styles.avatarContainer}>
                         {user?.profile ? (
@@ -353,59 +364,110 @@ const ProfileScreen = () => {
         </View>
     );
 
-    const renderMenuItem = (item: ProfileMenuItem) => (
-        <TouchableOpacity
-            key={item.id}
-            style={styles.menuItem}
-            onPress={item.action || (() => item.route && router.push(item.route as any))}
-        >
-            <View style={styles.menuItemLeft}>
-                <View style={styles.menuIcon}>
-                    <item.icon size={20} color={Colors.primary} />
-                </View>
-                <View style={styles.menuContent}>
-                    <View style={styles.menuTitleRow}>
-                        <Text style={styles.menuTitle}>{item.title}</Text>
-                        {item.isNew && (
-                            <View style={styles.newBadge}>
-                                <Text style={styles.newBadgeText}>NEW</Text>
-                            </View>
+    const renderMenuItem = React.useCallback(
+        (item: ProfileMenuItem) => (
+            <TouchableOpacity
+                key={item.id}
+                style={styles.menuItem}
+                onPress={item.action || (() => item.route && router.push(item.route as any))}
+            >
+                <View style={styles.menuItemLeft}>
+                    <View style={styles.menuIcon}>
+                        <item.icon size={20} color={isDark ? BITRIEL_COLORS.blue[400] : BITRIEL_COLORS.blue[600]} />
+                    </View>
+                    <View style={styles.menuContent}>
+                        <View style={styles.menuTitleRow}>
+                            <Text
+                                style={[
+                                    styles.menuTitle,
+                                    { color: isDark ? DARK_THEME.text.primary : LIGHT_THEME.text.primary },
+                                ]}
+                            >
+                                {item.title}
+                            </Text>
+                            {item.isNew && (
+                                <View style={styles.newBadge}>
+                                    <Text style={styles.newBadgeText}>NEW</Text>
+                                </View>
+                            )}
+                        </View>
+                        {item.subtitle && (
+                            <Text
+                                style={[
+                                    styles.menuSubtitle,
+                                    { color: isDark ? DARK_THEME.text.secondary : LIGHT_THEME.text.secondary },
+                                ]}
+                            >
+                                {item.subtitle}
+                            </Text>
                         )}
                     </View>
-                    {item.subtitle && <Text style={styles.menuSubtitle}>{item.subtitle}</Text>}
                 </View>
-            </View>
-            <View style={styles.menuItemRight}>
-                {item.hasSwitch ? (
-                    <Switch
-                        value={item.switchValue}
-                        onValueChange={item.onSwitchChange}
-                        trackColor={{ false: "#E5E5E7", true: Colors.primary }}
-                        thumbColor="#FFFFFF"
-                    />
-                ) : item.showChevron ? (
-                    <ChevronRight size={18} color="#8E8E93" />
-                ) : null}
-            </View>
-        </TouchableOpacity>
+                <View style={styles.menuItemRight}>
+                    {item.hasSwitch ? (
+                        <Switch
+                            value={item.switchValue}
+                            onValueChange={item.onSwitchChange}
+                            trackColor={{ false: "#E5E5E7", true: BITRIEL_COLORS.blue[500] }}
+                            thumbColor="#FFFFFF"
+                        />
+                    ) : item.showChevron ? (
+                        <ChevronRight size={18} color="#8E8E93" />
+                    ) : null}
+                </View>
+            </TouchableOpacity>
+        ),
+        [isDark]
     );
 
-    const renderMenuSection = (title: string, items: ProfileMenuItem[], isDangerous = false) => (
-        <View style={styles.menuSection}>
-            <Text style={styles.sectionTitle}>{title}</Text>
-            <View style={[styles.menuContainer, isDangerous && styles.dangerousSection]}>
-                {items.map((item, index) => (
-                    <View key={item.id}>
-                        {renderMenuItem(item)}
-                        {index < items.length - 1 && <View style={styles.menuDivider} />}
-                    </View>
-                ))}
+    const renderMenuSection = React.useCallback(
+        (title: string, items: ProfileMenuItem[], isDangerous = false) => (
+            <View style={styles.menuSection}>
+                <Text
+                    style={[
+                        styles.sectionTitle,
+                        { color: isDark ? DARK_THEME.text.primary : LIGHT_THEME.text.primary },
+                    ]}
+                >
+                    {title}
+                </Text>
+                <View
+                    style={[
+                        styles.menuContainer,
+                        { backgroundColor: isDark ? DARK_THEME.surface.primary : LIGHT_THEME.surface.primary },
+                        isDangerous && styles.dangerousSection,
+                    ]}
+                >
+                    {items.map((item, index) => (
+                        <View key={item.id}>
+                            {renderMenuItem(item)}
+                            {index < items.length - 1 && (
+                                <View
+                                    style={[
+                                        styles.menuDivider,
+                                        {
+                                            backgroundColor: isDark
+                                                ? DARK_THEME.border.secondary
+                                                : LIGHT_THEME.border.secondary,
+                                        },
+                                    ]}
+                                />
+                            )}
+                        </View>
+                    ))}
+                </View>
             </View>
-        </View>
+        ),
+        [isDark, renderMenuItem]
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView
+            style={[
+                styles.container,
+                { backgroundColor: isDark ? DARK_THEME.background.primary : LIGHT_THEME.background.primary },
+            ]}
+        >
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                 {renderProfileHeader()}
 
@@ -417,8 +479,20 @@ const ProfileScreen = () => {
 
                 {/* Dangerous Actions */}
                 <View style={styles.menuSection}>
-                    <Text style={styles.sectionTitle}>Account Actions</Text>
-                    <View style={styles.menuContainer}>
+                    <Text
+                        style={[
+                            styles.sectionTitle,
+                            { color: isDark ? DARK_THEME.text.primary : LIGHT_THEME.text.primary },
+                        ]}
+                    >
+                        Account Actions
+                    </Text>
+                    <View
+                        style={[
+                            styles.menuContainer,
+                            { backgroundColor: isDark ? DARK_THEME.surface.primary : LIGHT_THEME.surface.primary },
+                        ]}
+                    >
                         <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
                             <View style={styles.menuItemLeft}>
                                 <View style={[styles.menuIcon, styles.dangerousIcon]}>
@@ -429,7 +503,16 @@ const ProfileScreen = () => {
                             <ChevronRight size={18} color="#FF3B30" />
                         </TouchableOpacity>
 
-                        <View style={styles.menuDivider} />
+                        <View
+                            style={[
+                                styles.menuDivider,
+                                {
+                                    backgroundColor: isDark
+                                        ? DARK_THEME.border.secondary
+                                        : LIGHT_THEME.border.secondary,
+                                },
+                            ]}
+                        />
 
                         <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAccount}>
                             <View style={styles.menuItemLeft}>
@@ -458,7 +541,6 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F8F9FA",
     },
     scrollContent: {
         paddingBottom: 40,
@@ -501,7 +583,7 @@ const styles = StyleSheet.create({
         width: 28,
         height: 28,
         borderRadius: 14,
-        backgroundColor: Colors.primary,
+        backgroundColor: BITRIEL_COLORS.blue[500],
         justifyContent: "center",
         alignItems: "center",
         borderWidth: 2,
@@ -575,12 +657,12 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 18,
         fontWeight: "600",
-        color: "#1A1A1A",
+        // color: dynamic - set inline based on theme
         marginBottom: 12,
         paddingHorizontal: 20,
     },
     menuContainer: {
-        backgroundColor: "white",
+        backgroundColor: "#FFFFFF", // Default background color to fix shadow efficiency warning
         marginHorizontal: 20,
         borderRadius: 16,
         shadowColor: "#000",
@@ -627,7 +709,7 @@ const styles = StyleSheet.create({
     menuTitle: {
         fontSize: 16,
         fontWeight: "500",
-        color: "#1A1A1A",
+        // color: dynamic - set inline based on theme
         marginRight: 8,
     },
     dangerousText: {
@@ -635,7 +717,7 @@ const styles = StyleSheet.create({
     },
     menuSubtitle: {
         fontSize: 14,
-        color: "#8E8E93",
+        // color: dynamic - set inline based on theme
         marginTop: 2,
     },
     menuItemRight: {
@@ -643,7 +725,7 @@ const styles = StyleSheet.create({
     },
     menuDivider: {
         height: 1,
-        backgroundColor: "#F2F2F7",
+        // backgroundColor: dynamic - set inline based on theme
         marginLeft: 68,
     },
     newBadge: {

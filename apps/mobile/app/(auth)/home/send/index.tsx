@@ -23,9 +23,9 @@ export default function TransferScreen() {
     const { displayValue, appendDigit, addDecimalPoint, replaceDigit, deleteDigit, clearAll, replaceFullNumber } =
         useNumber();
 
-    const text = useThemeColor({}, "text");
-    const bg = useThemeColor({}, "background");
-    const ripple = useThemeColor({}, "ripple");
+    const text = useThemeColor("text.primary");
+    const bg = useThemeColor("background.primary");
+    const ripple = useThemeColor("interactive.ripple");
 
     const buttonAnimatedStyle = useAnimatedStyle(() => {
         return {

@@ -1,10 +1,10 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { StatusBar, Platform } from "react-native";
 import { useColorScheme } from "react-native";
-import Colors, { StatusBarPresets } from "../constants/Colors";
+import { THEMES, StatusBarPresets } from "../constants/Colors";
 import { useFocusEffect } from "@react-navigation/native";
 
-export type StatusBarStyle = "default" | "primary" | "gradient" | "transparent" | "custom";
+export type StatusBarStyle = "default" | "primary" | "transparent" | "custom";
 
 export interface StatusBarConfig {
     style?: StatusBarStyle;
@@ -44,10 +44,7 @@ export const useStatusBar = (config: StatusBarConfig = {}) => {
                     finalBackgroundColor = StatusBarPresets.primary.backgroundColor;
                     finalBarStyle = StatusBarPresets.primary.barStyle;
                     break;
-                case "gradient":
-                    finalBackgroundColor = StatusBarPresets.gradient.backgroundColor;
-                    finalBarStyle = StatusBarPresets.gradient.barStyle;
-                    break;
+
                 case "transparent":
                     finalBackgroundColor = StatusBarPresets.transparent.backgroundColor;
                     finalBarStyle = StatusBarPresets.transparent.barStyle;
@@ -96,9 +93,20 @@ export const useStatusBarColors = () => {
 
     return {
         isDark,
-        colors: isDark ? Colors.dark : Colors.light,
-        statusBarBackground: isDark ? Colors.dark.statusBarBackground : Colors.light.statusBarBackground,
-        statusBarContent: isDark ? Colors.dark.statusBarContent : Colors.light.statusBarContent,
+        colors: isDark ? THEMES.dark : THEMES.light,
+        statusBarBackground: isDark ? THEMES.dark.statusBar.background : THEMES.light.statusBar.background,
+        statusBarContent: isDark ? THEMES.dark.statusBar.content : THEMES.light.statusBar.content,
+        presets: StatusBarPresets,
+    };
+};
+
+// Add this function to get the correct theme data:
+const getThemeInfo = (isDark: boolean) => {
+    const theme = isDark ? THEMES.dark : THEMES.light;
+    return {
+        colors: theme,
+        statusBarBackground: theme.statusBar.background,
+        statusBarContent: theme.statusBar.content,
         presets: StatusBarPresets,
     };
 };

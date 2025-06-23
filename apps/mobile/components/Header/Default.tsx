@@ -1,10 +1,13 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import getHeaderContainerStyle from "./getHeaderContainerStyle";
-import Colors from "~/src/constants/Colors";
 import { router } from "expo-router";
 import { IconSettings, IconChevronDown, IconQrcode } from "@tabler/icons-react-native";
 import { Image } from "expo-image";
+import { ThemedView } from "~/components/ThemedView";
+import { ThemedText } from "~/components/ThemedText";
+import { useAppTheme } from "~/src/context/ThemeProvider";
+
 interface Props {
     nomargin?: boolean | undefined;
     handleOpenBottomSheet: () => void;
@@ -21,54 +24,78 @@ const MainHeader: React.FC<Props> = ({
     selectedNetworkImage,
     networkChainName,
     networkChainImage,
-}) => (
-    <View
-        style={[
-            {
-                height: 50,
-                width: "100%",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                paddingHorizontal: 13,
-            },
-            getHeaderContainerStyle(nomargin),
-        ]}
-    >
-        <TouchableOpacity onPress={() => router.push({ pathname: "/(auth)/home/settings" })}>
-            <IconSettings size={28} color={Colors.secondary} />
-        </TouchableOpacity>
+}) => {
+    const { getColor } = useAppTheme();
+    const iconColor = getColor("text.secondary");
+    const textColor = getColor("text.primary");
+    const borderColor = getColor("border.accent");
 
-        <TouchableOpacity
-            onPress={() => {
-                handleOpenBottomSheet();
-            }}
+    return (
+        <ThemedView
+            variant="primary"
+            style={[
+                {
+                    height: 50,
+                    width: "100%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 13,
+                },
+                getHeaderContainerStyle(nomargin),
+            ]}
         >
-            <View className="flex-1 flex-row items-center border-primary border-2 px-2 m-2 rounded-full">
-                {networkChainImage && ( // Display network image if available
-                    <Image
-                        source={{ uri: selectedNetworkImage || networkChainImage }}
-                        contentFit="contain"
-                        style={{ width: 20, height: 20 }}
-                    />
-                )}
+            <TouchableOpacity onPress={() => router.push({ pathname: "/(auth)/home/settings" })}>
+                <IconSettings size={28} color={iconColor} />
+            </TouchableOpacity>
 
-                <Text className="font-SpaceGroteskSemiBold p-1 text-sm text-blackText">
-                    {selectedNetworkLabel || networkChainName}
-                </Text>
+            <TouchableOpacity
+                onPress={() => {
+                    handleOpenBottomSheet();
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderWidth: 2,
+                        borderColor: borderColor,
+                        paddingHorizontal: 8,
+                        margin: 8,
+                        borderRadius: 20,
+                        paddingVertical: 4,
+                    }}
+                >
+                    {networkChainImage && ( // Display network image if available
+                        <Image
+                            source={{ uri: selectedNetworkImage || networkChainImage }}
+                            contentFit="contain"
+                            style={{ width: 20, height: 20 }}
+                        />
+                    )}
 
-                <IconChevronDown color={Colors.blackText} size={18} />
-            </View>
-        </TouchableOpacity>
+                    <ThemedText
+                        variant="primary"
+                        style={{
+                            fontFamily: "SpaceGrotesk-SemiBold",
+                            padding: 4,
+                            fontSize: 14,
+                        }}
+                    >
+                        {selectedNetworkLabel || networkChainName}
+                    </ThemedText>
 
-        <>
+                    <IconChevronDown color={textColor} size={18} />
+                </View>
+            </TouchableOpacity>
+
             <TouchableOpacity
                 onPress={() => router.push({ pathname: "/(auth)/home/qrScanner", params: { from: "home" } })}
             >
-                <IconQrcode size={28} color={Colors.secondary} />
+                <IconQrcode size={28} color={iconColor} />
             </TouchableOpacity>
-        </>
-    </View>
-);
+        </ThemedView>
+    );
+};
 
 export default MainHeader;

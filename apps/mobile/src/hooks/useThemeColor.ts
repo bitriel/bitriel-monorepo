@@ -1,12 +1,12 @@
 /**
  * Enhanced Theme Color Hook for Bitriel Mobile App
  * Supports the new comprehensive theme system with semantic color tokens
- * Compatible with both legacy Colors and new THEMES structure
+ * Compatible with the new THEMES structure
  */
 
 import { useColorScheme } from "react-native";
 import { useContext } from "react";
-import Colors, { THEMES, type ThemeMode } from "../constants/Colors";
+import { THEMES, type ThemeMode, type Theme } from "../constants/Colors";
 
 // Import the theme context - we'll need to make this accessible
 let ThemeContext: React.Context<any> | null = null;
@@ -16,7 +16,7 @@ export function _setThemeContext(context: React.Context<any>) {
     ThemeContext = context;
 }
 
-// Type definitions for theme color paths
+// Type definitions for theme color paths - updated to match actual theme structure
 type ThemeColorPath =
     | "text.primary"
     | "text.secondary"
@@ -32,6 +32,12 @@ type ThemeColorPath =
     | "background.overlay"
     | "background.card"
     | "background.surface"
+    | "surface.primary"
+    | "surface.secondary"
+    | "surface.tertiary"
+    | "surface.elevated"
+    | "surface.brand"
+    | "surface.accent"
     | "border.primary"
     | "border.secondary"
     | "border.accent"
@@ -41,27 +47,36 @@ type ThemeColorPath =
     | "interactive.hover"
     | "interactive.pressed"
     | "interactive.focus"
+    | "interactive.disabled"
+    | "primary.main"
+    | "primary.light"
+    | "primary.dark"
+    | "primary.surface"
+    | "secondary.main"
+    | "secondary.light"
+    | "secondary.dark"
+    | "secondary.surface"
+    | "status.success"
+    | "status.warning"
+    | "status.error"
+    | "status.info"
     | "statusBar.background"
-    | "statusBar.content"
-    | "shadow.color";
-
-// Legacy color names for backward compatibility
-type LegacyColorName = keyof typeof Colors.light & keyof typeof Colors.dark;
+    | "statusBar.content";
 
 /**
- * Enhanced hook to get theme-aware colors using semantic tokens
+ * Modern hook to get theme-aware colors using semantic tokens
  * Now uses the theme context instead of system useColorScheme
  * @param colorPath - Semantic color path (e.g., "text.primary", "background.card")
  * @param overrides - Optional light/dark color overrides
  * @returns The appropriate color for the current theme
  */
-export function useSemanticColor(colorPath: ThemeColorPath, overrides?: { light?: string; dark?: string }): string {
+export function useThemeColor(colorPath: ThemeColorPath, overrides?: { light?: string; dark?: string }): string {
     // Always call hooks in the same order
     const systemColorScheme = useColorScheme();
     const themeContext = ThemeContext ? useContext(ThemeContext) : null;
 
     // Determine which theme to use
-    let theme;
+    let theme: any; // Use any to avoid strict typing issues between light/dark themes
     let colorScheme: ThemeMode = "light";
 
     if (themeContext) {
@@ -92,36 +107,17 @@ export function useSemanticColor(colorPath: ThemeColorPath, overrides?: { light?
     }
 
     // Fallback to a default color if path is invalid
-    console.warn(`Invalid color path: ${colorPath}`);
+    console.warn(`Invalid color path: ${colorPath}. Available paths in theme:`, Object.keys(theme));
     return colorScheme === "dark" ? "#FFFFFF" : "#000000";
 }
 
 /**
- * Legacy useThemeColor function for backward compatibility
- * @deprecated Use useSemanticColor with semantic color paths instead
+ * Alias for useThemeColor for backward compatibility
+ * @param colorPath - Semantic color path (e.g., "text.primary", "background.card")
+ * @param overrides - Optional light/dark color overrides
+ * @returns The appropriate color for the current theme
  */
-export function useThemeColor(props: { light?: string; dark?: string }, colorName: LegacyColorName) {
-    // Always call hooks in the same order
-    const systemColorScheme = useColorScheme();
-    const themeContext = ThemeContext ? useContext(ThemeContext) : null;
-
-    // Determine color scheme
-    let colorScheme: ThemeMode;
-
-    if (themeContext) {
-        colorScheme = themeContext.mode;
-    } else {
-        colorScheme = systemColorScheme ?? "light";
-    }
-
-    const colorFromProps = props[colorScheme];
-
-    if (colorFromProps) {
-        return colorFromProps;
-    } else {
-        return Colors[colorScheme][colorName];
-    }
-}
+export const useSemanticColor = useThemeColor;
 
 /**
  * Hook to get the current theme object
@@ -156,7 +152,8 @@ export function useTheme() {
  * @returns Brand colors object
  */
 export function useBrandColors() {
-    return THEMES.light.brand;
+    const { BITRIEL_COLORS } = require("../constants/Colors");
+    return BITRIEL_COLORS;
 }
 
 /**
@@ -188,12 +185,12 @@ export function useAdaptiveColor(lightColor: string, darkColor: string): string 
  * @param fallback - Fallback color path if primary doesn't exist
  * @returns Color value
  */
-export function useSemanticColorWithFallback(primary: ThemeColorPath, fallback?: ThemeColorPath): string {
+export function useThemeColorWithFallback(primary: ThemeColorPath, fallback?: ThemeColorPath): string {
     try {
-        return useSemanticColor(primary);
+        return useThemeColor(primary);
     } catch {
         if (fallback) {
-            return useSemanticColor(fallback);
+            return useThemeColor(fallback);
         }
 
         // Always call hooks in the same order
@@ -212,6 +209,11 @@ export function useSemanticColorWithFallback(primary: ThemeColorPath, fallback?:
     }
 }
 
+/**
+ * Alias for useThemeColorWithFallback for backward compatibility
+ */
+export const useSemanticColorWithFallback = useThemeColorWithFallback;
+
 // Helper function to create style objects with theme colors
 export function createThemedStyles<T extends Record<string, any>>(
     styleCreator: (theme: ReturnType<typeof useTheme>) => T
@@ -220,4 +222,33 @@ export function createThemedStyles<T extends Record<string, any>>(
         const theme = useTheme();
         return styleCreator(theme);
     };
+}
+
+/**
+ * Legacy hook for components that haven't been migrated yet
+ * @deprecated Use useThemeColor with semantic color paths instead
+ */
+export function useLegacyThemeColor(props: { light?: string; dark?: string }, colorName: string) {
+    // Always call hooks in the same order
+    const systemColorScheme = useColorScheme();
+    const themeContext = ThemeContext ? useContext(ThemeContext) : null;
+
+    // Determine color scheme
+    let colorScheme: ThemeMode;
+
+    if (themeContext) {
+        colorScheme = themeContext.mode;
+    } else {
+        colorScheme = systemColorScheme ?? "light";
+    }
+
+    const colorFromProps = props[colorScheme];
+
+    if (colorFromProps) {
+        return colorFromProps;
+    } else {
+        // Fallback to basic colors
+        const Colors = require("../constants/Colors").default;
+        return Colors[colorName] || (colorScheme === "dark" ? "#FFFFFF" : "#000000");
+    }
 }

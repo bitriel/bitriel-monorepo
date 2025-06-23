@@ -5,12 +5,14 @@ import {
     BottomSheetFlatList,
     BottomSheetFlatListMethods,
 } from "@gorhom/bottom-sheet";
-import Colors from "~/src/constants/Colors";
-import { Text, View, TouchableOpacity, BackHandler } from "react-native";
+import { TouchableOpacity, BackHandler, View } from "react-native";
 import { useFocusEffect } from "expo-router";
 import { SUPPORTED_NETWORKS } from "@bitriel/wallet-sdk";
 import { useWalletStore } from "~/src/store/useWalletStore";
 import { Image } from "expo-image";
+import { ThemedView } from "~/components/ThemedView";
+import { ThemedText } from "~/components/ThemedText";
+import { useAppTheme } from "~/src/context/ThemeProvider";
 
 type Ref = BottomSheetModal;
 
@@ -26,32 +28,53 @@ const NetworkListItem = ({
     network: (typeof SUPPORTED_NETWORKS)[0];
     isSelected: boolean;
     onPress: () => void;
-}) => (
-    <TouchableOpacity
-        onPress={onPress}
-        className={`${isSelected ? "bg-blue-950/95" : "bg-white"}`}
-        style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: Colors.secondary }}
-    >
-        <View className="flex-row items-center">
-            <View
-                className={`${isSelected ? "bg-primary" : "bg-transparent"} absolute w-1 -ml-1 rounded-full h-full`}
-            />
-            {network.logo && (
-                <Image
-                    source={{ uri: network.logo }}
-                    style={{ width: 40, height: 40 }}
-                    className="rounded-full"
-                    contentFit="contain"
-                />
-            )}
-            <Text
-                className={`px-3 text-base ${isSelected ? "text-white font-SpaceGroteskBold" : "text-black font-SpaceGroteskMedium"}`}
+}) => {
+    const { getColor, getBrandColor } = useAppTheme();
+
+    return (
+        <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+            <ThemedView
+                variant={isSelected ? "surface" : "card"}
+                style={{
+                    padding: 12,
+                    borderBottomWidth: 1,
+                    borderBottomColor: getColor("border.secondary"),
+                    backgroundColor: isSelected ? getBrandColor("primary", 50) : getColor("background.card"),
+                }}
             >
-                {network.name}
-            </Text>
-        </View>
-    </TouchableOpacity>
-);
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View
+                        style={{
+                            position: "absolute",
+                            width: 4,
+                            left: -4,
+                            borderRadius: 2,
+                            height: "100%",
+                            backgroundColor: isSelected ? getBrandColor("primary", 500) : "transparent",
+                        }}
+                    />
+                    {network.logo && (
+                        <Image
+                            source={{ uri: network.logo }}
+                            style={{ width: 40, height: 40, borderRadius: 20 }}
+                            contentFit="contain"
+                        />
+                    )}
+                    <ThemedText
+                        variant={isSelected ? "accent" : "primary"}
+                        style={{
+                            paddingHorizontal: 12,
+                            fontSize: 16,
+                            fontFamily: isSelected ? "SpaceGrotesk-Bold" : "SpaceGrotesk-Medium",
+                        }}
+                    >
+                        {network.name}
+                    </ThemedText>
+                </View>
+            </ThemedView>
+        </TouchableOpacity>
+    );
+};
 
 const ChangeNetworkBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetProp, ref) => {
     // Use optimized snap points for better list performance
@@ -59,6 +82,7 @@ const ChangeNetworkBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
     const [isShowing, setIsShowing] = useState<boolean>(false);
     const flatListRef = useRef<BottomSheetFlatListMethods>(null);
     const { currentNetwork, connectToNetwork } = useWalletStore();
+    const { getColor, isDark } = useAppTheme();
 
     const renderBackdrop = useCallback(
         (props: any) => <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.5} />,
@@ -111,12 +135,21 @@ const ChangeNetworkBottomSheet = forwardRef<Ref, BottomSheetProps>((bottomSheetP
             }}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
-            handleIndicatorStyle={{ backgroundColor: Colors.secondary }}
-            backgroundStyle={{ backgroundColor: Colors.white }}
+            handleIndicatorStyle={{ backgroundColor: getColor("border.primary") }}
+            backgroundStyle={{ backgroundColor: getColor("background.card") }}
         >
-            <View className="px-4 py-2">
-                <Text className="text-center text-lg font-SpaceGroteskBold text-secondary">Select a network</Text>
-            </View>
+            <ThemedView variant="card" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+                <ThemedText
+                    variant="primary"
+                    style={{
+                        textAlign: "center",
+                        fontSize: 18,
+                        fontFamily: "SpaceGrotesk-Bold",
+                    }}
+                >
+                    Select a network
+                </ThemedText>
+            </ThemedView>
 
             <BottomSheetFlatList
                 ref={flatListRef}
