@@ -1,7 +1,7 @@
 import { HomeMessage, HomeMessageIcon } from '@bitriel/feature-home';
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View, Text } from 'react-native';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
@@ -26,6 +26,12 @@ export default function HomeScreen() {
           <HomeMessageIcon />
         </ThemedText>
       </ThemedView>
+
+      <View className="bg-black">
+        <Text className="text-white">
+          This is a black view to test the dark mode header text visibility on scroll
+        </Text>
+      </View>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
