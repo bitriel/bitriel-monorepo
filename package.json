@@ -1,13 +1,13 @@
 {
   "private": true,
-  "name": "@acme/monorepo",
+  "name": "@bitriel/monorepo",
   "scripts": {
     "dev": "turbo dev",
-    "dev:example": "turbo dev --filter=\"{./apps/example}...\"",
+    "dev:mobile": "turbo dev --filter=\"{./apps/mobile}...\"",
     "lint": "turbo lint",
     "test": "turbo test",
     "build": "turbo build",
-    "build:example": "turbo build --filter=\"...{./apps/example}\""
+    "build:mobile": "turbo build --filter=\"...{./apps/mobile}\""
   },
   "devDependencies": {
     "turbo": "^2.5.6",
@@ -18,5 +18,6 @@
     "tabWidth": 2,
     "singleQuote": true,
     "trailingComma": "es5"
-  }
+  },
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
 }

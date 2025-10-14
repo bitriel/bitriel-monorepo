@@ -15,9 +15,9 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  apps/example:
+  apps/mobile:
     dependencies:
-      '@acme/feature-home':
+      '@bitriel/feature-home':
         specifier: workspace:*
         version: link:../../packages/feature-home
       '@expo/vector-icons':
@@ -75,7 +75,7 @@ importers:
         specifier: ~0.21.0
         version: 0.21.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
     devDependencies:
-      '@acme/eslint-config':
+      '@bitriel/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@expo/metro':
@@ -123,11 +123,11 @@ importers:
 
   packages/feature-home:
     dependencies:
-      '@acme/ui':
+      '@bitriel/ui':
         specifier: workspace:*
         version: link:../ui
     devDependencies:
-      '@acme/eslint-config':
+      '@bitriel/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
       '@testing-library/react-native':
@@ -172,7 +172,7 @@ importers:
 
   packages/ui:
     devDependencies:
-      '@acme/eslint-config':
+      '@bitriel/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
       '@testing-library/react-native':

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@acme/app-example",
+  "name": "@bitriel/mobile",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -12,10 +12,10 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "eas-build-post-install": "pnpm run -w build:example"
+    "eas-build-post-install": "pnpm run -w build:mobile"
   },
   "dependencies": {
-    "@acme/feature-home": "workspace:*",
+    "@bitriel/feature-home": "workspace:*",
     "@expo/vector-icons": "^15.0.2",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
@@ -36,7 +36,7 @@
     "react-native-web": "~0.21.0"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:*",
+    "@bitriel/eslint-config": "workspace:*",
     "@expo/metro": "^0.1.1",
     "@expo/metro-runtime": "~6.1.2",
     "@testing-library/react-native": "^13.2.0",
@@ -47,7 +47,7 @@
     "typescript": "~5.9.2"
   },
   "eslintConfig": {
-    "extends": "@acme/eslint-config",
+    "extends": "@bitriel/eslint-config",
     "ignorePatterns": [
       "node_modules",
       "build",

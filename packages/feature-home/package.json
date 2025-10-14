@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "@acme/feature-home",
+  "name": "@bitriel/feature-home",
   "version": "1.0.0",
-  "description": "Acme home feature for React (Native)",
+  "description": "Bitriel home feature for React (Native)",
   "author": "Cedric van Putten <me@bycedric.com>",
   "license": "MIT",
   "main": "./src/index.ts",
@@ -16,10 +16,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "@acme/ui": "workspace:*"
+    "@bitriel/ui": "workspace:*"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:*",
+    "@bitriel/eslint-config": "workspace:*",
     "@testing-library/react-native": "^13.2.0",
     "@tsconfig/recommended": "^1.0.8",
     "@types/jest": "^29.5.14",
@@ -48,7 +48,7 @@
     }
   },
   "eslintConfig": {
-    "extends": "@acme/eslint-config",
+    "extends": "@bitriel/eslint-config",
     "ignorePatterns": [
       "node_modules",
       "build"

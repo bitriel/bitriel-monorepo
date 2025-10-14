@@ -4,15 +4,15 @@
 </div>
 
 <p align="center">
-  <a href="https://github.com/byCedric/expo-monorepo-example#-why-is-it-fast"><b>Why is it fast?</b></a>
+  <a href="https://github.com/bitriel/bitriel-monorepo#-why-is-it-fast"><b>Why is it fast?</b></a>
   &ensp;&mdash;&ensp;
-  <a href="https://github.com/byCedric/expo-monorepo-example#-how-to-use-it"><b>How to use it</b></a>
+  <a href="https://github.com/bitriel/bitriel-monorepo#-how-to-use-it"><b>How to use it</b></a>
   &ensp;&mdash;&ensp;
-  <a href="https://github.com/byCedric/expo-monorepo-example#-structure"><b>Structure</b></a>
+  <a href="https://github.com/bitriel/bitriel-monorepo#-structure"><b>Structure</b></a>
   &ensp;&mdash;&ensp;
-  <a href="https://github.com/byCedric/expo-monorepo-example#-workflows"><b>Workflows</b></a>
+  <a href="https://github.com/bitriel/bitriel-monorepo#-workflows"><b>Workflows</b></a>
   &ensp;&mdash;&ensp;
-  <a href="https://github.com/byCedric/expo-monorepo-example#%EF%B8%8F-caveats"><b>Caveats & Issues</b></a>
+  <a href="https://github.com/bitriel/bitriel-monorepo#%EF%B8%8F-caveats"><b>Caveats & Issues</b></a>
 </p>
 
 <br />
@@ -23,7 +23,7 @@ This repository uses both [pnpm](https://pnpm.io/) and [Turborepo](https://turbo
 
 ### What about Metro?
 
-In **apps/example** we leverage the Metro cache to speed up building and publishing. We use Turborepo to restore or invalidate this cache. To populate this Metro cache, the **apps/example** has a [`$ pnpm build`](./apps/example/package.json#L9) script that exports React Native bundles. The resulting Metro cache is then reused when [publishing previews](./.github/workflows/preview.yml#L26-L27) or [deploying the app](./.github/workflows/deploy.yml) with [EAS Hosting](https://docs.expo.dev/eas/hosting/introduction/).
+In **apps/mobile** we leverage the Metro cache to speed up building and publishing. We use Turborepo to restore or invalidate this cache. To populate this Metro cache, the **apps/mobile** has a [`$ pnpm build`](./apps/mobile/package.json#L9) script that exports React Native bundles. The resulting Metro cache is then reused when [publishing previews](./.github/workflows/preview.yml#L26-L27) or [deploying the app](./.github/workflows/deploy.yml) with [EAS Hosting](https://docs.expo.dev/eas/hosting/introduction/).
 
 ## ℹ️ Should I use it?
 
@@ -49,12 +49,12 @@ Because this monorepo uses [Turborepo](https://turbo.build/repo), you don't need
 - `$ pnpm test` - Run all tests for packages with Jest tests.
 - `$ pnpm build` - Build all **apps** and **packages** for production or to publish them on npm.
 
-When developing or deploying a single app, you might not need the development server for all apps. For example, if you need to make a fix in the example app, you don't need the dev server for all other apps. Or when deploying a single app to production, you only need to build that single app with all dependencies only used in this app.
+When developing or deploying a single app, you might not need the development server for all apps. For example, if you need to make a fix in the mobile app, you don't need the dev server for all other apps. Or when deploying a single app to production, you only need to build that single app with all dependencies only used in this app.
 
 This monorepo uses a simple npm script convention of `dev:<app-name>` and `build:<app-name>` to keep this process simple. Under the hood, it uses [Turborepo's workspace filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering), defined as an npm script in the root [**package.json**](./package.json).
 
-- `$ pnpm dev:example` - Build and watch **app/example** and all **packages** used in example, for development.
-- `$ pnpm build:example` - Build **apps/example** and all **packages** used in example, for production deployments
+- `$ pnpm dev:mobile` - Build and watch **app/mobile** and all **packages** used in mobile, for development.
+- `$ pnpm build:mobile` - Build **apps/mobile** and all **packages** used in mobile, for production deployments
 
 ### Switching to bun, yarn or npm
 
@@ -75,7 +75,7 @@ You can use any package manager with Expo. If you want to use bun, yarn, or pnpm
 
 ### Apps
 
-- [`apps/example`](./apps/example) - Expo app using `eslint-config` and `feature-home` packages.
+- [`apps/mobile`](./apps/mobile) - Expo app using `eslint-config` and `feature-home` packages.
 
 ### Packages
 
@@ -85,7 +85,7 @@ You can use any package manager with Expo. If you want to use bun, yarn, or pnpm
 
 ## 👷 Workflows
 
-- [`build`](./.github/workflows/build.yml) - Starts the EAS builds for **apps/example** using the given profile.
+- [`build`](./.github/workflows/build.yml) - Starts the EAS builds for **apps/mobile** using the given profile.
 - [`deploy`](./.github/workflows/deploy.yml) - Deploys apps to a preview URL or production URL using [EAS Hosting](https://docs.expo.dev/eas/hosting/introduction/).
 - [`preview`](./.github/workflows/preview.yml) - Publishes apps to a PR-specific release channel and adds a QR code to that PR.
 - [`test`](./.github/workflows/test.yml) - Ensures that the apps and packages are healthy on multiple OSs.

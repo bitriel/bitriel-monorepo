@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "@acme/eslint-config",
+  "name": "@bitriel/eslint-config",
   "version": "1.0.0",
-  "description": "Acme eslint configuration for React Native",
+  "description": "bitriel eslint configuration for React Native",
   "author": "Cedric van Putten <me@bycedric.com>",
   "license": "MIT",
   "main": "index.js",

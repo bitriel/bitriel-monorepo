@@ -1,4 +1,4 @@
-import { HomeMessage, HomeMessageIcon } from '@acme/feature-home';
+import { HomeMessage, HomeMessageIcon } from '@bitriel/feature-home';
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { Platform, StyleSheet } from 'react-native';
@@ -76,7 +76,7 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
           <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+          <ThemedText type="defaultSemiBold">app-bitriel</ThemedText>.
         </ThemedText>
       </ThemedView>
     </ParallaxScrollView>
