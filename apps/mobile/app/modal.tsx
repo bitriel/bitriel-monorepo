@@ -1,29 +1,33 @@
-import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { Linking, Platform, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { Icon } from '@/components/nativewindui/Icon';
+import { Text } from '@/components/nativewindui/Text';
+import { useColorScheme } from '@/lib/useColorScheme';
 
 export default function ModalScreen() {
+  const { colors, colorScheme } = useColorScheme();
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">This is a modal</ThemedText>
-      <Link href="/" dismissTo style={styles.link}>
-        <ThemedText type="link">Go to home screen</ThemedText>
-      </Link>
-    </ThemedView>
+    <>
+      <StatusBar
+        style={Platform.OS === 'ios' ? 'light' : colorScheme === 'dark' ? 'light' : 'dark'}
+      />
+      <View className="pb-safe flex-1 items-center justify-center gap-1 px-12">
+        <Icon name="doc.badge.plus" size={42} color={colors.grey} />
+        <Text variant="title3" className="pb-1 text-center font-semibold">
+          NativewindUI
+        </Text>
+        <Text color="tertiary" variant="subhead" className="pb-4 text-center">
+          You can install any of the free components from the{' '}
+          <Text
+            onPress={() => Linking.openURL('https://nativewindui.com')}
+            variant="subhead"
+            className="text-primary">
+            NativewindUI
+          </Text>
+          {' website.'}
+        </Text>
+      </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-});
