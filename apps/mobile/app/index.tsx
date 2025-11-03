@@ -1,3 +1,14 @@
+import { Redirect } from 'expo-router';
+
+// Redirect to wallet screen by default
+export default function Index() {
+  return <Redirect href="/wallet" />;
+}
+
+// Original index.tsx content moved below for reference/demo purposes
+// To access the component demo, navigate to /demo
+
+/*
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FlashList } from '@shopify/flash-list';
 import { cssInterop } from 'nativewind';
@@ -13,6 +24,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SearchBarProps } from 'react-native-screens';
+import { useRouter } from 'expo-router';
 
 import { useActionSheet } from '@expo/react-native-action-sheet';
 
@@ -48,8 +60,9 @@ cssInterop(FlashList, {
   contentContainerClassName: 'contentContainerStyle',
 });
 
-export default function Screen() {
+function Screen() {
   const searchValue = useHeaderSearchBar({ hideWhenScrolling: COMPONENTS.length === 0 });
+  const router = useRouter();
 
   const data = searchValue
     ? COMPONENTS.filter((c) => c.name.toLowerCase().includes(searchValue.toLowerCase()))
@@ -66,6 +79,19 @@ export default function Screen() {
       keyExtractor={keyExtractor}
       ItemSeparatorComponent={renderItemSeparator}
       renderItem={renderItem}
+      ListHeaderComponent={
+        <View className="px-4 mb-4">
+          <Button
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push('/wallet');
+            }}
+            className="bg-primary">
+            <Icon name={"wallet.pass" as any} className="text-primary-foreground" />
+            <Text className="text-primary-foreground font-semibold">Open Wallet</Text>
+          </Button>
+        </View>
+      }
       ListEmptyComponent={COMPONENTS.length === 0 ? ListEmptyComponent : undefined}
     />
   );
@@ -443,3 +469,4 @@ const COMPONENTS: ComponentItem[] = [
     },
   },
 ];
+*/

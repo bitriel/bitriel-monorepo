@@ -38,6 +38,8 @@ export default function RootLayout() {
           <NavThemeProvider value={NAV_THEME[colorScheme]}>
             <Stack>
               <Stack.Screen name="index" options={INDEX_OPTIONS} />
+              <Stack.Screen name="wallet" options={WALLET_OPTIONS} />
+              <Stack.Screen name="(wallet)" options={{ headerShown: false }} />
               <Stack.Screen name="modal" options={MODAL_OPTIONS} />
             </Stack>
           </NavThemeProvider>
@@ -53,6 +55,11 @@ const INDEX_OPTIONS = {
   headerTransparent: isIos26,
   title: 'NativewindUI',
   headerRight: () => <SettingsIcon />,
+} as const;
+
+const WALLET_OPTIONS = {
+  headerShown: false,
+  title: 'Wallet',
 } as const;
 
 function SettingsIcon() {
