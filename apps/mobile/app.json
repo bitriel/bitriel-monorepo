@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Bitriel",
-    "slug": "bitriel",
+    "slug": "bitriel-digital-wallet",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sokunsamnang.expomonorepo"
+      "bundleIdentifier": "com.selendra.secure.wallet"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +21,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.sokunsamnang.expomonorepo"
+      "package": "com.selendra.secure_wallet"
     },
     "web": {
       "output": "static",
@@ -51,8 +51,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f2347639-29cc-4d06-8c8e-207598f3ab55"
+        "projectId": "2258dc87-c9ef-49c3-a5fe-8b67255195fe"
       }
-    }
+    },
+    "owner": "koompi"
   }
 }

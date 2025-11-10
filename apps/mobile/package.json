@@ -59,6 +59,7 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@bitriel/eslint-config": "workspace:*",
     "@expo/metro": "^0.1.1",
     "@expo/metro-runtime": "~6.1.2",
