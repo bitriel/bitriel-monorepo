@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, Share2, QrCode, AtSign, Phone, Link as LinkIcon, Info, Copy } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -53,13 +53,13 @@ export default function ReceiveScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Receive Money
           </Text>
           <Pressable onPress={handleShare} className="active:opacity-70">
-            <Icon name="square.and.arrow.up" size={24} color={colors.foreground} />
+            <Share2 size={24} color={colors.foreground} />
           </Pressable>
         </View>
       </View>
@@ -93,7 +93,7 @@ export default function ReceiveScreen() {
             >
               {/* QR Code would be generated here */}
               <View className="items-center">
-                <Icon name="qrcode" size={200} color="#000000" />
+                <QrCode size={200} color="#000000" />
                 <Text variant="caption1" className="text-black mt-2">
                   Bakong QR
                 </Text>
@@ -157,7 +157,7 @@ export default function ReceiveScreen() {
             }}
           >
             <View className="flex-row gap-3">
-              <Icon name="info.circle.fill" size={20} className="text-green-500 mt-0.5" />
+              <Info size={20} color="#22c55e" />
               <View className="flex-1">
                 <Text variant="callout" className="font-semibold mb-1">
                   Instant Transfers
@@ -178,7 +178,7 @@ export default function ReceiveScreen() {
         className="px-6 pt-4 border-t border-border"
       >
         <Button onPress={handleShare} className="bg-primary">
-          <Icon name="square.and.arrow.up" size={20} color="#FFFFFF" />
+          <Share2 size={20} color="#FFFFFF" />
           <Text className="text-primary-foreground font-semibold text-base">
             Share Payment Info
           </Text>
@@ -217,7 +217,9 @@ function ReceiveMethodCard({
           style={{ backgroundColor: iconColor }}
           className="w-10 h-10 rounded-full items-center justify-center"
         >
-          <Icon name={icon as any} size={20} color="#FFFFFF" />
+          {icon === 'at' && <AtSign size={20} color="#FFFFFF" />}
+          {icon === 'phone.fill' && <Phone size={20} color="#FFFFFF" />}
+          {icon === 'link' && <LinkIcon size={20} color="#FFFFFF" />}
         </View>
         <View className="flex-1">
           <Text variant="caption1" className="text-muted-foreground mb-0.5">
@@ -229,7 +231,7 @@ function ReceiveMethodCard({
         </View>
         <Pressable onPress={onCopy} className="active:opacity-70">
           <View className="bg-primary/10 rounded-full p-2">
-            <Icon name="doc.on.doc" size={18} color={iconColor} />
+            <Copy size={18} color={iconColor} />
           </View>
         </Pressable>
       </View>

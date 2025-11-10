@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Linking, Platform, View } from 'react-native';
 
-import { Icon } from '@/components/nativewindui/Icon';
+import { FileText } from 'lucide-react-native';
 import { Text } from '@/components/nativewindui/Text';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -13,7 +13,7 @@ export default function ModalScreen() {
         style={Platform.OS === 'ios' ? 'light' : colorScheme === 'dark' ? 'light' : 'dark'}
       />
       <View className="pb-safe flex-1 items-center justify-center gap-1 px-12">
-        <Icon name="doc.badge.plus" size={42} color={colors.grey} />
+        <FileText size={42} color={colors.grey} />
         <Text variant="title3" className="pb-1 text-center font-semibold">
           NativewindUI
         </Text>

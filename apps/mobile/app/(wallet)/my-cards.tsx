@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, PlusCircle, CreditCard, MoreHorizontal } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -45,7 +45,7 @@ export default function MyCardsScreen() {
               router.back();
             }}
             className="active:opacity-70">
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             My Cards
@@ -82,7 +82,7 @@ export default function MyCardsScreen() {
             className="active:opacity-70">
             <View className="bg-card rounded-3xl p-6 border-2 border-dashed border-border items-center">
               <View className="w-16 h-16 rounded-full bg-primary/10 items-center justify-center mb-3">
-                <Icon name={"plus.circle.fill" as any} size={32} className="text-primary" />
+                <PlusCircle size={32} color={colors.primary} />
               </View>
               <Text variant="callout" className="font-semibold mb-1">
                 Add New Card
@@ -119,7 +119,7 @@ function SavedCard({ card }: { card: (typeof SAVED_CARDS)[number] }) {
                   </Text>
                 </View>
               )}
-              <Icon name="creditcard.fill" size={36} color="rgba(255,255,255,0.9)" />
+              <CreditCard size={36} color="rgba(255,255,255,0.9)" />
             </View>
             <View className="bg-white rounded-lg px-3 py-1.5">
               <Text variant="caption1" className="font-bold" style={{ color: card.color }}>
@@ -146,7 +146,7 @@ function SavedCard({ card }: { card: (typeof SAVED_CARDS)[number] }) {
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 className="active:opacity-70">
                 <View className="bg-white/20 rounded-full p-2">
-                  <Icon name="ellipsis" size={20} color="#FFFFFF" />
+                  <MoreHorizontal size={20} color="#FFFFFF" />
                 </View>
               </Pressable>
             </View>

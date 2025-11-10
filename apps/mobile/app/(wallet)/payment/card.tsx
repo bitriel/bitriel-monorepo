@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, CreditCard, Check, Shield } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -42,7 +42,7 @@ export default function CardPaymentScreen() {
               router.back();
             }}
             className="active:opacity-70">
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Card Payment
@@ -59,7 +59,7 @@ export default function CardPaymentScreen() {
             style={{ backgroundColor: '#667eea' }}>
             <View className="flex-1 justify-between">
               <View className="flex-row justify-between items-start">
-                <Icon name="creditcard.fill" size={40} color="#FFFFFF" />
+                <CreditCard size={40} color="#FFFFFF" />
                 <Text variant="caption1" className="text-white/80 font-semibold">
                   VISA/MASTERCARD
                 </Text>
@@ -181,7 +181,7 @@ export default function CardPaymentScreen() {
                 className={`w-6 h-6 rounded-md border-2 items-center justify-center ${
                   saveCard ? 'bg-primary border-primary' : 'border-border'
                 }`}>
-                {saveCard && <Icon name="checkmark" size={16} color="#FFFFFF" />}
+                {saveCard && <Check size={16} color="#FFFFFF" />}
               </View>
               <Text variant="subhead" className="flex-1">
                 Save card for future payments
@@ -194,7 +194,7 @@ export default function CardPaymentScreen() {
         <Animated.View entering={FadeInDown.delay(400).duration(400)}>
           <View className="bg-muted/10 rounded-2xl p-4">
             <View className="flex-row gap-3">
-              <Icon name="lock.shield.fill" size={20} className="text-primary mt-0.5" />
+              <Shield size={20} color={colors.primary} />
               <View className="flex-1">
                 <Text variant="callout" className="font-semibold mb-1">
                   Secure Payment
@@ -217,7 +217,7 @@ export default function CardPaymentScreen() {
           onPress={handlePayment}
           disabled={!isFormValid}
           className={`${!isFormValid ? 'opacity-50' : ''} bg-primary`}>
-          <Icon name="lock.fill" size={20} color="#FFFFFF" />
+          <Shield size={20} color="#FFFFFF" />
           <Text className="text-primary-foreground font-semibold text-base">
             Pay Securely
           </Text>

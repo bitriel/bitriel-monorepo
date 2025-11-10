@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, Clock, Star, CreditCard, TrendingUp, Star as StarIcon, Building2, Gift, Store } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -38,7 +38,7 @@ export default function EarnScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Earn & Save
@@ -50,7 +50,7 @@ export default function EarnScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="clock" size={24} color={colors.foreground} />
+            <Clock size={24} color={colors.foreground} />
           </Pressable>
         </View>
       </View>
@@ -84,7 +84,7 @@ export default function EarnScreen() {
                 </Text>
               </View>
               <View className="w-16 h-16 rounded-full bg-green-500/10 items-center justify-center">
-                <Icon name="star.fill" size={32} className="text-green-500" />
+                <Star size={32} color="#22c55e" />
               </View>
             </View>
           </View>
@@ -140,7 +140,7 @@ export default function EarnScreen() {
 
           <View className="gap-3">
             <EarnFeatureCard
-              icon="creditcard.fill"
+              icon={CreditCard}
               iconColor="#00C853"
               title="Cashback Rewards"
               description="Get up to 5% back on every purchase"
@@ -153,7 +153,7 @@ export default function EarnScreen() {
             />
 
             <EarnFeatureCard
-              icon="chart.line.uptrend.xyaxis"
+              icon={TrendingUp}
               iconColor="#0385FF"
               title="Savings Account"
               description="Earn 6.01% APY on your savings"
@@ -166,7 +166,7 @@ export default function EarnScreen() {
             />
 
             <EarnFeatureCard
-              icon="star.circle.fill"
+              icon={StarIcon}
               iconColor="#FFD700"
               title="Loyalty Points"
               description="Swap & use points across merchants"
@@ -179,7 +179,7 @@ export default function EarnScreen() {
             />
 
             <EarnFeatureCard
-              icon="building.2.fill"
+              icon={Building2}
               iconColor="#FF9500"
               title="Loyalty Merchants"
               description="Shop at partner merchants for extra rewards"
@@ -192,7 +192,7 @@ export default function EarnScreen() {
             />
 
             <EarnFeatureCard
-              icon="gift.fill"
+              icon={Gift}
               iconColor="#8E44AD"
               title="Referral Bonus"
               description="Invite friends and earn together"
@@ -265,7 +265,7 @@ export default function EarnScreen() {
           }}
           className="bg-primary"
         >
-          <Icon name="storefront.fill" size={20} color="#FFFFFF" />
+          <Store size={20} color="#FFFFFF" />
           <Text className="text-primary-foreground font-semibold text-base">
             Browse Loyalty Merchants
           </Text>
@@ -284,7 +284,7 @@ function EarnFeatureCard({
   isDarkColorScheme,
   onPress,
 }: {
-  icon: string;
+  icon: React.ComponentType<{ size: number; color: string }>;
   iconColor: string;
   title: string;
   description: string;
@@ -307,7 +307,7 @@ function EarnFeatureCard({
             style={{ backgroundColor: iconColor }}
             className="w-12 h-12 rounded-xl items-center justify-center"
           >
-            <Icon name={icon as any} size={24} color="#FFFFFF" />
+            {React.createElement(icon, { size: 24, color: '#FFFFFF' })}
           </View>
           <View className="flex-1">
             <Text variant="callout" className="font-semibold mb-0.5">

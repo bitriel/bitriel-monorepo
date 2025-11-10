@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { X, QrCode, Camera, Info, ShoppingCart, UtensilsCrossed, Ticket, Car } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -61,7 +61,7 @@ export default function ScanQRScreen() {
             }}
             className="active:opacity-70 bg-black/50 rounded-full p-2"
           >
-            <Icon name="xmark" size={24} color="#FFFFFF" />
+            <X size={24} color="#FFFFFF" />
           </Pressable>
           <View className="bg-black/50 rounded-full px-4 py-2">
             <Text variant="callout" className="text-white font-semibold">
@@ -91,7 +91,7 @@ export default function ScanQRScreen() {
 
             {/* Center Icon */}
             <View className="flex-1 items-center justify-center">
-              <Icon name="qrcode" size={80} color="rgba(255,255,255,0.5)" />
+              <QrCode size={80} color="rgba(255,255,255,0.5)" />
             </View>
 
             {/* Scanning Line Animation */}
@@ -117,14 +117,14 @@ export default function ScanQRScreen() {
         <Animated.View entering={FadeInDown.delay(400).duration(400)} className="gap-3">
           {/* Demo Button */}
           <Button onPress={handleScan} className="bg-primary">
-            <Icon name="camera.fill" size={20} color="#FFFFFF" />
+            <Camera size={20} color="#FFFFFF" />
             <Text className="text-white font-semibold">Simulate Scan (Demo)</Text>
           </Button>
 
           {/* Info Card */}
           <View className="bg-white/10 rounded-2xl p-4">
             <View className="flex-row items-start gap-3">
-              <Icon name="info.circle" size={20} color="rgba(255,255,255,0.7)" />
+              <Info size={20} color="rgba(255,255,255,0.7)" />
               <View className="flex-1">
                 <Text variant="callout" className="text-white font-semibold mb-1">
                   Bakong Integration
@@ -139,25 +139,25 @@ export default function ScanQRScreen() {
           {/* Supported Services */}
           <View className="flex-row gap-3">
             <View className="flex-1 bg-white/10 rounded-xl p-3 items-center">
-              <Icon name="cart.fill" size={24} color="#FFFFFF" className="mb-1" />
+              <ShoppingCart size={24} color="#FFFFFF" />
               <Text variant="caption2" className="text-white/70 text-center">
                 Shops
               </Text>
             </View>
             <View className="flex-1 bg-white/10 rounded-xl p-3 items-center">
-              <Icon name="fork.knife" size={24} color="#FFFFFF" className="mb-1" />
+              <UtensilsCrossed size={24} color="#FFFFFF" />
               <Text variant="caption2" className="text-white/70 text-center">
                 Restaurants
               </Text>
             </View>
             <View className="flex-1 bg-white/10 rounded-xl p-3 items-center">
-              <Icon name="ticket.fill" size={24} color="#FFFFFF" className="mb-1" />
+              <Ticket size={24} color="#FFFFFF" />
               <Text variant="caption2" className="text-white/70 text-center">
                 Services
               </Text>
             </View>
             <View className="flex-1 bg-white/10 rounded-xl p-3 items-center">
-              <Icon name={'car.fill' as any} size={24} color="#FFFFFF" className="mb-1" />
+              <Car size={24} color="#FFFFFF" />
               <Text variant="caption2" className="text-white/70 text-center">
                 Transport
               </Text>

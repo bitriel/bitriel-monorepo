@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, Inbox } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const EARN_HISTORY = [
@@ -99,7 +99,7 @@ export default function EarnHistoryScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Earn History
@@ -193,7 +193,7 @@ export default function EarnHistoryScreen() {
 
         {filteredHistory.length === 0 && (
           <View className="items-center py-12">
-            <Icon name="tray" size={48} className="text-muted-foreground mb-3" />
+            <Inbox size={48} color={colors.mutedForeground} />
             <Text variant="title3" className="font-semibold mb-1">
               No earnings yet
             </Text>

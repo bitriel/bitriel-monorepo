@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, UtensilsCrossed, ArrowDownCircle, Ticket, ShoppingCart, Star } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const TRANSACTIONS = [
@@ -17,7 +17,7 @@ const TRANSACTIONS = [
     description: 'Thai Street Food',
     amount: -45.32,
     date: '2024-11-03',
-    icon: 'fork.knife',
+    icon: UtensilsCrossed,
     color: '#FF9500',
   },
   {
@@ -27,7 +27,7 @@ const TRANSACTIONS = [
     description: 'From John Doe',
     amount: 120.0,
     date: '2024-11-02',
-    icon: 'arrow.down.circle.fill',
+    icon: ArrowDownCircle,
     color: '#00C853',
   },
   {
@@ -37,7 +37,7 @@ const TRANSACTIONS = [
     description: 'City Heritage Walk',
     amount: -89.99,
     date: '2024-11-01',
-    icon: 'ticket.fill',
+    icon: Ticket,
     color: '#0385FF',
   },
   {
@@ -47,7 +47,7 @@ const TRANSACTIONS = [
     description: 'Local Market',
     amount: -23.45,
     date: '2024-10-31',
-    icon: 'cart.fill',
+    icon: ShoppingCart,
     color: '#FF3B57',
   },
   {
@@ -57,7 +57,7 @@ const TRANSACTIONS = [
     description: 'Monthly rewards',
     amount: 12.5,
     date: '2024-10-30',
-    icon: 'star.fill',
+    icon: Star,
     color: '#FFD700',
   },
 ];
@@ -78,7 +78,7 @@ export default function TransactionsScreen() {
               router.back();
             }}
             className="active:opacity-70">
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Transactions
@@ -115,7 +115,7 @@ function TransactionCard({
         <View
           style={{ backgroundColor: transaction.color }}
           className="w-12 h-12 rounded-full items-center justify-center">
-          <Icon name={transaction.icon as any} size={24} color="#FFFFFF" />
+          <transaction.icon size={24} color="#FFFFFF" />
         </View>
         <View className="flex-1">
           <Text variant="callout" className="font-semibold mb-0.5">

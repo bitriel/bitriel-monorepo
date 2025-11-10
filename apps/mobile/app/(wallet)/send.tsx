@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, QrCode, UserCircle, ChevronRight, Send } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -44,7 +44,7 @@ export default function SendMoneyScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Send Money
@@ -56,7 +56,7 @@ export default function SendMoneyScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="qrcode" size={28} color={colors.foreground} />
+            <QrCode size={28} color={colors.foreground} />
           </Pressable>
         </View>
       </View>
@@ -106,7 +106,7 @@ export default function SendMoneyScreen() {
                 Phone Number or Bitriel ID
               </Text>
               <View className="bg-card border border-border rounded-2xl px-4 py-3.5 flex-row items-center gap-3">
-                <Icon name="person.circle.fill" size={24} className="text-muted-foreground" />
+                <UserCircle size={24} color={colors.mutedForeground} />
                 <TextInput
                   value={recipient}
                   onChangeText={setRecipient}
@@ -172,7 +172,7 @@ export default function SendMoneyScreen() {
                       @{name.toLowerCase().replace(' ', '')}
                     </Text>
                   </View>
-                  <Icon name="chevron.right" size={20} className="text-muted-foreground" />
+                  <ChevronRight size={20} color={colors.mutedForeground} />
                 </View>
               </Pressable>
             ))}
@@ -190,7 +190,7 @@ export default function SendMoneyScreen() {
           disabled={!isFormValid}
           className={`${!isFormValid ? 'opacity-50' : ''} bg-primary`}
         >
-          <Icon name="paperplane.fill" size={20} color="#FFFFFF" />
+          <Send size={20} color="#FFFFFF" />
           <Text className="text-primary-foreground font-semibold text-base">Send Money</Text>
         </Button>
       </View>

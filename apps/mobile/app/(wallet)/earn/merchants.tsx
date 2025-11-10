@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, Search, Star, ChevronRight } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const LOYALTY_MERCHANTS = [
@@ -104,7 +104,7 @@ export default function LoyaltyMerchantsScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Loyalty Merchants
@@ -121,7 +121,7 @@ export default function LoyaltyMerchantsScreen() {
             borderColor: isDarkColorScheme ? '#2C2C2E' : '#E5E5EA',
           }}
         >
-          <Icon name="magnifyingglass" size={20} className="text-muted-foreground" />
+          <Search size={20} color={colors.mutedForeground} />
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -145,7 +145,7 @@ export default function LoyaltyMerchantsScreen() {
             }}
           >
             <View className="flex-row gap-3">
-              <Icon name="star.fill" size={20} className="text-green-500 mt-0.5" />
+              <Star size={20} color="#22c55e" fill="#22c55e" />
               <View className="flex-1">
                 <Text variant="callout" className="font-semibold mb-1">
                   Earn Extra Cashback
@@ -198,7 +198,7 @@ export default function LoyaltyMerchantsScreen() {
 
         {filteredMerchants.length === 0 && (
           <View className="items-center py-12">
-            <Icon name="magnifyingglass" size={48} className="text-muted-foreground mb-3" />
+            <Search size={48} color={colors.mutedForeground} />
             <Text variant="title3" className="font-semibold mb-1">
               No merchants found
             </Text>
@@ -277,7 +277,7 @@ function MerchantCard({
           </View>
 
           {/* Arrow */}
-          <Icon name="chevron.right" size={20} className="text-muted-foreground" />
+          <ChevronRight size={20} color={colors.mutedForeground} />
         </View>
       </View>
     </Pressable>

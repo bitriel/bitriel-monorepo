@@ -20,7 +20,26 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import {
+  PlusCircle,
+  XCircle,
+  Eye,
+  Plus,
+  Gift,
+  TrendingUp,
+  CreditCard,
+  ArrowLeftRight,
+  ArrowRight,
+  QrCode,
+  BarChart3,
+  Building2,
+  ShoppingCart,
+  Ticket,
+  UtensilsCrossed,
+  MapPin,
+  ArrowDownCircle,
+  ArrowUpCircle,
+} from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -34,7 +53,7 @@ const PROMO_CARDS = [
     id: '1',
     title: 'Get 50,000 KHR Bonus',
     description: 'Invite friends and both earn rewards',
-    icon: 'gift.fill',
+    icon: Gift,
     iconColor: '#8E44AD',
     gradient: ['#8E44AD', '#9B59B6'],
     action: 'Invite Now',
@@ -44,7 +63,7 @@ const PROMO_CARDS = [
     id: '2',
     title: 'Earn 6.01% APY',
     description: 'Start saving and watch your money grow',
-    icon: 'chart.line.uptrend.xyaxis',
+    icon: TrendingUp,
     iconColor: '#0385FF',
     gradient: ['#0385FF', '#0EA5E9'],
     action: 'Start Saving',
@@ -54,7 +73,7 @@ const PROMO_CARDS = [
     id: '3',
     title: 'Up to 5% Cashback',
     description: 'Shop at loyalty merchants and earn back',
-    icon: 'creditcard.fill',
+    icon: CreditCard,
     iconColor: '#00C853',
     gradient: ['#00C853', '#10B981'],
     action: 'Browse Merchants',
@@ -64,7 +83,7 @@ const PROMO_CARDS = [
     id: '4',
     title: 'Swap Points to Cash',
     description: 'Convert loyalty points to KHR or USDT',
-    icon: 'arrow.left.arrow.right',
+    icon: ArrowLeftRight,
     iconColor: '#FF9500',
     gradient: ['#FF9500', '#F59E0B'],
     action: 'Swap Now',
@@ -172,7 +191,7 @@ export default function WalletScreen() {
                 }}
                 className="bg-foreground rounded-full px-8"
               >
-                <Icon name={'plus.circle.fill' as any} size={20} color={colors.background} />
+                <PlusCircle size={20} color={colors.background} />
                 <Text className="font-semibold" style={{ color: colors.background }}>
                   Add Funds
                 </Text>
@@ -186,7 +205,7 @@ export default function WalletScreen() {
           <View className="flex-row gap-4 mb-4">
             <Animated.View entering={FadeInDown.delay(100).duration(400)} className="flex-1">
               <FeatureCard
-                icon={'qrcode' as any}
+                icon={QrCode}
                 iconColor="#0385FF"
                 title="Bakong Pay"
                 subtitle="Scan QR to pay"
@@ -199,7 +218,7 @@ export default function WalletScreen() {
             </Animated.View>
             <Animated.View entering={FadeInDown.delay(150).duration(400)} className="flex-1">
               <FeatureCard
-                icon="creditcard.fill"
+                icon={CreditCard}
                 iconColor="#FF9500"
                 title="Add Funds"
                 subtitle="Card or Crypto"
@@ -214,7 +233,7 @@ export default function WalletScreen() {
           <View className="flex-row gap-4">
             <Animated.View entering={FadeInDown.delay(200).duration(400)} className="flex-1">
               <FeatureCard
-                icon="chart.bar.fill"
+                icon={BarChart3}
                 iconColor="#8E44AD"
                 title="Earn"
                 subtitle="Cashback & Loyalty"
@@ -227,7 +246,7 @@ export default function WalletScreen() {
             </Animated.View>
             <Animated.View entering={FadeInDown.delay(250).duration(400)} className="flex-1">
               <FeatureCard
-                icon="building.columns.fill"
+                icon={Building2}
                 iconColor={isDarkColorScheme ? '#FFFFFF' : '#1a1a1a'}
                 title="My Cards"
                 subtitle="Manage cards"
@@ -262,7 +281,7 @@ export default function WalletScreen() {
           <View className="flex-row gap-4 mb-4">
             <View className="flex-1">
               <ServiceCard
-                icon="cart.fill"
+                icon={ShoppingCart}
                 iconColor="#FF3B57"
                 title="Shopping"
                 subtitle="Local markets"
@@ -272,7 +291,7 @@ export default function WalletScreen() {
             </View>
             <View className="flex-1">
               <ServiceCard
-                icon="ticket.fill"
+                icon={Ticket}
                 iconColor="#0385FF"
                 title="Tickets"
                 subtitle="Tours & attractions"
@@ -284,7 +303,7 @@ export default function WalletScreen() {
           <View className="flex-row gap-4">
             <View className="flex-1">
               <ServiceCard
-                icon="fork.knife"
+                icon={UtensilsCrossed}
                 iconColor="#FF9500"
                 title="Dining"
                 subtitle="Restaurants"
@@ -294,7 +313,7 @@ export default function WalletScreen() {
             </View>
             <View className="flex-1">
               <ServiceCard
-                icon="mappin.and.ellipse"
+                icon={MapPin}
                 iconColor="#8E44AD"
                 title="Experiences"
                 subtitle="Local activities"
@@ -319,7 +338,7 @@ export default function WalletScreen() {
                 }}
                 className="active:opacity-70"
               >
-                <Icon name="xmark.circle.fill" size={24} className="text-muted-foreground" />
+                <XCircle size={24} color={colors.mutedForeground} />
               </Pressable>
             </View>
 
@@ -401,7 +420,7 @@ export default function WalletScreen() {
                 borderStyle: 'dashed',
               }}
             >
-              <Icon name="eye" size={24} className="text-muted-foreground mb-2" />
+              <Eye size={24} color={colors.mutedForeground} />
               <Text variant="subhead" className="text-muted-foreground">
                 Tap to see promotions
               </Text>
@@ -420,7 +439,7 @@ export default function WalletScreen() {
           className="active:scale-95"
         >
           <View className="w-16 h-16 rounded-full bg-foreground items-center justify-center shadow-xl">
-            <Icon name="plus" size={32} color={colors.background} />
+            <Plus size={32} color={colors.background} />
           </View>
         </Pressable>
       </View>
@@ -448,7 +467,7 @@ export default function WalletScreen() {
             >
               <View className="px-6 pt-6 pb-4">
                 <ActionSheetItem
-                  icon={'qrcode' as any}
+                  icon={QrCode}
                   iconColor="#0385FF"
                   label="Scan QR"
                   onPress={() => {
@@ -458,7 +477,7 @@ export default function WalletScreen() {
                   }}
                 />
                 <ActionSheetItem
-                  icon="arrow.down.circle.fill"
+                  icon={ArrowDownCircle}
                   iconColor="#00C853"
                   label="Receive"
                   onPress={() => {
@@ -468,7 +487,7 @@ export default function WalletScreen() {
                   }}
                 />
                 <ActionSheetItem
-                  icon="arrow.up.circle.fill"
+                  icon={ArrowUpCircle}
                   iconColor="#FF9500"
                   label="Send Money"
                   onPress={() => {
@@ -536,7 +555,7 @@ function PromoCard({
               style={{ backgroundColor: card.iconColor }}
               className="w-14 h-14 rounded-2xl items-center justify-center mb-4"
             >
-              <Icon name={card.icon as any} size={28} color="#FFFFFF" />
+              <card.icon size={28} color="#FFFFFF" />
             </View>
 
             <Text variant="title2" className="font-bold mb-2">
@@ -559,7 +578,7 @@ function PromoCard({
             <Text variant="callout" className="font-semibold">
               {card.action}
             </Text>
-            <Icon name="arrow.right" size={16} />
+            <ArrowRight size={16} color={isDarkColorScheme ? '#FFFFFF' : '#000000'} />
           </View>
         </View>
       </View>
@@ -576,7 +595,7 @@ function FeatureCard({
   isDarkColorScheme,
   onPress,
 }: {
-  icon: any;
+  icon: React.ComponentType<{ size: number; color: string }>;
   iconColor: string;
   title: string;
   subtitle: string;
@@ -602,7 +621,7 @@ function FeatureCard({
           style={{ backgroundColor: iconColor }}
           className="w-14 h-14 rounded-2xl items-center justify-center"
         >
-          <Icon name={icon} size={28} color="#FFFFFF" />
+          {React.createElement(icon, { size: 28, color: '#FFFFFF' })}
         </View>
         <View>
           <Text variant="callout" className="font-semibold mb-1">
@@ -626,7 +645,7 @@ function ServiceCard({
   isDarkColorScheme,
   onPress,
 }: {
-  icon: any;
+  icon: React.ComponentType<{ size: number; color: string }>;
   iconColor: string;
   title: string;
   subtitle: string;
@@ -651,7 +670,7 @@ function ServiceCard({
           style={{ backgroundColor: iconColor }}
           className="w-12 h-12 rounded-xl items-center justify-center mb-3"
         >
-          <Icon name={icon} size={24} color="#FFFFFF" />
+          {React.createElement(icon, { size: 24, color: '#FFFFFF' })}
         </View>
         <Text variant="callout" className="font-semibold mb-1">
           {title}
@@ -672,7 +691,7 @@ function ActionSheetItem({
   onPress,
   isLast,
 }: {
-  icon: any;
+  icon: React.ComponentType<{ size: number; color: string }>;
   iconColor: string;
   label: string;
   onPress: () => void;
@@ -692,7 +711,7 @@ function ActionSheetItem({
         style={{ backgroundColor: iconColor }}
         className="w-10 h-10 rounded-full items-center justify-center"
       >
-        <Icon name={icon} size={20} color="#FFFFFF" />
+        {React.createElement(icon, { size: 20, color: '#FFFFFF' })}
       </View>
     </Pressable>
   );

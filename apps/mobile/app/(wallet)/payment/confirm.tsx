@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, CheckCircle2, Shield } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -42,7 +42,7 @@ export default function ConfirmPaymentScreen() {
       <View className="flex-1 bg-background items-center justify-center px-6">
         <Animated.View entering={FadeIn.duration(600)} className="items-center">
           <View className="w-24 h-24 rounded-full bg-green-500/20 items-center justify-center mb-6">
-            <Icon name="checkmark.circle.fill" size={80} className="text-green-500" />
+            <CheckCircle2 size={80} color="#22c55e" />
           </View>
           <Text variant="title1" className="font-bold mb-2">
             Payment Successful!
@@ -101,7 +101,7 @@ export default function ConfirmPaymentScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Confirm Payment
@@ -154,7 +154,7 @@ export default function ConfirmPaymentScreen() {
         <Animated.View entering={FadeInDown.delay(300).duration(400)}>
           <View className="bg-primary/10 rounded-2xl p-4">
             <View className="flex-row gap-3">
-              <Icon name="lock.shield.fill" size={20} className="text-primary mt-0.5" />
+              <Shield size={20} color={colors.primary} />
               <View className="flex-1">
                 <Text variant="caption1" className="text-muted-foreground">
                   Your payment is secured and encrypted. Funds will be instantly available in your
@@ -172,7 +172,7 @@ export default function ConfirmPaymentScreen() {
         className="px-6 pt-4 border-t border-border"
       >
         <Button onPress={handleConfirm} className="bg-primary mb-3">
-          <Icon name="checkmark.circle.fill" size={20} color="#FFFFFF" />
+          <CheckCircle2 size={20} color="#FFFFFF" />
           <Text className="text-primary-foreground font-semibold text-base">
             Confirm & Pay {amountKHR.toLocaleString('en-US')} KHR
           </Text>

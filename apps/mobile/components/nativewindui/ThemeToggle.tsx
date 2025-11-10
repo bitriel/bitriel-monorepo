@@ -1,7 +1,7 @@
 import { Pressable, View } from 'react-native';
 import Animated, { LayoutAnimationConfig, ZoomInRotate } from 'react-native-reanimated';
 
-import { Icon } from '@/components/nativewindui/Icon';
+import { Moon, Sun } from 'lucide-react-native';
 import { cn } from '@/lib/cn';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { COLORS } from '@/theme/colors';
@@ -18,12 +18,12 @@ export function ThemeToggle() {
           {colorScheme === 'dark'
             ? ({ pressed }) => (
                 <View className={cn('px-0.5', pressed && 'opacity-50')}>
-                  <Icon name="moon.stars" color={COLORS.white} />
+                  <Moon size={24} color={COLORS.white} />
                 </View>
               )
             : ({ pressed }) => (
                 <View className={cn('px-0.5', pressed && 'opacity-50')}>
-                  <Icon name="sun.min" color={COLORS.black} />
+                  <Sun size={24} color={COLORS.black} />
                 </View>
               )}
         </Pressable>

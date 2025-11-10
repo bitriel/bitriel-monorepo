@@ -6,14 +6,22 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import {
+  ChevronLeft,
+  ChevronRight,
+  ShoppingCart,
+  Ticket,
+  UtensilsCrossed,
+  Car,
+  Home,
+} from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const SERVICES = [
   {
     id: '1',
     category: 'Shopping',
-    icon: 'cart.fill',
+    icon: ShoppingCart,
     gradient: ['#FF3B57', '#FF6B35'],
     items: [
       { name: 'Local Markets', description: 'Traditional goods & crafts' },
@@ -24,7 +32,7 @@ const SERVICES = [
   {
     id: '2',
     category: 'Tours & Tickets',
-    icon: 'ticket.fill',
+    icon: Ticket,
     gradient: ['#0385FF', '#00C853'],
     items: [
       { name: 'City Tours', description: 'Guided heritage walks' },
@@ -35,7 +43,7 @@ const SERVICES = [
   {
     id: '3',
     category: 'Dining',
-    icon: 'fork.knife',
+    icon: UtensilsCrossed,
     gradient: ['#FF9500', '#FFB800'],
     items: [
       { name: 'Local Cuisine', description: 'Authentic flavors' },
@@ -46,7 +54,7 @@ const SERVICES = [
   {
     id: '4',
     category: 'Transportation',
-    icon: 'car.fill',
+    icon: Car,
     gradient: ['#8E44AD', '#C39BD3'],
     items: [
       { name: 'Ride Sharing', description: 'Quick & affordable' },
@@ -57,7 +65,7 @@ const SERVICES = [
   {
     id: '5',
     category: 'Accommodation',
-    icon: 'house.fill',
+    icon: Home,
     gradient: ['#E74C3C', '#FF6B9D'],
     items: [
       { name: 'Hotels', description: 'Luxury stays' },
@@ -82,8 +90,9 @@ export default function ServicesScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               router.back();
             }}
-            className="active:opacity-70">
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            className="active:opacity-70"
+          >
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             All Services
@@ -95,9 +104,7 @@ export default function ServicesScreen() {
       <ScrollView className="flex-1" contentContainerClassName="p-6">
         <View className="gap-6">
           {SERVICES.map((service, index) => (
-            <Animated.View
-              key={service.id}
-              entering={FadeInDown.delay(index * 100).duration(400)}>
+            <Animated.View key={service.id} entering={FadeInDown.delay(index * 100).duration(400)}>
               <ServiceCategory service={service} />
             </Animated.View>
           ))}
@@ -108,13 +115,15 @@ export default function ServicesScreen() {
 }
 
 function ServiceCategory({ service }: { service: (typeof SERVICES)[number] }) {
+  const { colors } = useColorScheme();
   return (
     <View className="bg-card rounded-3xl p-5 border border-border shadow-sm">
       <View className="flex-row items-center gap-3 mb-4">
         <View
           style={{ backgroundColor: service.gradient[0] }}
-          className="w-14 h-14 rounded-2xl items-center justify-center">
-            <Icon name={service.icon as any} size={28} color="#FFFFFF" />
+          className="w-14 h-14 rounded-2xl items-center justify-center"
+        >
+          <service.icon size={28} color="#FFFFFF" />
         </View>
         <Text variant="title3" className="font-semibold flex-1">
           {service.category}
@@ -125,7 +134,8 @@ function ServiceCategory({ service }: { service: (typeof SERVICES)[number] }) {
           <Pressable
             key={index}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            className="active:opacity-70">
+            className="active:opacity-70"
+          >
             <View className="flex-row items-center justify-between py-2">
               <View className="flex-1">
                 <Text variant="callout" className="font-semibold mb-0.5">
@@ -135,7 +145,7 @@ function ServiceCategory({ service }: { service: (typeof SERVICES)[number] }) {
                   {item.description}
                 </Text>
               </View>
-              <Icon name="chevron.right" size={20} className="text-muted-foreground" />
+              <ChevronRight size={20} color={colors.mutedForeground} />
             </View>
           </Pressable>
         ))}
@@ -143,4 +153,3 @@ function ServiceCategory({ service }: { service: (typeof SERVICES)[number] }) {
     </View>
   );
 }
-

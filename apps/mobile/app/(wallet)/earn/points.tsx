@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, ArrowLeftRight, Clock, Info, Star, CreditCard } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -91,7 +91,7 @@ export default function PointsScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Loyalty Points
@@ -131,7 +131,7 @@ export default function PointsScreen() {
                 }}
                 className="flex-1 bg-primary"
               >
-                <Icon name="arrow.left.arrow.right" size={18} color="#FFFFFF" />
+                <ArrowLeftRight size={18} color="#FFFFFF" />
                 <Text className="text-primary-foreground font-semibold">Swap Points</Text>
               </Button>
               <Button
@@ -142,7 +142,7 @@ export default function PointsScreen() {
                 className="flex-1"
                 variant="secondary"
               >
-                <Icon name="clock.fill" size={18} />
+                <Clock size={18} color={colors.foreground} />
                 <Text className="font-semibold">History</Text>
               </Button>
             </View>
@@ -198,7 +198,7 @@ export default function PointsScreen() {
             }}
           >
             <View className="flex-row gap-3">
-              <Icon name="info.circle.fill" size={20} className="text-blue-500 mt-0.5" />
+              <Info size={20} color="#3b82f6" />
               <View className="flex-1">
                 <Text variant="callout" className="font-semibold mb-1">
                   Swap Points ⇄ Cash
@@ -240,21 +240,21 @@ export default function PointsScreen() {
 
           <View className="gap-3">
             <InfoItem
-              icon="star.fill"
+              icon={Star}
               iconColor="#FFD700"
               title="Earn Points"
               description="Get loyalty points with every purchase at participating merchants"
               isDarkColorScheme={isDarkColorScheme}
             />
             <InfoItem
-              icon="arrow.left.arrow.right"
+              icon={ArrowLeftRight}
               iconColor="#0385FF"
               title="Swap Points"
               description="Exchange points between merchants or convert to/from cash (KHR, USDT, USD)"
               isDarkColorScheme={isDarkColorScheme}
             />
             <InfoItem
-              icon="creditcard.fill"
+              icon={CreditCard}
               iconColor="#00C853"
               title="Pay with Points"
               description="Use points to pay for purchases at any loyalty merchant"
@@ -327,7 +327,7 @@ function InfoItem({
   description,
   isDarkColorScheme,
 }: {
-  icon: string;
+  icon: React.ComponentType<{ size: number; color: string }>;
   iconColor: string;
   title: string;
   description: string;
@@ -339,7 +339,7 @@ function InfoItem({
         style={{ backgroundColor: iconColor }}
         className="w-10 h-10 rounded-full items-center justify-center flex-shrink-0"
       >
-        <Icon name={icon as any} size={18} color="#FFFFFF" />
+        {React.createElement(icon, { size: 18, color: '#FFFFFF' })}
       </View>
       <View className="flex-1">
         <Text variant="callout" className="font-semibold mb-0.5">

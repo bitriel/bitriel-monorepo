@@ -6,35 +6,35 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, CreditCard, Building2, Bitcoin, QrCode, CheckCircle2, Info } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const PAYMENT_METHODS = [
   {
     id: 'credit-card',
-    icon: 'creditcard.fill',
+    icon: CreditCard,
     title: 'Credit/Debit Card',
     subtitle: 'Add funds instantly',
     color: '#0385FF',
   },
   {
     id: 'bank-transfer',
-    icon: 'building.columns.fill',
+    icon: Building2,
     title: 'Bank Transfer',
     subtitle: 'Link your bank account',
     color: '#00C853',
   },
   {
     id: 'crypto',
-    icon: 'bitcoinsign.circle.fill',
+    icon: Bitcoin,
     title: 'Cryptocurrency',
     subtitle: 'Pay with crypto',
     color: '#FF9500',
   },
   {
     id: 'bakong',
-    icon: 'qrcode.viewfinder',
+    icon: QrCode,
     title: 'Bakong QR',
     subtitle: 'Scan to pay via Bakong',
     color: '#8E44AD',
@@ -90,7 +90,7 @@ export default function AddFundsScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Add Funds
@@ -178,7 +178,7 @@ export default function AddFundsScreen() {
                       style={{ backgroundColor: method.color }}
                       className="w-12 h-12 rounded-xl items-center justify-center"
                     >
-                      <Icon name={method.icon as any} size={24} color="#FFFFFF" />
+                      <method.icon size={24} color="#FFFFFF" />
                     </View>
                     <View className="flex-1">
                       <Text variant="callout" className="font-semibold mb-0.5">
@@ -189,7 +189,7 @@ export default function AddFundsScreen() {
                       </Text>
                     </View>
                     {selectedMethod === method.id && (
-                      <Icon name="checkmark.circle.fill" size={24} className="text-primary" />
+                      <CheckCircle2 size={24} color={colors.primary} />
                     )}
                   </View>
                 </View>
@@ -202,7 +202,7 @@ export default function AddFundsScreen() {
         <Animated.View entering={FadeInDown.delay(300).duration(400)}>
           <View className="bg-muted/10 rounded-2xl p-4">
             <View className="flex-row gap-3">
-              <Icon name="info.circle.fill" size={20} className="text-primary mt-0.5" />
+              <Info size={20} color={colors.primary} />
               <View className="flex-1">
                 <Text variant="caption1" className="text-muted-foreground">
                   Funds will be converted to Cambodian Riel (KHR) and credited to your Bitriel

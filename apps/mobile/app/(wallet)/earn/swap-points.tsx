@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, ChevronDown, ArrowDown, Info, CheckCircle2 } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -139,7 +139,7 @@ export default function SwapPointsScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Swap & Convert
@@ -213,7 +213,7 @@ export default function SwapPointsScreen() {
                   <Text variant="callout" className="text-muted-foreground">
                     Select {swapMode === 'cash-to-points' ? 'currency' : 'merchant'}
                   </Text>
-                  <Icon name="chevron.down" size={20} color={colors.mutedForeground} />
+                  <ChevronDown size={20} color={colors.mutedForeground} />
                 </View>
               )}
             </View>
@@ -245,7 +245,7 @@ export default function SwapPointsScreen() {
               borderColor: isDarkColorScheme ? '#2C2C2E' : '#E5E5EA',
             }}
           >
-            <Icon name="arrow.down" size={24} color={colors.primary} />
+            <ArrowDown size={24} color={colors.primary} />
           </View>
         </Animated.View>
 
@@ -282,7 +282,7 @@ export default function SwapPointsScreen() {
                   <Text variant="callout" className="text-muted-foreground">
                     Select {swapMode === 'points-to-cash' ? 'currency' : 'merchant'}
                   </Text>
-                  <Icon name="chevron.down" size={20} color={colors.mutedForeground} />
+                  <ChevronDown size={20} color={colors.mutedForeground} />
                 </View>
               )}
             </View>
@@ -413,7 +413,7 @@ export default function SwapPointsScreen() {
             }}
           >
             <View className="flex-row gap-3">
-              <Icon name="info.circle" size={20} color={colors.mutedForeground} />
+              <Info size={20} color={colors.mutedForeground} />
               <View className="flex-1">
                 <Text variant="caption1" className="text-muted-foreground">
                   {swapMode === 'points-to-points' 
@@ -527,7 +527,7 @@ function ItemDisplay({ item, colors }: { item: SwapItem; colors: any }) {
           }
         </Text>
       </View>
-      <Icon name="chevron.down" size={20} color={colors.mutedForeground} />
+      <ChevronDown size={20} color={colors.mutedForeground} />
     </View>
   );
 }
@@ -588,7 +588,7 @@ function ItemPicker({
                 </Text>
               </View>
               {selectedItem?.id === item.id && (
-                <Icon name="checkmark.circle.fill" size={24} className="text-blue-500" />
+                <CheckCircle2 size={24} color="#3b82f6" />
               )}
             </View>
           </Pressable>

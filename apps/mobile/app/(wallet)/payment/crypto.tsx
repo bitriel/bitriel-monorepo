@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, Bitcoin, DollarSign, Sparkles, CheckCircle2 } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -15,7 +15,7 @@ const CRYPTO_OPTIONS = [
     id: 'usdc',
     name: 'USDC',
     fullName: 'USD Coin',
-    icon: 'dollarsign.circle.fill',
+    icon: DollarSign,
     color: '#0385FF',
     network: 'Solana',
     rate: '1 USDC = 4,050 KHR',
@@ -24,7 +24,7 @@ const CRYPTO_OPTIONS = [
     id: 'usdt',
     name: 'USDT',
     fullName: 'Tether',
-    icon: 'dollarsign.circle.fill',
+    icon: DollarSign,
     color: '#00C853',
     network: 'Solana',
     rate: '1 USDT = 4,050 KHR',
@@ -33,7 +33,7 @@ const CRYPTO_OPTIONS = [
     id: 'sol',
     name: 'SOL',
     fullName: 'Solana',
-    icon: 'sparkles',
+    icon: Sparkles,
     color: '#9945FF',
     network: 'Solana',
     rate: '1 SOL = 607,500 KHR',
@@ -42,7 +42,7 @@ const CRYPTO_OPTIONS = [
     id: 'btc',
     name: 'BTC',
     fullName: 'Bitcoin',
-    icon: 'bitcoinsign.circle.fill',
+    icon: Bitcoin,
     color: '#FF9500',
     network: 'Bitcoin',
     rate: '1 BTC = 283,500,000 KHR',
@@ -74,7 +74,7 @@ export default function CryptoPaymentScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Pay with Crypto
@@ -88,7 +88,7 @@ export default function CryptoPaymentScreen() {
         <Animated.View entering={FadeInDown.delay(100).duration(400)} className="mb-6">
           <View className="bg-primary/10 rounded-2xl p-4 border border-primary/20">
             <View className="flex-row gap-3">
-              <Icon name={'bitcoinsign.circle.fill' as any} size={24} className="text-primary" />
+              <Bitcoin size={24} color={colors.primary} />
               <View className="flex-1">
                 <Text variant="callout" className="font-semibold mb-1">
                   Crypto to Riel Conversion
@@ -128,7 +128,7 @@ export default function CryptoPaymentScreen() {
                       style={{ backgroundColor: crypto.color }}
                       className="w-14 h-14 rounded-full items-center justify-center"
                     >
-                      <Icon name={crypto.icon as any} size={28} color="#FFFFFF" />
+                      <crypto.icon size={28} color="#FFFFFF" />
                     </View>
                     <View className="flex-1">
                       <View className="flex-row items-center gap-2 mb-1">
@@ -149,7 +149,7 @@ export default function CryptoPaymentScreen() {
                       </Text>
                     </View>
                     {selectedCrypto === crypto.id && (
-                      <Icon name="checkmark.circle.fill" size={28} className="text-primary" />
+                      <CheckCircle2 size={28} color={colors.primary} />
                     )}
                   </View>
                 </View>

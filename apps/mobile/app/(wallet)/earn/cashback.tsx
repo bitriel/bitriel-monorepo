@@ -6,7 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import { ChevronLeft, Clock, Store } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -74,7 +74,7 @@ export default function CashbackScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Cashback Rewards
@@ -112,7 +112,7 @@ export default function CashbackScreen() {
                 </Text>
               </View>
               <View className="w-16 h-16 rounded-full bg-green-500/10 items-center justify-center">
-                <Icon name="clock.fill" size={32} className="text-green-500" />
+                <Clock size={32} color="#22c55e" />
               </View>
             </View>
             <View
@@ -233,7 +233,7 @@ export default function CashbackScreen() {
           }}
           className="bg-primary"
         >
-          <Icon name="storefront.fill" size={20} color="#FFFFFF" />
+          <Store size={20} color="#FFFFFF" />
           <Text className="text-primary-foreground font-semibold text-base">
             Find Merchants
           </Text>

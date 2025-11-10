@@ -6,7 +6,14 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
-import { Icon } from '@/components/nativewindui/Icon';
+import {
+  ChevronLeft,
+  TrendingUp,
+  Sparkles,
+  Shield,
+  ArrowUpDown,
+  Calendar,
+} from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -36,7 +43,7 @@ export default function SavingsScreen() {
             }}
             className="active:opacity-70"
           >
-            <Icon name="chevron.left" size={28} color={colors.foreground} />
+            <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
             Savings Account
@@ -74,11 +81,7 @@ export default function SavingsScreen() {
                 </Text>
               </View>
               <View className="w-16 h-16 rounded-full bg-blue-500/10 items-center justify-center">
-                <Icon
-                  name={'chart.line.uptrend.xyaxis' as any}
-                  size={32}
-                  className="text-primary"
-                />
+                <TrendingUp size={32} color={colors.primary} />
               </View>
             </View>
             <View className="flex-row items-center justify-between">
@@ -113,7 +116,7 @@ export default function SavingsScreen() {
                   Annual Percentage Yield
                 </Text>
               </View>
-              <Icon name={'sparkles' as any} size={32} className="text-primary" />
+              <Sparkles size={32} color={colors.primary} />
             </View>
           </View>
         </Animated.View>
@@ -185,25 +188,25 @@ export default function SavingsScreen() {
             }}
           >
             <BenefitItem
-              icon="chart.line.uptrend.xyaxis"
+              icon={TrendingUp}
               title="High APY"
               description="Earn 6.01% annual yield on your savings"
               isLast={false}
             />
             <BenefitItem
-              icon="lock.shield.fill"
+              icon={Shield}
               title="Secure & Protected"
               description="Your funds are protected and insured"
               isLast={false}
             />
             <BenefitItem
-              icon="arrow.up.arrow.down"
+              icon={ArrowUpDown}
               title="Flexible Withdrawals"
               description="Withdraw anytime with no penalties"
               isLast={false}
             />
             <BenefitItem
-              icon="calendar"
+              icon={Calendar}
               title="Daily Accrual"
               description="Interest calculated and added daily"
               isLast={true}
@@ -221,17 +224,18 @@ function BenefitItem({
   description,
   isLast,
 }: {
-  icon: string;
+  icon: React.ComponentType<{ size: number; color: string }>;
   title: string;
   description: string;
   isLast: boolean;
 }) {
   const { colors } = useColorScheme();
 
+  const IconComponent = icon;
   return (
     <View className={`flex-row gap-3 ${!isLast ? 'mb-4 pb-4 border-b border-border' : ''}`}>
       <View className="w-10 h-10 rounded-full bg-primary/10 items-center justify-center">
-        <Icon name={icon as any} size={20} color={colors.primary} />
+        <IconComponent size={20} color={colors.primary} />
       </View>
       <View className="flex-1">
         <Text variant="callout" className="font-semibold mb-0.5">
