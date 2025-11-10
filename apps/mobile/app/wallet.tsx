@@ -18,6 +18,9 @@ import Animated, {
   SlideInDown,
   FadeOut,
 } from 'react-native-reanimated';
+import { MotiView, MotiImage } from 'moti';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Easing } from 'react-native-reanimated';
 
 import { Text } from '@/components/nativewindui/Text';
 import {
@@ -46,6 +49,16 @@ import { useColorScheme } from '@/lib/useColorScheme';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 48; // 24px padding on each side
 const CARD_SPACING = 12;
+
+// Background images for animated card
+const CARD_BACKGROUNDS = [
+  'https://images.pexels.com/photos/2887710/pexels-photo-2887710.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=350&w=660',
+  'https://images.pexels.com/photos/1561020/pexels-photo-1561020.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=660',
+  'https://images.pexels.com/photos/1212407/pexels-photo-1212407.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=660',
+  'https://images.pexels.com/photos/1193743/pexels-photo-1193743.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=660',
+];
+
+const BALANCE_CARD_WIDTH = SCREEN_WIDTH - 48;
 
 // Promo cards data
 const PROMO_CARDS = [
@@ -99,7 +112,7 @@ export default function WalletScreen() {
   const [showPromoCards, setShowPromoCards] = React.useState(true);
   const [activePromoIndex, setActivePromoIndex] = React.useState(0);
 
-  const balanceKHR = 50420000; // Balance in Riel (KHR)
+  const balanceKHR = 123456789; // Balance in Riel (KHR)
   const exchangeRate = 4050; // 1 USD = 4050 KHR (approximate)
   const balanceUSD = balanceKHR / exchangeRate;
   const hasBalance = balanceKHR > 0;
@@ -122,53 +135,131 @@ export default function WalletScreen() {
         <View className="px-6 mb-8">
           <Animated.View entering={FadeIn.duration(400)}>
             <View
-              className="rounded-3xl p-6"
               style={{
-                backgroundColor: isDarkColorScheme ? '#1C1C1E' : '#F9F9F9',
-                borderWidth: 1,
-                borderColor: isDarkColorScheme ? '#2C2C2E' : '#E5E5EA',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: isDarkColorScheme ? 0 : 0.08,
-                shadowRadius: 8,
-                elevation: 3,
+                overflow: 'hidden',
+                borderRadius: 24,
               }}
             >
-              {/* Header with USD Badge */}
-              <View className="flex-row items-center justify-between mb-4">
-                <Text variant="subhead" className="text-muted-foreground font-medium">
-                  Total Balance
-                </Text>
-                <View
-                  style={{
-                    backgroundColor: isDarkColorScheme
-                      ? 'rgba(0, 200, 83, 0.15)'
-                      : 'rgba(0, 200, 83, 0.1)',
-                    borderWidth: 1,
-                    borderColor: isDarkColorScheme ? '#00C85340' : '#00C85320',
+              {/* Base Gradient Background */}
+              <LinearGradient
+                colors={['#4facfe', '#00f2fe']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                }}
+              />
+
+              {/* Animated Background Image */}
+              <MotiView
+                from={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{
+                  opacity: {
+                    type: 'timing',
+                    duration: 1000,
+                    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+                  },
+                }}
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                <MotiImage
+                  source={{
+                    uri: CARD_BACKGROUNDS[Math.floor(Math.random() * CARD_BACKGROUNDS.length)],
                   }}
-                  className="rounded-full px-3 py-1.5"
-                >
-                  <Text variant="caption1" className="text-green-500 font-semibold">
-                    ≈ ${balanceUSD.toFixed(2)} USD
+                  from={{
+                    transform: [{ rotate: '0deg' }, { scale: 2 }],
+                  }}
+                  animate={{
+                    transform: [{ rotate: '360deg' }, { scale: 2.5 }],
+                  }}
+                  transition={{
+                    type: 'timing',
+                    duration: 15000,
+                    easing: Easing.inOut(Easing.sin),
+                    loop: true,
+                    repeatReverse: true,
+                  }}
+                  blurRadius={80}
+                  style={{
+                    width: '200%',
+                    height: '200%',
+                    resizeMode: 'cover',
+                    position: 'absolute',
+                    left: '-50%',
+                    top: '-50%',
+                  }}
+                />
+              </MotiView>
+
+              {/* Gradient Overlay for depth */}
+              <LinearGradient
+                colors={['rgba(0, 0, 0, 0.05)', 'rgba(0, 0, 0, 0.15)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                }}
+              />
+
+              {/* Card Content */}
+              <View style={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 28 }}>
+                {/* Header with USD Badge */}
+                <View className="flex-row items-center justify-between mb-4">
+                  <Text
+                    variant="subhead"
+                    className="font-medium"
+                    style={{ color: 'rgba(255, 255, 255, 0.95)' }}
+                  >
+                    Total Balance
                   </Text>
+                  <View
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                      borderRadius: 16,
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                    }}
+                  >
+                    <Text
+                      variant="caption1"
+                      className="font-semibold"
+                      style={{ color: '#FFFFFF', fontSize: 12 }}
+                    >
+                      ≈ ${balanceUSD.toFixed(2)} USD
+                    </Text>
+                  </View>
                 </View>
-              </View>
 
-              {/* Main Balance */}
-              <View className="flex-row items-baseline gap-2 mb-2">
-                <Text variant="largeTitle" className="font-bold">
-                  {hasBalance ? balanceKHR.toLocaleString('en-US') : '0'}
+                {/* Main Balance */}
+                <Text
+                  className="font-bold mb-1 text-4xl text-white w-full"
+                  adjustsFontSizeToFit
+                  numberOfLines={1}
+                  minimumFontScale={0.5}
+                >
+                  {hasBalance ? balanceKHR.toLocaleString('en-US') : '0'} KHR
                 </Text>
-                <Text variant="title1" className="font-semibold text-muted-foreground">
-                  KHR
+
+                {/* Currency Label */}
+                <Text
+                  variant="callout"
+                  style={{
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: 15,
+                  }}
+                >
+                  Cambodian Riel
                 </Text>
               </View>
-
-              {/* Currency Label */}
-              <Text variant="callout" className="text-muted-foreground">
-                Cambodian Riel
-              </Text>
             </View>
           </Animated.View>
 
