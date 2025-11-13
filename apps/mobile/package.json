@@ -28,6 +28,7 @@
     "@rn-primitives/avatar": "^1.2.0",
     "@rn-primitives/slot": "^1.2.0",
     "@shopify/flash-list": "2.0.2",
+    "@shopify/react-native-skia": "^2.3.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "expo": "~54.0.13",
