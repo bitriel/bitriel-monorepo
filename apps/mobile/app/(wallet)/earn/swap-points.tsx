@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, View, Pressable, TextInput, Alert } from 'react-native';
+import { ScrollView, View, Pressable, TextInput, Alert, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -9,15 +9,10 @@ import { Text } from '@/components/nativewindui/Text';
 import { ChevronLeft, ChevronDown, ArrowDown, Info, CheckCircle2 } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
+import { LOYALTY_MERCHANTS, LoyaltyMerchant } from '@/services/mockData';
 
-// Mock merchant data
-const MERCHANTS = [
-  { id: '1', name: 'Brown Coffee', logo: '☕', points: 20, color: '#8B4513', type: 'merchant' as const },
-  { id: '2', name: 'Zando Fashion', logo: '👔', points: 10, color: '#E91E63', type: 'merchant' as const },
-  { id: '3', name: 'Lucky Supermarket', logo: '🛒', points: 15, color: '#4CAF50', type: 'merchant' as const },
-  { id: '4', name: 'Angkor Petroleum', logo: '⛽', points: 8, color: '#FF5722', type: 'merchant' as const },
-  { id: '5', name: 'Cinema Star', logo: '🎬', points: 5, color: '#9C27B0', type: 'merchant' as const },
-];
+// Use centralized merchant data
+const MERCHANTS = LOYALTY_MERCHANTS;
 
 // Currency options
 const CURRENCIES = [
@@ -507,21 +502,30 @@ function ModeTab({
 
 function ItemDisplay({ item, colors }: { item: SwapItem; colors: any }) {
   const isCurrency = 'balance' in item;
-  
+  const hasImageLogo = 'logoType' in item && item.logoType === 'image';
+
   return (
     <View className="flex-row items-center">
       <View
-        style={{ backgroundColor: item.color }}
-        className="w-12 h-12 rounded-xl items-center justify-center"
+        style={{ backgroundColor: hasImageLogo ? '#FFFFFF' : item.color }}
+        className="w-12 h-12 rounded-xl items-center justify-center overflow-hidden"
       >
-        <Text style={{ fontSize: 24 }}>{item.logo}</Text>
+        {hasImageLogo ? (
+          <Image
+            source={{ uri: item.logo }}
+            style={{ width: 48, height: 48 }}
+            resizeMode="contain"
+          />
+        ) : (
+          <Text style={{ fontSize: 24 }}>{item.logo}</Text>
+        )}
       </View>
       <View className="flex-1 ml-3">
         <Text variant="callout" className="font-semibold">
           {item.name}
         </Text>
         <Text variant="caption1" className="text-muted-foreground">
-          {isCurrency 
+          {isCurrency
             ? `${item.balance.toFixed(2)} ${item.symbol}`
             : `${item.points} points available`
           }
@@ -556,7 +560,8 @@ function ItemPicker({
     >
       {items.map((item, index) => {
         const isCurrency = 'balance' in item;
-        
+        const hasImageLogo = 'logoType' in item && item.logoType === 'image';
+
         return (
           <Pressable
             key={item.id}
@@ -571,17 +576,25 @@ function ItemPicker({
               }}
             >
               <View
-                style={{ backgroundColor: item.color }}
-                className="w-10 h-10 rounded-lg items-center justify-center"
+                style={{ backgroundColor: hasImageLogo ? '#FFFFFF' : item.color }}
+                className="w-10 h-10 rounded-lg items-center justify-center overflow-hidden"
               >
-                <Text style={{ fontSize: 20 }}>{item.logo}</Text>
+                {hasImageLogo ? (
+                  <Image
+                    source={{ uri: item.logo }}
+                    style={{ width: 40, height: 40 }}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <Text style={{ fontSize: 20 }}>{item.logo}</Text>
+                )}
               </View>
               <View className="flex-1 ml-3">
                 <Text variant="callout" className="font-semibold">
                   {item.name}
                 </Text>
                 <Text variant="caption1" className="text-muted-foreground">
-                  {isCurrency 
+                  {isCurrency
                     ? `${item.balance.toFixed(2)} ${item.symbol}`
                     : `${item.points} pts`
                   }

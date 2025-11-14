@@ -26,6 +26,9 @@ import { ThemeToggle } from '@/components/nativewindui/ThemeToggle';
 import { cn } from '@/lib/cn';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { NAV_THEME } from '@/theme';
+import { PaymentProvider } from '@/context/PaymentContext';
+import { ToastProvider } from '@/context/ToastContext';
+import { ToastContainer } from '@/components/Toast';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -67,20 +70,23 @@ export default function RootLayout() {
         style={isDarkColorScheme ? 'light' : 'dark'}
       />
       {/* WRAP YOUR APP WITH ANY ADDITIONAL PROVIDERS HERE */}
-      {/* <ExampleProvider> */}
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <ActionSheetProvider>
-          <NavThemeProvider value={NAV_THEME[colorScheme]}>
-            <Stack>
-              <Stack.Screen name="index" options={INDEX_OPTIONS} />
-              <Stack.Screen name="wallet" options={WALLET_OPTIONS} />
-              <Stack.Screen name="(wallet)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={MODAL_OPTIONS} />
-            </Stack>
-          </NavThemeProvider>
-        </ActionSheetProvider>
+        <ToastProvider>
+          <PaymentProvider>
+            <ActionSheetProvider>
+              <NavThemeProvider value={NAV_THEME[colorScheme]}>
+                <Stack>
+                  <Stack.Screen name="index" options={INDEX_OPTIONS} />
+                  <Stack.Screen name="wallet" options={WALLET_OPTIONS} />
+                  <Stack.Screen name="(wallet)" options={{ headerShown: false }} />
+                  <Stack.Screen name="modal" options={MODAL_OPTIONS} />
+                </Stack>
+                <ToastContainer />
+              </NavThemeProvider>
+            </ActionSheetProvider>
+          </PaymentProvider>
+        </ToastProvider>
       </GestureHandlerRootView>
-      {/* </ExampleProvider> */}
     </>
   );
 }

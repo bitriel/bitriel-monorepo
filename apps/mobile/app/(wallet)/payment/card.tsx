@@ -9,24 +9,90 @@ import { Text } from '@/components/nativewindui/Text';
 import { ChevronLeft, CreditCard, Check, Shield } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
+import { usePayment } from '@/context/PaymentContext';
+import { useToast } from '@/context/ToastContext';
+import { getCardType, formatCardNumber } from '@/services/mockData';
 
 export default function CardPaymentScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { colors } = useColorScheme();
-  
+  const { addCard, selectCard } = usePayment();
+  const { success } = useToast();
+
   const [cardNumber, setCardNumber] = React.useState('');
   const [expiryDate, setExpiryDate] = React.useState('');
   const [cvv, setCvv] = React.useState('');
   const [cardholderName, setCardholderName] = React.useState('');
   const [saveCard, setSaveCard] = React.useState(true);
 
-  const isFormValid = cardNumber.length >= 15 && expiryDate.length === 5 && cvv.length >= 3 && cardholderName.length > 0;
+  // Auto-format card number with spaces
+  const handleCardNumberChange = (text: string) => {
+    const cleaned = text.replace(/\s/g, '');
+    if (cleaned.length <= 16) {
+      setCardNumber(formatCardNumber(cleaned));
+    }
+  };
+
+  // Auto-format expiry date
+  const handleExpiryChange = (text: string) => {
+    const cleaned = text.replace(/\//g, '');
+    if (cleaned.length <= 4) {
+      if (cleaned.length >= 2) {
+        setExpiryDate(`${cleaned.slice(0, 2)}/${cleaned.slice(2)}`);
+      } else {
+        setExpiryDate(cleaned);
+      }
+    }
+  };
+
+  const isFormValid =
+    cardNumber.replace(/\s/g, '').length >= 15 &&
+    expiryDate.length === 5 &&
+    cvv.length >= 3 &&
+    cardholderName.length > 0;
 
   const handlePayment = () => {
     if (!isFormValid) return;
-    
+
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    const detectedCardType = getCardType(cardNumber);
+    const last4 = cardNumber.replace(/\s/g, '').slice(-4);
+
+    // Handle UNKNOWN card type by defaulting to VISA
+    const cardType: 'VISA' | 'MASTERCARD' | 'AMEX' =
+      detectedCardType === 'UNKNOWN' ? 'VISA' : detectedCardType;
+
+    // Generate card color based on type
+    const cardColors = {
+      VISA: '#0385FF',
+      MASTERCARD: '#FF9500',
+      AMEX: '#006FCF',
+    };
+
+    const newCard = {
+      type: cardType,
+      last4,
+      expiryDate,
+      cardholderName,
+      isDefault: false,
+      color: cardColors[cardType],
+      fullNumber: cardNumber,
+    };
+
+    if (saveCard) {
+      // Add card to saved cards
+      addCard(newCard);
+      success('Card saved successfully!');
+    }
+
+    // Select this card for the current payment
+    selectCard({
+      id: `temp_${Date.now()}`, // Temporary ID, will be replaced by addCard
+      ...newCard,
+    });
+
     // Navigate to confirmation
     router.push('/(wallet)/payment/confirm');
   };
@@ -41,7 +107,8 @@ export default function CardPaymentScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               router.back();
             }}
-            className="active:opacity-70">
+            className="active:opacity-70"
+          >
             <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
@@ -56,7 +123,8 @@ export default function CardPaymentScreen() {
         <Animated.View entering={FadeInDown.delay(100).duration(400)} className="mb-8">
           <View
             className="bg-gradient-to-br rounded-3xl p-6 aspect-[1.586]"
-            style={{ backgroundColor: '#667eea' }}>
+            style={{ backgroundColor: '#667eea' }}
+          >
             <View className="flex-1 justify-between">
               <View className="flex-row justify-between items-start">
                 <CreditCard size={40} color="#FFFFFF" />
@@ -100,7 +168,7 @@ export default function CardPaymentScreen() {
             <View className="bg-card border border-border rounded-2xl px-4 py-3.5">
               <TextInput
                 value={cardNumber}
-                onChangeText={setCardNumber}
+                onChangeText={handleCardNumberChange}
                 placeholder="1234 5678 9012 3456"
                 keyboardType="number-pad"
                 maxLength={19}
@@ -119,7 +187,7 @@ export default function CardPaymentScreen() {
               <View className="bg-card border border-border rounded-2xl px-4 py-3.5">
                 <TextInput
                   value={expiryDate}
-                  onChangeText={setExpiryDate}
+                  onChangeText={handleExpiryChange}
                   placeholder="MM/YY"
                   keyboardType="number-pad"
                   maxLength={5}
@@ -175,12 +243,14 @@ export default function CardPaymentScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               setSaveCard(!saveCard);
             }}
-            className="active:opacity-70">
+            className="active:opacity-70"
+          >
             <View className="flex-row items-center gap-3">
               <View
                 className={`w-6 h-6 rounded-md border-2 items-center justify-center ${
                   saveCard ? 'bg-primary border-primary' : 'border-border'
-                }`}>
+                }`}
+              >
                 {saveCard && <Check size={16} color="#FFFFFF" />}
               </View>
               <Text variant="subhead" className="flex-1">
@@ -212,18 +282,17 @@ export default function CardPaymentScreen() {
       {/* Pay Button */}
       <View
         style={{ paddingBottom: insets.bottom + 16 }}
-        className="px-6 pt-4 border-t border-border">
+        className="px-6 pt-4 border-t border-border"
+      >
         <Button
           onPress={handlePayment}
           disabled={!isFormValid}
-          className={`${!isFormValid ? 'opacity-50' : ''} bg-primary`}>
+          className={`${!isFormValid ? 'opacity-50' : ''} bg-primary`}
+        >
           <Shield size={20} color="#FFFFFF" />
-          <Text className="text-primary-foreground font-semibold text-base">
-            Pay Securely
-          </Text>
+          <Text className="text-primary-foreground font-semibold text-base">Pay Securely</Text>
         </Button>
       </View>
     </View>
   );
 }
-

@@ -9,55 +9,19 @@ import { Text } from '@/components/nativewindui/Text';
 import { ChevronLeft, ArrowLeftRight, Clock, Info, Star, CreditCard } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
+import { LOYALTY_MERCHANTS } from '@/services/mockData';
 
-// Mock data
-const MERCHANT_POINTS = [
-  {
-    id: '1',
-    merchantName: 'Brown Coffee',
-    merchantLogo: '☕',
-    points: 20,
-    pointValue: 1, // 1 point = $1
-    category: 'Food & Beverage',
-    color: '#8B4513',
-  },
-  {
-    id: '2',
-    merchantName: 'Zando Fashion',
-    merchantLogo: '👔',
-    points: 10,
-    pointValue: 1,
-    category: 'Fashion & Apparel',
-    color: '#E91E63',
-  },
-  {
-    id: '3',
-    merchantName: 'Lucky Supermarket',
-    merchantLogo: '🛒',
-    points: 15,
-    pointValue: 1,
-    category: 'Retail',
-    color: '#4CAF50',
-  },
-  {
-    id: '4',
-    merchantName: 'Angkor Petroleum',
-    merchantLogo: '⛽',
-    points: 8,
-    pointValue: 1,
-    category: 'Fuel & Transport',
-    color: '#FF5722',
-  },
-  {
-    id: '5',
-    merchantName: 'Cinema Star',
-    merchantLogo: '🎬',
-    points: 5,
-    pointValue: 1,
-    category: 'Entertainment',
-    color: '#9C27B0',
-  },
-];
+// Use centralized merchant data and transform to match component expectations
+const MERCHANT_POINTS = LOYALTY_MERCHANTS.map(merchant => ({
+  id: merchant.id,
+  merchantName: merchant.name,
+  merchantLogo: merchant.logo,
+  logoType: merchant.logoType,
+  points: merchant.points,
+  pointValue: 1, // 1 point = 1 KHR
+  category: merchant.category || 'General',
+  color: merchant.color,
+}));
 
 export default function PointsScreen() {
   const insets = useSafeAreaInsets();
@@ -289,10 +253,18 @@ function MerchantPointCard({
         <View className="flex-row items-center">
           {/* Merchant Logo */}
           <View
-            style={{ backgroundColor: merchant.color }}
-            className="w-14 h-14 rounded-2xl items-center justify-center"
+            style={{ backgroundColor: merchant.logoType === 'image' ? '#FFFFFF' : merchant.color }}
+            className="w-14 h-14 rounded-2xl items-center justify-center overflow-hidden"
           >
-            <Text style={{ fontSize: 28 }}>{merchant.merchantLogo}</Text>
+            {merchant.logoType === 'image' ? (
+              <Image
+                source={{ uri: merchant.merchantLogo }}
+                style={{ width: 56, height: 56 }}
+                resizeMode="contain"
+              />
+            ) : (
+              <Text style={{ fontSize: 28 }}>{merchant.merchantLogo}</Text>
+            )}
           </View>
 
           {/* Merchant Info */}

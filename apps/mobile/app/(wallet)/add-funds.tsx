@@ -9,37 +9,15 @@ import { Text } from '@/components/nativewindui/Text';
 import { ChevronLeft, CreditCard, Building2, Bitcoin, QrCode, CheckCircle2, Info } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
+import { usePayment } from '@/context/PaymentContext';
+import { PAYMENT_METHODS } from '@/services/mockData';
 
-const PAYMENT_METHODS = [
-  {
-    id: 'credit-card',
-    icon: CreditCard,
-    title: 'Credit/Debit Card',
-    subtitle: 'Add funds instantly',
-    color: '#0385FF',
-  },
-  {
-    id: 'bank-transfer',
-    icon: Building2,
-    title: 'Bank Transfer',
-    subtitle: 'Link your bank account',
-    color: '#00C853',
-  },
-  {
-    id: 'crypto',
-    icon: Bitcoin,
-    title: 'Cryptocurrency',
-    subtitle: 'Pay with crypto',
-    color: '#FF9500',
-  },
-  {
-    id: 'bakong',
-    icon: QrCode,
-    title: 'Bakong QR',
-    subtitle: 'Scan to pay via Bakong',
-    color: '#8E44AD',
-  },
-];
+const PAYMENT_METHOD_ICONS = {
+  'credit-card': CreditCard,
+  'bank-transfer': Building2,
+  'crypto': Bitcoin,
+  'bakong': QrCode,
+};
 
 const QUICK_AMOUNTS = [10, 20, 50, 100, 200, 500];
 
@@ -47,6 +25,7 @@ export default function AddFundsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { colors } = useColorScheme();
+  const { setPaymentAmount, setPaymentMethod } = usePayment();
   const [amount, setAmount] = React.useState('');
   const [selectedMethod, setSelectedMethod] = React.useState<string | null>(null);
 
@@ -58,12 +37,22 @@ export default function AddFundsScreen() {
       return;
     }
 
+    const amountNum = parseFloat(amount);
+    if (isNaN(amountNum) || amountNum <= 0) {
+      return;
+    }
+
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    // Save amount and payment method to context
+    setPaymentAmount(amountNum);
+    setPaymentMethod(selectedMethod as any);
 
     // Navigate to specific payment flow
     switch (selectedMethod) {
       case 'credit-card':
-        router.push('/(wallet)/payment/card');
+        // Route to saved cards selection screen instead of directly to card form
+        router.push('/(wallet)/payment/select-card');
         break;
       case 'bank-transfer':
         // Bank transfer - redirect to confirmation for now
@@ -159,42 +148,45 @@ export default function AddFundsScreen() {
           </Text>
 
           <View className="gap-3">
-            {PAYMENT_METHODS.map((method, index) => (
-              <Pressable
-                key={method.id}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setSelectedMethod(method.id);
-                }}
-                className="active:opacity-70"
-              >
-                <View
-                  className={`bg-card rounded-2xl p-4 border-2 ${
-                    selectedMethod === method.id ? 'border-primary' : 'border-border'
-                  }`}
+            {PAYMENT_METHODS.map((method, index) => {
+              const IconComponent = PAYMENT_METHOD_ICONS[method.id as keyof typeof PAYMENT_METHOD_ICONS];
+              return (
+                <Pressable
+                  key={method.id}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setSelectedMethod(method.id);
+                  }}
+                  className="active:opacity-70"
                 >
-                  <View className="flex-row items-center gap-4">
-                    <View
-                      style={{ backgroundColor: method.color }}
-                      className="w-12 h-12 rounded-xl items-center justify-center"
-                    >
-                      <method.icon size={24} color="#FFFFFF" />
+                  <View
+                    className={`bg-card rounded-2xl p-4 border-2 ${
+                      selectedMethod === method.id ? 'border-primary' : 'border-border'
+                    }`}
+                  >
+                    <View className="flex-row items-center gap-4">
+                      <View
+                        style={{ backgroundColor: method.color }}
+                        className="w-12 h-12 rounded-xl items-center justify-center"
+                      >
+                        <IconComponent size={24} color="#FFFFFF" />
+                      </View>
+                      <View className="flex-1">
+                        <Text variant="callout" className="font-semibold mb-0.5">
+                          {method.title}
+                        </Text>
+                        <Text variant="caption1" className="text-muted-foreground">
+                          {method.subtitle}
+                        </Text>
+                      </View>
+                      {selectedMethod === method.id && (
+                        <CheckCircle2 size={24} color={colors.primary} />
+                      )}
                     </View>
-                    <View className="flex-1">
-                      <Text variant="callout" className="font-semibold mb-0.5">
-                        {method.title}
-                      </Text>
-                      <Text variant="caption1" className="text-muted-foreground">
-                        {method.subtitle}
-                      </Text>
-                    </View>
-                    {selectedMethod === method.id && (
-                      <CheckCircle2 size={24} color={colors.primary} />
-                    )}
                   </View>
-                </View>
-              </Pressable>
-            ))}
+                </Pressable>
+              );
+            })}
           </View>
         </Animated.View>
 

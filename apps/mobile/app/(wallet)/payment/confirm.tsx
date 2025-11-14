@@ -9,18 +9,30 @@ import { Text } from '@/components/nativewindui/Text';
 import { ChevronLeft, CheckCircle2, Shield } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
+import { usePayment } from '@/context/PaymentContext';
+import { useToast } from '@/context/ToastContext';
+import { EXCHANGE_RATES } from '@/services/mockData';
 
 export default function ConfirmPaymentScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { colors } = useColorScheme();
+  const { paymentData, balance, addFunds, resetPayment } = usePayment();
+  const { success: showSuccessToast } = useToast();
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
-  const amountUSD = 50.0;
-  const amountKHR = amountUSD * 4050;
+  const amountUSD = paymentData.amount || 0;
+  const amountKHR = paymentData.amountKHR || 0;
+  const selectedCard = paymentData.selectedCard;
+  const paymentMethod = paymentData.paymentMethod;
 
   const handleConfirm = () => {
+    if (!amountUSD || amountUSD <= 0) {
+      router.back();
+      return;
+    }
+
     setIsProcessing(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
@@ -30,8 +42,21 @@ export default function ConfirmPaymentScreen() {
       setIsSuccess(true);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-      // Auto navigate back to wallet after success
+      // Add funds to balance and create transaction
+      const methodName = selectedCard
+        ? `${selectedCard.type} •••• ${selectedCard.last4}`
+        : paymentMethod === 'bank-transfer'
+        ? 'Bank Transfer'
+        : paymentMethod === 'crypto'
+        ? 'Cryptocurrency'
+        : 'Bakong QR';
+
+      addFunds(amountUSD, methodName, selectedCard?.id);
+      showSuccessToast('Funds added successfully!');
+
+      // Reset payment data
       setTimeout(() => {
+        resetPayment();
         router.push('/wallet');
       }, 2000);
     }, 2500);
@@ -64,7 +89,7 @@ export default function ConfirmPaymentScreen() {
                 New Balance
               </Text>
               <Text variant="subhead" className="font-semibold">
-                {(50420000 + amountKHR).toLocaleString('en-US')} KHR
+                {(balance.khr + amountKHR).toLocaleString('en-US')} KHR
               </Text>
             </View>
           </View>
@@ -137,9 +162,22 @@ export default function ConfirmPaymentScreen() {
         {/* Transaction Details */}
         <Animated.View entering={FadeInDown.delay(200).duration(400)} className="mb-8">
           <View className="bg-card rounded-3xl border border-border overflow-hidden">
-            <DetailRow label="Payment Method" value="Credit Card" />
-            <DetailRow label="Card Number" value="•••• 4242" />
-            <DetailRow label="Exchange Rate" value="1 USD = 4,050 KHR" />
+            <DetailRow
+              label="Payment Method"
+              value={
+                selectedCard
+                  ? `${selectedCard.type} Card`
+                  : paymentMethod === 'bank-transfer'
+                  ? 'Bank Transfer'
+                  : paymentMethod === 'crypto'
+                  ? 'Cryptocurrency'
+                  : paymentMethod === 'bakong'
+                  ? 'Bakong QR'
+                  : 'Credit Card'
+              }
+            />
+            {selectedCard && <DetailRow label="Card Number" value={`•••• ${selectedCard.last4}`} />}
+            <DetailRow label="Exchange Rate" value={`1 USD = ${EXCHANGE_RATES.USD_TO_KHR.toLocaleString('en-US')} KHR`} />
             <DetailRow label="Processing Fee" value="Free" />
             <DetailRow
               label="Total"

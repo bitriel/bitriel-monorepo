@@ -45,6 +45,8 @@ import {
 } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
 import { useColorScheme } from '@/lib/useColorScheme';
+import { usePayment } from '@/context/PaymentContext';
+import { EXCHANGE_RATES } from '@/services/mockData';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 48; // 24px padding on each side
@@ -108,13 +110,13 @@ export default function WalletScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { isDarkColorScheme, colors } = useColorScheme();
+  const { balance } = usePayment();
   const [showActionSheet, setShowActionSheet] = React.useState(false);
   const [showPromoCards, setShowPromoCards] = React.useState(true);
   const [activePromoIndex, setActivePromoIndex] = React.useState(0);
 
-  const balanceKHR = 123456789; // Balance in Riel (KHR)
-  const exchangeRate = 4050; // 1 USD = 4050 KHR (approximate)
-  const balanceUSD = balanceKHR / exchangeRate;
+  const balanceKHR = balance.khr;
+  const balanceUSD = balance.usd;
   const hasBalance = balanceKHR > 0;
 
   return (
