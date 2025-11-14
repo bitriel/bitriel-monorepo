@@ -90,10 +90,7 @@ export default function LoyaltyMerchantsScreen() {
   const otherMerchants = filteredMerchants.filter((m) => !m.featured);
 
   return (
-    <View
-      className="flex-1"
-      style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}
-    >
+    <View className="flex-1" style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top }} className="px-6 pb-4 border-b border-border">
         <View className="flex-row items-center justify-between mb-4">
@@ -220,6 +217,7 @@ function MerchantCard({
   isDarkColorScheme: boolean;
 }) {
   const router = useRouter();
+  const { colors } = useColorScheme();
 
   return (
     <Pressable
@@ -283,4 +281,3 @@ function MerchantCard({
     </Pressable>
   );
 }
-
