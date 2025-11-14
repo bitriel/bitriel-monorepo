@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "name": "@bitriel/http-client",
+  "version": "0.1.0",
+  "description": "Shared axios HTTP client utilities for Bitriel apps",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "lint": "eslint --ext ts src"
+  },
+  "dependencies": {
+    "axios": "^1.7.9"
+  },
+  "devDependencies": {
+    "@bitriel/eslint-config": "workspace:*",
+    "@tsconfig/recommended": "^1.0.8",
+    "eslint": "^8.57.0",
+    "typescript": "~5.9.3"
+  },
+  "eslintConfig": {
+    "extends": "@bitriel/eslint-config",
+    "ignorePatterns": [
+      "node_modules"
+    ]
+  }
+}

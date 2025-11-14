@@ -1,28 +1,6 @@
-import * as React from 'react';
-import {
-  ScrollView,
-  View,
-  Pressable,
-  Modal,
-  Dimensions,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import Animated, {
-  FadeInDown,
-  FadeIn,
-  FadeInUp,
-  SlideInDown,
-  FadeOut,
-} from 'react-native-reanimated';
-import { MotiView, MotiImage } from 'moti';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Easing } from 'react-native-reanimated';
-
-import { Text } from '@/components/nativewindui/Text';
+import { useRouter } from 'expo-router';
 import {
   PlusCircle,
   XCircle,
@@ -43,10 +21,30 @@ import {
   ArrowDownCircle,
   ArrowUpCircle,
 } from 'lucide-react-native';
+import { MotiView, MotiImage } from 'moti';
+import * as React from 'react';
+import {
+  ScrollView,
+  View,
+  Pressable,
+  Modal,
+  Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from 'react-native';
+import Animated, {
+  FadeInDown,
+  FadeIn,
+  SlideInDown,
+  FadeOut,
+  Easing,
+} from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { Button } from '@/components/nativewindui/Button';
-import { useColorScheme } from '@/lib/useColorScheme';
+import { Text } from '@/components/nativewindui/Text';
 import { usePayment } from '@/context/PaymentContext';
-import { EXCHANGE_RATES } from '@/services/mockData';
+import { useColorScheme } from '@/lib/useColorScheme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 48; // 24px padding on each side
@@ -59,8 +57,6 @@ const CARD_BACKGROUNDS = [
   'https://images.pexels.com/photos/1212407/pexels-photo-1212407.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=660',
   'https://images.pexels.com/photos/1193743/pexels-photo-1193743.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=660',
 ];
-
-const BALANCE_CARD_WIDTH = SCREEN_WIDTH - 48;
 
 // Promo cards data
 const PROMO_CARDS = [
@@ -491,8 +487,8 @@ export default function WalletScreen() {
                           ? '#FFFFFF'
                           : '#000000'
                         : isDarkColorScheme
-                        ? 'rgba(255,255,255,0.3)'
-                        : 'rgba(0,0,0,0.2)',
+                          ? 'rgba(255,255,255,0.3)'
+                          : 'rgba(0,0,0,0.2)',
                   }}
                 />
               ))}

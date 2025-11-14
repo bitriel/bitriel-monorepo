@@ -1,4 +1,5 @@
 import React, { createContext, ReactNode, useContext, useState, useCallback } from 'react';
+
 import {
   SavedCard,
   MOCK_SAVED_CARDS,
@@ -86,21 +87,22 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({ children })
     setPaymentData(initialPaymentData);
   }, []);
 
-  const addCard = useCallback((card: Omit<SavedCard, 'id'>) => {
-    const newCard: SavedCard = {
-      ...card,
-      id: `card_${Date.now()}`,
-    };
+  const addCard = useCallback(
+    (card: Omit<SavedCard, 'id'>) => {
+      const newCard: SavedCard = {
+        ...card,
+        id: `card_${Date.now()}`,
+      };
 
-    // If this is the first card or marked as default, make it default
-    if (savedCards.length === 0 || card.isDefault) {
-      setSavedCards((prev) =>
-        prev.map((c) => ({ ...c, isDefault: false })).concat(newCard)
-      );
-    } else {
-      setSavedCards((prev) => [...prev, newCard]);
-    }
-  }, [savedCards]);
+      // If this is the first card or marked as default, make it default
+      if (savedCards.length === 0 || card.isDefault) {
+        setSavedCards((prev) => prev.map((c) => ({ ...c, isDefault: false })).concat(newCard));
+      } else {
+        setSavedCards((prev) => [...prev, newCard]);
+      }
+    },
+    [savedCards]
+  );
 
   const removeCard = useCallback((cardId: string) => {
     setSavedCards((prev) => {
@@ -134,9 +136,7 @@ export const PaymentProvider: React.FC<{ children: ReactNode }> = ({ children })
 
       // Find card details if cardId provided
       const card = cardId ? savedCards.find((c) => c.id === cardId) : null;
-      const paymentMethodText = card
-        ? `${card.type} •••• ${card.last4}`
-        : method;
+      const paymentMethodText = card ? `${card.type} •••• ${card.last4}` : method;
 
       // Add transaction
       const newTransaction: Transaction = {

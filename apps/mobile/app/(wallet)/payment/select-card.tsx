@@ -1,16 +1,23 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import {
+  ChevronLeft,
+  CreditCard,
+  PlusCircle,
+  CheckCircle2,
+  Shield,
+  Trash2,
+} from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable, Alert } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, CreditCard, PlusCircle, CheckCircle2, Shield, Trash2 } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
-import { useColorScheme } from '@/lib/useColorScheme';
+import { Text } from '@/components/nativewindui/Text';
 import { usePayment } from '@/context/PaymentContext';
 import { useToast } from '@/context/ToastContext';
+import { useColorScheme } from '@/lib/useColorScheme';
 import { SavedCard } from '@/services/mockData';
 
 export default function SelectCardScreen() {
@@ -80,7 +87,8 @@ export default function SelectCardScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               router.back();
             }}
-            className="active:opacity-70">
+            className="active:opacity-70"
+          >
             <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
@@ -131,7 +139,8 @@ export default function SelectCardScreen() {
               {savedCards.map((card, index) => (
                 <Animated.View
                   key={card.id}
-                  entering={FadeInDown.delay(150 + index * 50).duration(400)}>
+                  entering={FadeInDown.delay(150 + index * 50).duration(400)}
+                >
                   <SavedCardItem
                     card={card}
                     isSelected={selectedCardId === card.id}
@@ -146,9 +155,7 @@ export default function SelectCardScreen() {
 
         {/* Add New Card */}
         <Animated.View entering={FadeInDown.delay(300).duration(400)}>
-          <Pressable
-            onPress={handleAddNewCard}
-            className="active:opacity-70">
+          <Pressable onPress={handleAddNewCard} className="active:opacity-70">
             <View className="bg-card rounded-2xl p-5 border-2 border-dashed border-border">
               <View className="flex-row items-center gap-4">
                 <View className="w-12 h-12 rounded-full bg-primary/10 items-center justify-center">
@@ -162,7 +169,11 @@ export default function SelectCardScreen() {
                     Save a new credit or debit card
                   </Text>
                 </View>
-                <ChevronLeft size={20} color={colors.muted} style={{ transform: [{ rotate: '180deg' }] }} />
+                <ChevronLeft
+                  size={20}
+                  color={colors.muted}
+                  style={{ transform: [{ rotate: '180deg' }] }}
+                />
               </View>
             </View>
           </Pressable>
@@ -176,7 +187,8 @@ export default function SelectCardScreen() {
                 <Shield size={18} color={colors.primary} />
                 <View className="flex-1">
                   <Text variant="caption1" className="text-muted-foreground">
-                    Your card information is encrypted and secured. We never store your full card details.
+                    Your card information is encrypted and secured. We never store your full card
+                    details.
                   </Text>
                 </View>
               </View>
@@ -189,11 +201,13 @@ export default function SelectCardScreen() {
       {savedCards.length > 0 && (
         <View
           style={{ paddingBottom: insets.bottom + 16 }}
-          className="px-6 pt-4 border-t border-border">
+          className="px-6 pt-4 border-t border-border"
+        >
           <Button
             onPress={handleContinue}
             disabled={!selectedCardId}
-            className={`${!selectedCardId ? 'opacity-50' : ''} bg-primary`}>
+            className={`${!selectedCardId ? 'opacity-50' : ''} bg-primary`}
+          >
             <Text className="text-primary-foreground font-semibold text-base">
               Continue with Selected Card
             </Text>
@@ -215,23 +229,22 @@ function SavedCardItem({
   onSelect: (card: SavedCard) => void;
   onDelete: (card: SavedCard) => void;
 }) {
-  const { colors } = useColorScheme();
-
   return (
     <View
       className={`rounded-2xl border-2 overflow-hidden ${
         isSelected ? 'border-primary' : 'border-border'
-      }`}>
+      }`}
+    >
       {/* Card Visual */}
-      <Pressable
-        onPress={() => onSelect(card)}
-        className="active:opacity-70">
+      <Pressable onPress={() => onSelect(card)} className="active:opacity-70">
         <View
           className="p-5 flex-row items-center gap-4"
-          style={{ backgroundColor: `${card.color}15` }}>
+          style={{ backgroundColor: `${card.color}15` }}
+        >
           <View
             className="w-14 h-14 rounded-xl items-center justify-center"
-            style={{ backgroundColor: card.color }}>
+            style={{ backgroundColor: card.color }}
+          >
             <CreditCard size={28} color="#FFFFFF" />
           </View>
           <View className="flex-1">
@@ -264,9 +277,7 @@ function SavedCardItem({
 
       {/* Delete Button */}
       <View className="border-t border-border">
-        <Pressable
-          onPress={() => onDelete(card)}
-          className="active:opacity-70">
+        <Pressable onPress={() => onDelete(card)} className="active:opacity-70">
           <View className="px-5 py-3 flex-row items-center justify-center gap-2">
             <Trash2 size={16} color="#EF4444" />
             <Text variant="callout" className="font-semibold" style={{ color: '#EF4444' }}>

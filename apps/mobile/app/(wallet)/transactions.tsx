@@ -1,12 +1,19 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import {
+  ChevronLeft,
+  UtensilsCrossed,
+  ArrowDownCircle,
+  Ticket,
+  ShoppingCart,
+  Star,
+} from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, UtensilsCrossed, ArrowDownCircle, Ticket, ShoppingCart, Star } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const TRANSACTIONS = [
@@ -77,7 +84,8 @@ export default function TransactionsScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               router.back();
             }}
-            className="active:opacity-70">
+            className="active:opacity-70"
+          >
             <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
@@ -92,7 +100,8 @@ export default function TransactionsScreen() {
           {TRANSACTIONS.map((transaction, index) => (
             <Animated.View
               key={transaction.id}
-              entering={FadeInDown.delay(index * 100).duration(400)}>
+              entering={FadeInDown.delay(index * 100).duration(400)}
+            >
               <TransactionCard transaction={transaction} />
             </Animated.View>
           ))}
@@ -102,19 +111,17 @@ export default function TransactionsScreen() {
   );
 }
 
-function TransactionCard({
-  transaction,
-}: {
-  transaction: (typeof TRANSACTIONS)[number];
-}) {
+function TransactionCard({ transaction }: { transaction: (typeof TRANSACTIONS)[number] }) {
   return (
     <Pressable
       onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-      className="active:opacity-70">
+      className="active:opacity-70"
+    >
       <View className="bg-card rounded-2xl p-4 border border-border shadow-sm flex-row items-center gap-4">
         <View
           style={{ backgroundColor: transaction.color }}
-          className="w-12 h-12 rounded-full items-center justify-center">
+          className="w-12 h-12 rounded-full items-center justify-center"
+        >
           <transaction.icon size={24} color="#FFFFFF" />
         </View>
         <View className="flex-1">
@@ -134,11 +141,11 @@ function TransactionCard({
         </View>
         <Text
           variant="callout"
-          className={`font-semibold ${transaction.amount > 0 ? 'text-green-500' : 'text-foreground'}`}>
+          className={`font-semibold ${transaction.amount > 0 ? 'text-green-500' : 'text-foreground'}`}
+        >
           {transaction.amount > 0 ? '+' : ''}${Math.abs(transaction.amount).toFixed(2)}
         </Text>
       </View>
     </Pressable>
   );
 }
-

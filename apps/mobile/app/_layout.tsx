@@ -1,18 +1,6 @@
 import '@/global.css';
 
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-
-import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
-import * as Device from 'expo-device';
-import { useFonts } from 'expo-font';
-import { Link, Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { Platform, Pressable } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-
-import { Settings } from 'lucide-react-native';
 import {
   Manrope_200ExtraLight,
   Manrope_300Light,
@@ -22,13 +10,24 @@ import {
   Manrope_700Bold,
   Manrope_800ExtraBold,
 } from '@expo-google-fonts/manrope';
+import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
+import * as Device from 'expo-device';
+import { useFonts } from 'expo-font';
+import { Link, Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import { Settings } from 'lucide-react-native';
+import { useEffect } from 'react';
+import { Platform, Pressable } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import { ToastContainer } from '@/components/Toast';
 import { ThemeToggle } from '@/components/nativewindui/ThemeToggle';
+import { PaymentProvider } from '@/context/PaymentContext';
+import { ToastProvider } from '@/context/ToastContext';
 import { cn } from '@/lib/cn';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { NAV_THEME } from '@/theme';
-import { PaymentProvider } from '@/context/PaymentContext';
-import { ToastProvider } from '@/context/ToastContext';
-import { ToastContainer } from '@/components/Toast';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

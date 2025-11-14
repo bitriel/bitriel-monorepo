@@ -1,13 +1,23 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import {
+  ChevronLeft,
+  Clock,
+  Star,
+  CreditCard,
+  TrendingUp,
+  Star as StarIcon,
+  Building2,
+  Gift,
+  Store,
+} from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
-import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, Clock, Star, CreditCard, TrendingUp, Star as StarIcon, Building2, Gift, Store } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
+import { Text } from '@/components/nativewindui/Text';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 export default function EarnScreen() {
@@ -24,10 +34,7 @@ export default function EarnScreen() {
   const currentCashbackUSD = currentCashback / 4050;
 
   return (
-    <View
-      className="flex-1"
-      style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}
-    >
+    <View className="flex-1" style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top }} className="px-6 pb-4 border-b border-border">
         <View className="flex-row items-center justify-between">
@@ -357,4 +364,3 @@ function CashbackTier({
     </View>
   );
 }
-

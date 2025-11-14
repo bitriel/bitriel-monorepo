@@ -1,29 +1,65 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { ChevronLeft, ChevronDown, ArrowDown, Info, CheckCircle2 } from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable, TextInput, Alert, Image } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, ChevronDown, ArrowDown, Info, CheckCircle2 } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
+import { Text } from '@/components/nativewindui/Text';
 import { useColorScheme } from '@/lib/useColorScheme';
-import { LOYALTY_MERCHANTS, LoyaltyMerchant } from '@/services/mockData';
+import { LOYALTY_MERCHANTS } from '@/services/mockData';
 
 // Use centralized merchant data
 const MERCHANTS = LOYALTY_MERCHANTS;
 
 // Currency options
 const CURRENCIES = [
-  { id: 'khr', name: 'Cambodian Riel', symbol: 'KHR', logo: '🇰🇭', balance: 50420000, color: '#0385FF', type: 'currency' as const, rate: 1 }, // 1 point = 1 KHR
-  { id: 'khrt', name: 'Riel Token', symbol: 'KHRT', logo: '💎', balance: 12500, color: '#00C853', type: 'currency' as const, rate: 1 }, // 1 point = 1 KHRT
-  { id: 'usdt', name: 'Tether USD', symbol: 'USDT', logo: '₮', balance: 245.50, color: '#26A17B', type: 'currency' as const, rate: 0.000247 }, // 1 point = $0.000247 (≈4050 KHR per USD)
-  { id: 'usd', name: 'US Dollar', symbol: '$', logo: '💵', balance: 245.50, color: '#85BB65', type: 'currency' as const, rate: 0.000247 }, // 1 point = $0.000247
+  {
+    id: 'khr',
+    name: 'Cambodian Riel',
+    symbol: 'KHR',
+    logo: '🇰🇭',
+    balance: 50420000,
+    color: '#0385FF',
+    type: 'currency' as const,
+    rate: 1,
+  }, // 1 point = 1 KHR
+  {
+    id: 'khrt',
+    name: 'Riel Token',
+    symbol: 'KHRT',
+    logo: '💎',
+    balance: 12500,
+    color: '#00C853',
+    type: 'currency' as const,
+    rate: 1,
+  }, // 1 point = 1 KHRT
+  {
+    id: 'usdt',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    logo: '₮',
+    balance: 245.5,
+    color: '#26A17B',
+    type: 'currency' as const,
+    rate: 0.000247,
+  }, // 1 point = $0.000247 (≈4050 KHR per USD)
+  {
+    id: 'usd',
+    name: 'US Dollar',
+    symbol: '$',
+    logo: '💵',
+    balance: 245.5,
+    color: '#85BB65',
+    type: 'currency' as const,
+    rate: 0.000247,
+  }, // 1 point = $0.000247
 ];
 
 type SwapMode = 'points-to-points' | 'points-to-cash' | 'cash-to-points';
-type SwapItem = typeof MERCHANTS[0] | typeof CURRENCIES[0];
+type SwapItem = (typeof MERCHANTS)[0] | (typeof CURRENCIES)[0];
 
 export default function SwapPointsScreen() {
   const insets = useSafeAreaInsets();
@@ -62,7 +98,7 @@ export default function SwapPointsScreen() {
 
   const getToOptions = (): SwapItem[] => {
     if (swapMode === 'points-to-points') {
-      return MERCHANTS.filter(m => m.id !== fromItem?.id);
+      return MERCHANTS.filter((m) => m.id !== fromItem?.id);
     }
     if (swapMode === 'points-to-cash') {
       return CURRENCIES;
@@ -73,19 +109,22 @@ export default function SwapPointsScreen() {
   // Validation
   const canSwap = () => {
     if (!fromItem || !toItem || !amount || parseFloat(amount) <= 0) return false;
-    
+
     if (swapMode === 'points-to-points') {
-      return fromItem.id !== toItem.id && parseFloat(amount) <= (fromItem as typeof MERCHANTS[0]).points;
+      return (
+        fromItem.id !== toItem.id &&
+        parseFloat(amount) <= (fromItem as (typeof MERCHANTS)[0]).points
+      );
     }
-    
+
     if (swapMode === 'points-to-cash') {
-      return parseFloat(amount) <= (fromItem as typeof MERCHANTS[0]).points;
+      return parseFloat(amount) <= (fromItem as (typeof MERCHANTS)[0]).points;
     }
-    
+
     if (swapMode === 'cash-to-points') {
-      return parseFloat(amount) <= (fromItem as typeof CURRENCIES[0]).balance;
+      return parseFloat(amount) <= (fromItem as (typeof CURRENCIES)[0]).balance;
     }
-    
+
     return false;
   };
 
@@ -93,16 +132,16 @@ export default function SwapPointsScreen() {
     if (!canSwap()) return;
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    
+
     let message = '';
     if (swapMode === 'points-to-points') {
       message = `Swapped ${amount} points from ${fromItem?.name} to ${toItem?.name}`;
     } else if (swapMode === 'points-to-cash') {
-      message = `Converted ${amount} points to ${receiveAmount.toFixed(2)} ${(toItem as typeof CURRENCIES[0])?.symbol}`;
+      message = `Converted ${amount} points to ${receiveAmount.toFixed(2)} ${(toItem as (typeof CURRENCIES)[0])?.symbol}`;
     } else {
-      message = `Converted ${amount} ${(fromItem as typeof CURRENCIES[0])?.symbol} to ${Math.floor(receiveAmount)} points`;
+      message = `Converted ${amount} ${(fromItem as (typeof CURRENCIES)[0])?.symbol} to ${Math.floor(receiveAmount)} points`;
     }
-    
+
     Alert.alert('Swap Successful!', message, [
       { text: 'View Points', onPress: () => router.back() },
       { text: 'Done', style: 'cancel' },
@@ -120,10 +159,7 @@ export default function SwapPointsScreen() {
   };
 
   return (
-    <View
-      className="flex-1"
-      style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}
-    >
+    <View className="flex-1" style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top }} className="px-6 pb-4 border-b border-border">
         <View className="flex-row items-center justify-between">
@@ -194,11 +230,7 @@ export default function SwapPointsScreen() {
               style={{
                 backgroundColor: isDarkColorScheme ? '#1C1C1E' : '#F9F9F9',
                 borderWidth: 2,
-                borderColor: showFromPicker
-                  ? '#0385FF'
-                  : isDarkColorScheme
-                    ? '#2C2C2E'
-                    : '#E5E5EA',
+                borderColor: showFromPicker ? '#0385FF' : isDarkColorScheme ? '#2C2C2E' : '#E5E5EA',
               }}
             >
               {fromItem ? (
@@ -247,7 +279,11 @@ export default function SwapPointsScreen() {
         {/* To Section */}
         <Animated.View entering={FadeInDown.delay(400).duration(400)} className="mb-6">
           <Text variant="subhead" className="text-muted-foreground mb-3">
-            {swapMode === 'points-to-cash' ? 'To Currency' : swapMode === 'cash-to-points' ? 'To Merchant' : 'To Merchant'}
+            {swapMode === 'points-to-cash'
+              ? 'To Currency'
+              : swapMode === 'cash-to-points'
+                ? 'To Merchant'
+                : 'To Merchant'}
           </Text>
 
           <Pressable
@@ -263,11 +299,7 @@ export default function SwapPointsScreen() {
               style={{
                 backgroundColor: isDarkColorScheme ? '#1C1C1E' : '#F9F9F9',
                 borderWidth: 2,
-                borderColor: showToPicker
-                  ? '#0385FF'
-                  : isDarkColorScheme
-                    ? '#2C2C2E'
-                    : '#E5E5EA',
+                borderColor: showToPicker ? '#0385FF' : isDarkColorScheme ? '#2C2C2E' : '#E5E5EA',
               }}
             >
               {toItem ? (
@@ -325,11 +357,17 @@ export default function SwapPointsScreen() {
             {fromItem && (
               <View className="flex-row items-center justify-between mt-2">
                 <Text variant="caption1" className="text-muted-foreground">
-                  Available: {'points' in fromItem ? fromItem.points : fromItem.balance.toFixed(2)} {swapMode === 'cash-to-points' ? (fromItem as typeof CURRENCIES[0]).symbol : 'pts'}
+                  Available: {'points' in fromItem ? fromItem.points : fromItem.balance.toFixed(2)}{' '}
+                  {swapMode === 'cash-to-points'
+                    ? (fromItem as (typeof CURRENCIES)[0]).symbol
+                    : 'pts'}
                 </Text>
                 <Pressable
                   onPress={() => {
-                    const max = 'points' in fromItem ? fromItem.points.toString() : fromItem.balance.toString();
+                    const max =
+                      'points' in fromItem
+                        ? fromItem.points.toString()
+                        : fromItem.balance.toString();
                     setAmount(max);
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   }}
@@ -367,7 +405,10 @@ export default function SwapPointsScreen() {
                     You send
                   </Text>
                   <Text variant="subhead" className="font-semibold">
-                    {amount} {swapMode === 'cash-to-points' ? (fromItem as typeof CURRENCIES[0]).symbol : `pts (${fromItem.name})`}
+                    {amount}{' '}
+                    {swapMode === 'cash-to-points'
+                      ? (fromItem as (typeof CURRENCIES)[0]).symbol
+                      : `pts (${fromItem.name})`}
                   </Text>
                 </View>
                 <View className="flex-row justify-between">
@@ -384,12 +425,11 @@ export default function SwapPointsScreen() {
                     You receive
                   </Text>
                   <Text variant="subhead" className="font-bold text-blue-500">
-                    {swapMode === 'cash-to-points' 
+                    {swapMode === 'cash-to-points'
                       ? `${Math.floor(receiveAmount)} pts (${toItem.name})`
                       : swapMode === 'points-to-cash'
-                        ? `${receiveAmount.toFixed(6)} ${(toItem as typeof CURRENCIES[0]).symbol}`
-                        : `${receiveAmount} pts (${toItem.name})`
-                    }
+                        ? `${receiveAmount.toFixed(6)} ${(toItem as (typeof CURRENCIES)[0]).symbol}`
+                        : `${receiveAmount} pts (${toItem.name})`}
                   </Text>
                 </View>
               </View>
@@ -411,12 +451,11 @@ export default function SwapPointsScreen() {
               <Info size={20} color={colors.mutedForeground} />
               <View className="flex-1">
                 <Text variant="caption1" className="text-muted-foreground">
-                  {swapMode === 'points-to-points' 
+                  {swapMode === 'points-to-points'
                     ? 'Points are swapped instantly at a 1:1 ratio. This action cannot be undone.'
                     : swapMode === 'points-to-cash'
                       ? 'Convert points to cash instantly. Exchange rates are based on current market values (1 pt ≈ 1 KHR).'
-                      : 'Buy loyalty points with your cash balance. Use points for exclusive merchant rewards and discounts.'
-                  }
+                      : 'Buy loyalty points with your cash balance. Use points for exclusive merchant rewards and discounts.'}
                 </Text>
               </View>
             </View>
@@ -441,9 +480,11 @@ export default function SwapPointsScreen() {
               ? 'Select Items'
               : !amount || parseFloat(amount) === 0
                 ? 'Enter Amount'
-                : swapMode === 'points-to-points' && parseFloat(amount) > (fromItem as typeof MERCHANTS[0])?.points
+                : swapMode === 'points-to-points' &&
+                    parseFloat(amount) > (fromItem as (typeof MERCHANTS)[0])?.points
                   ? 'Insufficient Points'
-                  : swapMode === 'cash-to-points' && parseFloat(amount) > (fromItem as typeof CURRENCIES[0])?.balance
+                  : swapMode === 'cash-to-points' &&
+                      parseFloat(amount) > (fromItem as (typeof CURRENCIES)[0])?.balance
                     ? 'Insufficient Balance'
                     : swapMode === 'points-to-cash'
                       ? 'Convert to Cash'
@@ -473,11 +514,7 @@ function ModeTab({
       <View
         className="py-2.5 px-3 rounded-xl items-center justify-center"
         style={{
-          backgroundColor: isActive
-            ? isDarkColorScheme
-              ? '#FFFFFF'
-              : '#000000'
-            : 'transparent',
+          backgroundColor: isActive ? (isDarkColorScheme ? '#FFFFFF' : '#000000') : 'transparent',
         }}
       >
         <Text
@@ -527,8 +564,7 @@ function ItemDisplay({ item, colors }: { item: SwapItem; colors: any }) {
         <Text variant="caption1" className="text-muted-foreground">
           {isCurrency
             ? `${item.balance.toFixed(2)} ${item.symbol}`
-            : `${item.points} points available`
-          }
+            : `${item.points} points available`}
         </Text>
       </View>
       <ChevronDown size={20} color={colors.mutedForeground} />
@@ -563,11 +599,7 @@ function ItemPicker({
         const hasImageLogo = 'logoType' in item && item.logoType === 'image';
 
         return (
-          <Pressable
-            key={item.id}
-            onPress={() => onSelect(item)}
-            className="active:opacity-70"
-          >
+          <Pressable key={item.id} onPress={() => onSelect(item)} className="active:opacity-70">
             <View
               className="p-4 flex-row items-center"
               style={{
@@ -594,15 +626,10 @@ function ItemPicker({
                   {item.name}
                 </Text>
                 <Text variant="caption1" className="text-muted-foreground">
-                  {isCurrency
-                    ? `${item.balance.toFixed(2)} ${item.symbol}`
-                    : `${item.points} pts`
-                  }
+                  {isCurrency ? `${item.balance.toFixed(2)} ${item.symbol}` : `${item.points} pts`}
                 </Text>
               </View>
-              {selectedItem?.id === item.id && (
-                <CheckCircle2 size={24} color="#3b82f6" />
-              )}
+              {selectedItem?.id === item.id && <CheckCircle2 size={24} color="#3b82f6" />}
             </View>
           </Pressable>
         );

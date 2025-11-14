@@ -1,22 +1,29 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import {
+  X,
+  QrCode,
+  Camera,
+  Info,
+  ShoppingCart,
+  UtensilsCrossed,
+  Ticket,
+  Car,
+} from 'lucide-react-native';
 import * as React from 'react';
 import { View, Pressable, Alert, Dimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/nativewindui/Text';
-import { X, QrCode, Camera, Info, ShoppingCart, UtensilsCrossed, Ticket, Car } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
-import { useColorScheme } from '@/lib/useColorScheme';
+import { Text } from '@/components/nativewindui/Text';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SCAN_AREA_SIZE = SCREEN_WIDTH * 0.7;
 
 export default function ScanQRScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { colors } = useColorScheme();
   const [isScanning, setIsScanning] = React.useState(true);
 
   // Simulate QR scanning

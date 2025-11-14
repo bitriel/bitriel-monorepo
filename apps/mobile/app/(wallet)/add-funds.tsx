@@ -1,22 +1,30 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import {
+  ChevronLeft,
+  CreditCard,
+  Building2,
+  Bitcoin,
+  QrCode,
+  CheckCircle2,
+  Info,
+} from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable, TextInput } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, CreditCard, Building2, Bitcoin, QrCode, CheckCircle2, Info } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
-import { useColorScheme } from '@/lib/useColorScheme';
+import { Text } from '@/components/nativewindui/Text';
 import { usePayment } from '@/context/PaymentContext';
+import { useColorScheme } from '@/lib/useColorScheme';
 import { PAYMENT_METHODS } from '@/services/mockData';
 
 const PAYMENT_METHOD_ICONS = {
   'credit-card': CreditCard,
   'bank-transfer': Building2,
-  'crypto': Bitcoin,
-  'bakong': QrCode,
+  crypto: Bitcoin,
+  bakong: QrCode,
 };
 
 const QUICK_AMOUNTS = [10, 20, 50, 100, 200, 500];
@@ -149,7 +157,8 @@ export default function AddFundsScreen() {
 
           <View className="gap-3">
             {PAYMENT_METHODS.map((method, index) => {
-              const IconComponent = PAYMENT_METHOD_ICONS[method.id as keyof typeof PAYMENT_METHOD_ICONS];
+              const IconComponent =
+                PAYMENT_METHOD_ICONS[method.id as keyof typeof PAYMENT_METHOD_ICONS];
               return (
                 <Pressable
                   key={method.id}

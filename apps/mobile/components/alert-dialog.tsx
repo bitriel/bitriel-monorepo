@@ -1,7 +1,6 @@
+import * as Haptics from 'expo-haptics';
 import React, { useEffect, useMemo } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-
-import * as Haptics from 'expo-haptics';
 
 export type AlertDialogActionStyle = 'default' | 'cancel' | 'destructive';
 
@@ -48,7 +47,6 @@ export const AlertDialog: React.FC<AlertDialogProps> = ({
   backdropOpacity,
   testID,
 }) => {
-
   useEffect(() => {
     if (visible && hapticsOnOpen) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
@@ -133,8 +131,8 @@ export const AlertDialog: React.FC<AlertDialogProps> = ({
                   a.style === 'cancel'
                     ? 'bg-black/5 border border-[#E5E7EB]'
                     : a.style === 'destructive'
-                    ? 'bg-red-500 border border-red-500'
-                    : 'bg-primary border border-primary';
+                      ? 'bg-red-500 border border-red-500'
+                      : 'bg-primary border border-primary';
 
                 const textClass = a.style === 'cancel' ? 'text-slate-900' : 'text-white';
 

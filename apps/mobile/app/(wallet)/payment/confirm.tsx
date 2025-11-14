@@ -1,16 +1,16 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { ChevronLeft, CheckCircle2, Shield } from 'lucide-react-native';
 import * as React from 'react';
 import { View, Pressable, ActivityIndicator } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, CheckCircle2, Shield } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
-import { useColorScheme } from '@/lib/useColorScheme';
+import { Text } from '@/components/nativewindui/Text';
 import { usePayment } from '@/context/PaymentContext';
 import { useToast } from '@/context/ToastContext';
+import { useColorScheme } from '@/lib/useColorScheme';
 import { EXCHANGE_RATES } from '@/services/mockData';
 
 export default function ConfirmPaymentScreen() {
@@ -46,10 +46,10 @@ export default function ConfirmPaymentScreen() {
       const methodName = selectedCard
         ? `${selectedCard.type} •••• ${selectedCard.last4}`
         : paymentMethod === 'bank-transfer'
-        ? 'Bank Transfer'
-        : paymentMethod === 'crypto'
-        ? 'Cryptocurrency'
-        : 'Bakong QR';
+          ? 'Bank Transfer'
+          : paymentMethod === 'crypto'
+            ? 'Cryptocurrency'
+            : 'Bakong QR';
 
       addFunds(amountUSD, methodName, selectedCard?.id);
       showSuccessToast('Funds added successfully!');
@@ -168,16 +168,19 @@ export default function ConfirmPaymentScreen() {
                 selectedCard
                   ? `${selectedCard.type} Card`
                   : paymentMethod === 'bank-transfer'
-                  ? 'Bank Transfer'
-                  : paymentMethod === 'crypto'
-                  ? 'Cryptocurrency'
-                  : paymentMethod === 'bakong'
-                  ? 'Bakong QR'
-                  : 'Credit Card'
+                    ? 'Bank Transfer'
+                    : paymentMethod === 'crypto'
+                      ? 'Cryptocurrency'
+                      : paymentMethod === 'bakong'
+                        ? 'Bakong QR'
+                        : 'Credit Card'
               }
             />
             {selectedCard && <DetailRow label="Card Number" value={`•••• ${selectedCard.last4}`} />}
-            <DetailRow label="Exchange Rate" value={`1 USD = ${EXCHANGE_RATES.USD_TO_KHR.toLocaleString('en-US')} KHR`} />
+            <DetailRow
+              label="Exchange Rate"
+              value={`1 USD = ${EXCHANGE_RATES.USD_TO_KHR.toLocaleString('en-US')} KHR`}
+            />
             <DetailRow label="Processing Fee" value="Free" />
             <DetailRow
               label="Total"

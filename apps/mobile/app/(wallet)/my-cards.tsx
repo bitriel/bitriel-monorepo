@@ -1,16 +1,15 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { ChevronLeft, PlusCircle, CreditCard, MoreHorizontal, Edit3 } from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable, Alert, ActionSheetIOS, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, PlusCircle, CreditCard, MoreHorizontal, Trash2, Star, Edit3 } from 'lucide-react-native';
-import { Button } from '@/components/nativewindui/Button';
-import { useColorScheme } from '@/lib/useColorScheme';
 import { usePayment } from '@/context/PaymentContext';
 import { useToast } from '@/context/ToastContext';
+import { useColorScheme } from '@/lib/useColorScheme';
 import { SavedCard } from '@/services/mockData';
 
 export default function MyCardsScreen() {
@@ -18,16 +17,12 @@ export default function MyCardsScreen() {
   const router = useRouter();
   const { colors } = useColorScheme();
   const { savedCards, removeCard, setDefaultCard } = usePayment();
-  const { success, error } = useToast();
+  const { success } = useToast();
 
   const handleCardOptions = (card: SavedCard) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    const options = [
-      card.isDefault ? 'Default Card' : 'Set as Default',
-      'Remove Card',
-      'Cancel',
-    ];
+    const options = [card.isDefault ? 'Default Card' : 'Set as Default', 'Remove Card', 'Cancel'];
 
     const destructiveButtonIndex = 1;
     const cancelButtonIndex = 2;
@@ -57,32 +52,28 @@ export default function MyCardsScreen() {
       );
     } else {
       // Android Alert
-      Alert.alert(
-        'Card Options',
-        `${card.type} •••• ${card.last4}`,
-        [
-          {
-            text: card.isDefault ? 'Default Card' : 'Set as Default',
-            onPress: () => {
-              if (!card.isDefault) {
-                setDefaultCard(card.id);
-                success(`${card.type} •••• ${card.last4} set as default`);
-                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-              }
-            },
-            style: card.isDefault ? 'cancel' : 'default',
+      Alert.alert('Card Options', `${card.type} •••• ${card.last4}`, [
+        {
+          text: card.isDefault ? 'Default Card' : 'Set as Default',
+          onPress: () => {
+            if (!card.isDefault) {
+              setDefaultCard(card.id);
+              success(`${card.type} •••• ${card.last4} set as default`);
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            }
           },
-          {
-            text: 'Remove Card',
-            onPress: () => handleRemoveCard(card),
-            style: 'destructive',
-          },
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-        ]
-      );
+          style: card.isDefault ? 'cancel' : 'default',
+        },
+        {
+          text: 'Remove Card',
+          onPress: () => handleRemoveCard(card),
+          style: 'destructive',
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ]);
     }
   };
 
@@ -115,7 +106,8 @@ export default function MyCardsScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               router.back();
             }}
-            className="active:opacity-70">
+            className="active:opacity-70"
+          >
             <ChevronLeft size={28} color={colors.foreground} />
           </Pressable>
           <Text variant="title3" className="font-semibold">
@@ -147,7 +139,8 @@ export default function MyCardsScreen() {
               {savedCards.map((card, index) => (
                 <Animated.View
                   key={card.id}
-                  entering={FadeInDown.delay(150 + index * 50).duration(400)}>
+                  entering={FadeInDown.delay(150 + index * 50).duration(400)}
+                >
                   <SavedCardItem card={card} onOptions={handleCardOptions} />
                 </Animated.View>
               ))}
@@ -162,7 +155,8 @@ export default function MyCardsScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               router.push('/(wallet)/payment/card');
             }}
-            className="active:opacity-70">
+            className="active:opacity-70"
+          >
             <View className="bg-card rounded-3xl p-6 border-2 border-dashed border-border items-center">
               <View className="w-16 h-16 rounded-full bg-primary/10 items-center justify-center mb-3">
                 <PlusCircle size={32} color={colors.primary} />
@@ -202,7 +196,8 @@ function SavedCardItem({
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           onOptions(card);
         }}
-        className="active:opacity-70">
+        className="active:opacity-70"
+      >
         <View className="rounded-3xl p-6 aspect-[1.586]" style={{ backgroundColor: card.color }}>
           <View className="flex-1 justify-between">
             {/* Card Header */}
@@ -238,9 +233,7 @@ function SavedCardItem({
                     {card.expiryDate}
                   </Text>
                 </View>
-                <Pressable
-                  onPress={() => onOptions(card)}
-                  className="active:opacity-70">
+                <Pressable onPress={() => onOptions(card)} className="active:opacity-70">
                   <View className="bg-white/20 rounded-full p-2">
                     <MoreHorizontal size={20} color="#FFFFFF" />
                   </View>
@@ -253,15 +246,14 @@ function SavedCardItem({
 
       {/* Quick Actions - Shows on tap */}
       {showQuickActions && (
-        <Animated.View
-          entering={FadeInDown.duration(200)}
-          className="mt-2 flex-row gap-2">
+        <Animated.View entering={FadeInDown.duration(200)} className="mt-2 flex-row gap-2">
           <Pressable
             onPress={() => {
               onOptions(card);
               setShowQuickActions(false);
             }}
-            className="flex-1 active:opacity-70">
+            className="flex-1 active:opacity-70"
+          >
             <View className="bg-card border border-border rounded-2xl p-3 flex-row items-center justify-center gap-2">
               <Edit3 size={16} color={colors.primary} />
               <Text variant="callout" className="font-semibold text-primary">
@@ -274,4 +266,3 @@ function SavedCardItem({
     </View>
   );
 }
-

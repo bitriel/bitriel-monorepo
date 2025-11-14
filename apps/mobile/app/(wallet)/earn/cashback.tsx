@@ -1,13 +1,13 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { ChevronLeft, Clock, Store } from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, Clock, Store } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
+import { Text } from '@/components/nativewindui/Text';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const RECENT_CASHBACK = [
@@ -60,10 +60,7 @@ export default function CashbackScreen() {
   const totalEarnedUSD = totalEarned / 4050;
 
   return (
-    <View
-      className="flex-1"
-      style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}
-    >
+    <View className="flex-1" style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top }} className="px-6 pb-4 border-b border-border">
         <View className="flex-row items-center justify-between">
@@ -163,7 +160,8 @@ export default function CashbackScreen() {
                 This Month
               </Text>
               <Text variant="title3" className="font-bold">
-                {RECENT_CASHBACK.reduce((sum, cb) => sum + cb.amount, 0).toLocaleString('en-US')} KHR
+                {RECENT_CASHBACK.reduce((sum, cb) => sum + cb.amount, 0).toLocaleString('en-US')}{' '}
+                KHR
               </Text>
               <Text variant="caption2" className="text-primary font-semibold mt-1">
                 {RECENT_CASHBACK.length} purchases
@@ -234,9 +232,7 @@ export default function CashbackScreen() {
           className="bg-primary"
         >
           <Store size={20} color="#FFFFFF" />
-          <Text className="text-primary-foreground font-semibold text-base">
-            Find Merchants
-          </Text>
+          <Text className="text-primary-foreground font-semibold text-base">Find Merchants</Text>
         </Button>
       </View>
     </View>
@@ -250,8 +246,6 @@ function CashbackItem({
   cashback: (typeof RECENT_CASHBACK)[number];
   isDarkColorScheme: boolean;
 }) {
-  const amountUSD = cashback.amount / 4050;
-
   return (
     <View
       className="rounded-2xl p-4"
@@ -322,4 +316,3 @@ function HowItWorksStep({
     </View>
   );
 }
-

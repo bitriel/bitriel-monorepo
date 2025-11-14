@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
+import { FileText } from 'lucide-react-native';
 import { Linking, Platform, View } from 'react-native';
 
-import { FileText } from 'lucide-react-native';
 import { Text } from '@/components/nativewindui/Text';
 import { useColorScheme } from '@/lib/useColorScheme';
 
@@ -22,7 +22,8 @@ export default function ModalScreen() {
           <Text
             onPress={() => Linking.openURL('https://nativewindui.com')}
             variant="subhead"
-            className="text-primary">
+            className="text-primary"
+          >
             NativewindUI
           </Text>
           {' website.'}

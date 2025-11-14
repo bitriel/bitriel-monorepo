@@ -1,16 +1,16 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { ChevronLeft, CreditCard, Check, Shield } from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable, TextInput } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, CreditCard, Check, Shield } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
-import { useColorScheme } from '@/lib/useColorScheme';
+import { Text } from '@/components/nativewindui/Text';
 import { usePayment } from '@/context/PaymentContext';
 import { useToast } from '@/context/ToastContext';
+import { useColorScheme } from '@/lib/useColorScheme';
 import { getCardType, formatCardNumber } from '@/services/mockData';
 
 export default function CardPaymentScreen() {

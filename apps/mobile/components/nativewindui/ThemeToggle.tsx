@@ -1,7 +1,7 @@
+import { Moon, Sun } from 'lucide-react-native';
 import { Pressable, View } from 'react-native';
 import Animated, { LayoutAnimationConfig, ZoomInRotate } from 'react-native-reanimated';
 
-import { Moon, Sun } from 'lucide-react-native';
 import { cn } from '@/lib/cn';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { COLORS } from '@/theme/colors';
@@ -13,7 +13,8 @@ export function ThemeToggle() {
       <Animated.View
         className="items-center justify-center"
         key={`toggle-${colorScheme}`}
-        entering={ZoomInRotate}>
+        entering={ZoomInRotate}
+      >
         <Pressable onPress={toggleColorScheme} className="opacity-80">
           {colorScheme === 'dark'
             ? ({ pressed }) => (

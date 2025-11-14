@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
-import { View, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { FadeInUp, FadeOutUp, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { CheckCircle2, AlertCircle, Info, AlertTriangle } from 'lucide-react-native';
+import React from 'react';
+import { View } from 'react-native';
+import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { Text } from '@/components/nativewindui/Text';
 import { useToast } from '@/context/ToastContext';
-import { useColorScheme } from '@/lib/useColorScheme';
 
 export function ToastContainer() {
   const { toastState } = useToast();
-  const { colors } = useColorScheme();
   const insets = useSafeAreaInsets();
 
   if (!toastState.isVisible) {

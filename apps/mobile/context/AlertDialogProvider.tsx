@@ -1,6 +1,7 @@
-import AlertDialog, { AlertDialogAction } from '@/components/alert-dialog';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Alert as RNAlert } from 'react-native';
+
+import AlertDialog, { AlertDialogAction } from '@/components/alert-dialog';
 
 type RNAlertButton = {
   text?: string;

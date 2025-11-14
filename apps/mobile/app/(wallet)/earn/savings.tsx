@@ -1,11 +1,5 @@
-import * as React from 'react';
-import { ScrollView, View, Pressable, TextInput } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import Animated, { FadeInDown } from 'react-native-reanimated';
-
-import { Text } from '@/components/nativewindui/Text';
+import { useRouter } from 'expo-router';
 import {
   ChevronLeft,
   TrendingUp,
@@ -14,7 +8,13 @@ import {
   ArrowUpDown,
   Calendar,
 } from 'lucide-react-native';
+import * as React from 'react';
+import { ScrollView, View, Pressable, TextInput } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { Button } from '@/components/nativewindui/Button';
+import { Text } from '@/components/nativewindui/Text';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 export default function SavingsScreen() {
@@ -27,7 +27,6 @@ export default function SavingsScreen() {
   const savingsBalanceUSD = savingsBalance / 4050;
   const apr = 6.01;
   const monthlyEarnings = (savingsBalance * (apr / 100)) / 12;
-  const monthlyEarningsUSD = monthlyEarnings / 4050;
 
   const depositAmountKHR = depositAmount ? parseFloat(depositAmount) * 4050 : 0;
 

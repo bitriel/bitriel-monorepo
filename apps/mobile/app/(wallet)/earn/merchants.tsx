@@ -1,12 +1,12 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { ChevronLeft, Search, Star, ChevronRight } from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable, TextInput } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, Search, Star, ChevronRight } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const LOYALTY_MERCHANTS = [
@@ -216,7 +216,6 @@ function MerchantCard({
   merchant: (typeof LOYALTY_MERCHANTS)[number];
   isDarkColorScheme: boolean;
 }) {
-  const router = useRouter();
   const { colors } = useColorScheme();
 
   return (

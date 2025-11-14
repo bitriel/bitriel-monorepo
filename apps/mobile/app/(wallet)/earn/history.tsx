@@ -1,12 +1,12 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { ChevronLeft, Inbox } from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, Inbox } from 'lucide-react-native';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const EARN_HISTORY = [
@@ -85,10 +85,7 @@ export default function EarnHistoryScreen() {
   const totalEarnedUSD = totalEarned / 4050;
 
   return (
-    <View
-      className="flex-1"
-      style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}
-    >
+    <View className="flex-1" style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top }} className="px-6 pb-4 border-b border-border">
         <View className="flex-row items-center justify-between mb-4">
@@ -315,4 +312,3 @@ function EarnHistoryItem({
     </View>
   );
 }
-

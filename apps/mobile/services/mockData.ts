@@ -214,11 +214,7 @@ export const formatCurrency = (amount: number, currency: 'KHR' | 'USD'): string 
   return `$${amount.toFixed(2)} USD`;
 };
 
-export const convertCurrency = (
-  amount: number,
-  from: 'KHR' | 'USD',
-  to: 'KHR' | 'USD'
-): number => {
+export const convertCurrency = (amount: number, from: 'KHR' | 'USD', to: 'KHR' | 'USD'): number => {
   if (from === to) return amount;
   if (from === 'USD') return amount * EXCHANGE_RATES.USD_TO_KHR;
   return amount * EXCHANGE_RATES.KHR_TO_USD;

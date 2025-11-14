@@ -1,18 +1,18 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { ChevronLeft, ArrowLeftRight, Clock, Info, Star, CreditCard } from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable, Image } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, ArrowLeftRight, Clock, Info, Star, CreditCard } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
+import { Text } from '@/components/nativewindui/Text';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { LOYALTY_MERCHANTS } from '@/services/mockData';
 
 // Use centralized merchant data and transform to match component expectations
-const MERCHANT_POINTS = LOYALTY_MERCHANTS.map(merchant => ({
+const MERCHANT_POINTS = LOYALTY_MERCHANTS.map((merchant) => ({
   id: merchant.id,
   merchantName: merchant.name,
   merchantLogo: merchant.logo,
@@ -37,14 +37,11 @@ export default function PointsScreen() {
   // Currency balances for reference
   const walletBalance = {
     khr: 50420000,
-    usdt: 245.50,
+    usdt: 245.5,
   };
 
   return (
-    <View
-      className="flex-1"
-      style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}
-    >
+    <View className="flex-1" style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top }} className="px-6 pb-4 border-b border-border">
         <View className="flex-row items-center justify-between">
@@ -168,7 +165,8 @@ export default function PointsScreen() {
                   Swap Points ⇄ Cash
                 </Text>
                 <Text variant="caption1" className="text-muted-foreground">
-                  Exchange points between merchants, convert to cash (KHR, USDT, USD), or buy points with your wallet balance
+                  Exchange points between merchants, convert to cash (KHR, USDT, USD), or buy points
+                  with your wallet balance
                 </Text>
               </View>
             </View>
@@ -324,4 +322,3 @@ function InfoItem({
     </View>
   );
 }
-

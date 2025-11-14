@@ -19,6 +19,11 @@ node_modules
 npm-debug.log
 yarn-error.log
 package-lock.json
+dist
+
+# Environment files
+.env
+apps/*/.env
 
 # Ruby
 .direnv

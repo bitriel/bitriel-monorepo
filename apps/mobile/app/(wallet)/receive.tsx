@@ -1,13 +1,22 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import {
+  ChevronLeft,
+  Share2,
+  QrCode,
+  AtSign,
+  Phone,
+  Link as LinkIcon,
+  Info,
+  Copy,
+} from 'lucide-react-native';
 import * as React from 'react';
 import { ScrollView, View, Pressable, Share } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
-import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 
-import { Text } from '@/components/nativewindui/Text';
-import { ChevronLeft, Share2, QrCode, AtSign, Phone, Link as LinkIcon, Info, Copy } from 'lucide-react-native';
 import { Button } from '@/components/nativewindui/Button';
+import { Text } from '@/components/nativewindui/Text';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 export default function ReceiveScreen() {
@@ -39,10 +48,7 @@ export default function ReceiveScreen() {
   };
 
   return (
-    <View
-      className="flex-1"
-      style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}
-    >
+    <View className="flex-1" style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top }} className="px-6 pb-4 border-b border-border">
         <View className="flex-row items-center justify-between">
@@ -163,8 +169,8 @@ export default function ReceiveScreen() {
                   Instant Transfers
                 </Text>
                 <Text variant="caption1" className="text-muted-foreground">
-                  Money sent to your Bitriel ID or phone number will be credited instantly to
-                  your wallet in Cambodian Riel (KHR)
+                  Money sent to your Bitriel ID or phone number will be credited instantly to your
+                  wallet in Cambodian Riel (KHR)
                 </Text>
               </View>
             </View>
@@ -238,4 +244,3 @@ function ReceiveMethodCard({
     </View>
   );
 }
-
