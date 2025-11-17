@@ -18,6 +18,18 @@ export const config = {
     secret: jwtSecret,
     expiresIn: jwtExpiresIn,
   },
+  mongodb: {
+    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/bitriel',
+  },
+  koompi: {
+    clientId: ensure(process.env.KOOMPI_CLIENT_ID, 'KOOMPI_CLIENT_ID'),
+    clientSecret: ensure(process.env.KOOMPI_CLIENT_SECRET, 'KOOMPI_CLIENT_SECRET'),
+    redirectUri: process.env.KOOMPI_REDIRECT_URI || 'http://localhost:4000/api/oauth/callback',
+  },
+  frontend: {
+    url: process.env.FRONTEND_URL || 'http://localhost:5173',
+    callbackPath: process.env.FRONTEND_CALLBACK_PATH || '/oauth/callback',
+  },
 }
 
 export type JwtConfig = typeof config.jwt

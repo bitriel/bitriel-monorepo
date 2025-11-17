@@ -4,11 +4,14 @@ import jwt from 'jsonwebtoken'
 import morgan from 'morgan'
 import { config } from './config.js'
 import { authenticate, type AuthenticatedRequest } from './middleware/authenticate.js'
+import oauthRoutes from './routes/oauthRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
 
 app.get('/health', (_req, res) => {
@@ -37,5 +40,11 @@ app.get('/me', authenticate, (req, res) => {
     claims: user,
   })
 })
+
+// OAuth routes
+app.use('/api/oauth', oauthRoutes)
+
+// User routes
+app.use('/api/auth', userRoutes)
 
 export default app
