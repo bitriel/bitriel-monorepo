@@ -13,7 +13,7 @@ import {
 import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
 import * as Device from 'expo-device';
 import { useFonts } from 'expo-font';
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { Settings } from 'lucide-react-native';
@@ -25,6 +25,7 @@ import { ToastContainer } from '@/components/Toast';
 import { ThemeToggle } from '@/components/nativewindui/ThemeToggle';
 import { PaymentProvider } from '@/context/PaymentContext';
 import { ToastProvider } from '@/context/ToastContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/cn';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { NAV_THEME } from '@/theme';
@@ -40,7 +41,6 @@ export {
 const isIos26 = Platform.select({ default: false, ios: Device.osVersion?.startsWith('26.') });
 
 export default function RootLayout() {
-  const { colorScheme, isDarkColorScheme } = useColorScheme();
   const [fontsLoaded, fontError] = useFonts({
     Manrope_200ExtraLight,
     Manrope_300Light,
@@ -51,14 +51,43 @@ export default function RootLayout() {
     Manrope_800ExtraBold,
   });
 
+  return (
+    <AuthProvider>
+      <RootLayoutNav fontsLoaded={fontsLoaded} fontError={fontError} />
+    </AuthProvider>
+  );
+}
+
+function RootLayoutNav({ fontsLoaded, fontError }: { fontsLoaded: boolean; fontError: Error | null }) {
+  const { colorScheme, isDarkColorScheme } = useColorScheme();
+  const { user, isLoading } = useAuth();
+  const segments = useSegments();
+
   useEffect(() => {
-    if (fontsLoaded || fontError) {
-      // Hide the splash screen once the fonts have loaded (or an error was returned) and the UI is ready.
-      SplashScreen.hideAsync();
+    if (isLoading || (!fontsLoaded && !fontError)) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (!user && !inAuthGroup) {
+      // Wait for redirect to login
+      return;
     }
-  }, [fontsLoaded, fontError]);
+
+    if (user && inAuthGroup) {
+      // Wait for redirect to app
+      return;
+    }
+
+    // Hide the splash screen once we are in the correct state
+    SplashScreen.hideAsync();
+  }, [fontsLoaded, fontError, isLoading, user, segments]);
 
   if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
+  // Keep splash screen visible while checking auth
+  if (isLoading) {
     return null;
   }
 
@@ -75,10 +104,8 @@ export default function RootLayout() {
             <ActionSheetProvider>
               <NavThemeProvider value={NAV_THEME[colorScheme]}>
                 <Stack>
-                  <Stack.Screen name="index" options={INDEX_OPTIONS} />
-                  <Stack.Screen name="wallet" options={WALLET_OPTIONS} />
                   <Stack.Screen name="(wallet)" options={{ headerShown: false }} />
-                  <Stack.Screen name="modal" options={MODAL_OPTIONS} />
+                  <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                 </Stack>
                 <ToastContainer />
               </NavThemeProvider>
@@ -89,33 +116,3 @@ export default function RootLayout() {
     </>
   );
 }
-
-const INDEX_OPTIONS = {
-  headerLargeTitle: true,
-  headerTransparent: isIos26,
-  title: 'NativewindUI',
-  headerRight: () => <SettingsIcon />,
-} as const;
-
-const WALLET_OPTIONS = {
-  headerShown: false,
-  title: 'Wallet',
-} as const;
-
-function SettingsIcon() {
-  const { colors } = useColorScheme();
-  return (
-    <Link href="/modal" asChild>
-      <Pressable className={cn('opacity-80 active:opacity-50', isIos26 && 'px-1.5')}>
-        <Settings size={24} color={colors.foreground} />
-      </Pressable>
-    </Link>
-  );
-}
-
-const MODAL_OPTIONS = {
-  presentation: 'modal',
-  animation: 'fade_from_bottom', // for android
-  title: 'Settings',
-  headerRight: () => <ThemeToggle />,
-} as const;

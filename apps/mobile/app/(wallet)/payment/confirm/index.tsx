@@ -57,7 +57,7 @@ export default function ConfirmPaymentScreen() {
       // Reset payment data
       setTimeout(() => {
         resetPayment();
-        router.push('/wallet');
+        router.push('/(wallet)');
       }, 2000);
     }, 2500);
   };

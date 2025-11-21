@@ -168,6 +168,9 @@ importers:
       expo-router:
         specifier: ~6.0.12
         version: 6.0.14(e6348a22049f7cadfd304d490682c435)
+      expo-secure-store:
+        specifier: ~15.0.7
+        version: 15.0.7(expo@54.0.21)
       expo-splash-screen:
         specifier: ~31.0.10
         version: 31.0.10(expo@54.0.21)
@@ -383,7 +386,7 @@ importers:
         version: 19.1.13
       babel-preset-expo:
         specifier: ~54.0.0
-        version: 54.0.1(@babel/core@7.28.5)(@babel/runtime@7.28.4)(expo@54.0.6)(react-refresh@0.14.2)
+        version: 54.0.1(@babel/core@7.28.5)(@babel/runtime@7.28.4)(expo@54.0.6)(react-refresh@0.18.0)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -447,7 +450,7 @@ importers:
         version: 19.1.13
       babel-preset-expo:
         specifier: ~54.0.0
-        version: 54.0.1(@babel/core@7.28.5)(@babel/runtime@7.28.4)(expo@54.0.6)(react-refresh@0.18.0)
+        version: 54.0.1(@babel/core@7.28.5)(@babel/runtime@7.28.4)(expo@54.0.6)(react-refresh@0.14.2)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -3921,6 +3924,11 @@ packages:
         optional: true
       react-server-dom-webpack:
         optional: true
+
+  expo-secure-store@15.0.7:
+    resolution: {integrity: sha512-9q7+G1Zxr5P6J5NRIlm86KulvmYwc6UnQlYPjQLDu1drDnerz6AT6l884dPu29HgtDTn4rR0heYeeGFhMKM7/Q==}
+    peerDependencies:
+      expo: '*'
 
   expo-server@1.0.3:
     resolution: {integrity: sha512-SOwdzM/BFAL+vTFlUDJG6ljhyk6TyTl+LRK3ubGmN+Pf18ENRqKj37U8krc5vH926sAsB3IFcE8kJEYf4dG7PA==}
@@ -12483,6 +12491,10 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
       - supports-color
+
+  expo-secure-store@15.0.7(expo@54.0.21):
+    dependencies:
+      expo: 54.0.21(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.14)(react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.13)(react@19.1.0))(react@19.1.0)
 
   expo-server@1.0.3: {}
 

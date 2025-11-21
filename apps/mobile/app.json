@@ -54,7 +54,8 @@
         {
           "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to select QR codes."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
