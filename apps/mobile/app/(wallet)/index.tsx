@@ -20,6 +20,7 @@ import {
   MapPin,
   ArrowDownCircle,
   ArrowUpCircle,
+  User,
 } from 'lucide-react-native';
 import { MotiView, MotiImage } from 'moti';
 import * as React from 'react';
@@ -124,9 +125,27 @@ export default function WalletScreen() {
       >
         {/* Header */}
         <View style={{ paddingTop: insets.top + 16 }} className="px-6 mb-6">
-          <Text variant="largeTitle" className="font-bold">
-            Wallet
-          </Text>
+          <View className="flex-row items-center justify-between">
+            <Text variant="largeTitle" className="font-bold">
+              Wallet
+            </Text>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                router.push('/(wallet)/profile');
+              }}
+              className="active:opacity-70"
+            >
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center"
+                style={{
+                  backgroundColor: isDarkColorScheme ? '#1C1C1E' : '#F5F5F5',
+                }}
+              >
+                <User size={20} color={colors.foreground} />
+              </View>
+            </Pressable>
+          </View>
         </View>
 
         {/* Balance Card */}
