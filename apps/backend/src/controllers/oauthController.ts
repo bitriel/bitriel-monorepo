@@ -1,34 +1,35 @@
 import { Request, Response } from 'express';
 import { OAuthService } from '../services/oauthService.js';
+import { config } from '../config.js';
 
 /**
  * OAuth Controller
  * Handles HTTP requests for OAuth authentication flow
+ *
+ * Standard OAuth 2.0 Authorization Code Flow:
+ * 1. Client (mobile/web) opens OAuth URL directly (no /login endpoint needed)
+ * 2. OAuth server redirects to callback endpoints below with authorization code
+ * 3. Backend exchanges code for token and creates user session
  */
 
 /**
- * Initiates the OAuth login flow by redirecting to Koompi OAuth
- * @route GET /api/oauth/login?platform=mobile|web
+ * Get OAuth configuration for clients to build authorization URL
+ * @route GET /api/oauth/config?platform=mobile|web
  */
-export const login = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const platform = req.query.platform as string;
-    const isMobile = platform === 'mobile';
+export const getConfig = (req: Request, res: Response): void => {
+  const platform = req.query.platform as string;
+  const isMobile = platform === 'mobile';
 
-    // Generate authorization URL
-    const authorizeUrl = await OAuthService.createAuthorizationUrl(isMobile);
+  const redirectUri = isMobile
+    ? config.koompi.mobileRedirectUri
+    : config.koompi.redirectUri;
 
-    console.log(`[OAuth] Initiating login for ${platform || 'web'} platform`);
-    console.log(`[OAuth] Redirect URL: ${authorizeUrl}`);
-
-    res.redirect(authorizeUrl);
-  } catch (error) {
-    console.error('[OAuth] Login error:', error);
-    res.status(500).json({
-      error: 'Failed to initiate OAuth login',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
-  }
+  res.json({
+    authUrl: 'https://oauth.koompi.org/v1/oauth',
+    clientId: config.koompi.clientId,
+    redirectUri,
+    scope: 'profile.basic profile.contact wallet.read',
+  });
 };
 
 /**

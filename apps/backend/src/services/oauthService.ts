@@ -6,7 +6,14 @@ import { isOAuthUserResponse, OAuthUserData } from '../types/oauth.js';
 
 /**
  * OAuth Service
- * Handles all OAuth-related business logic
+ * Handles all OAuth-related business logic following standard OAuth 2.0 Authorization Code flow
+ *
+ * Flow:
+ * 1. Mobile app opens hosted OAuth URL directly (no backend call needed)
+ * 2. Koompi OAuth server redirects to backend with authorization code
+ * 3. Backend exchanges code for access token using client_secret
+ * 4. Backend fetches user profile and creates/updates user
+ * 5. Backend generates JWT and redirects to mobile deep link
  */
 export class OAuthService {
   /**
@@ -25,15 +32,12 @@ export class OAuthService {
   }
 
   /**
-   * Generate authorization URL for OAuth login
-   */
-  static async createAuthorizationUrl(isMobile: boolean): Promise<string> {
-    const oauthClient = this.createOAuthClient(isMobile);
-    return await oauthClient.createLoginUrl({});
-  }
-
-  /**
    * Exchange authorization code for access token and fetch user info
+   *
+   * This implements the standard OAuth 2.0 Authorization Code flow:
+   * - Exchange code for access token using client_secret (secure, backend-only)
+   * - No PKCE needed since we use client_secret (confidential client)
+   * - State parameter handled by @koompi/oauth library for CSRF protection
    */
   static async exchangeCodeAndGetUser(
     code: string,
@@ -43,9 +47,12 @@ export class OAuthService {
     const oauthClient = this.createOAuthClient(isMobile);
 
     // Exchange code for access token
+    // The library handles: POST https://oauth.koompi.org/v1/oauth/token
+    // with client_id, client_secret, code, redirect_uri, grant_type=authorization_code
     const tokenResponse = await oauthClient.exchangeCode({ code, state });
 
     // Get user info from OAuth provider
+    // GET https://oauth.koompi.org/v1/oauth/userinfo with Bearer token
     const oauthUserResponse = await oauthClient.getUserInfo(tokenResponse.access_token);
 
     // Validate response structure
@@ -56,7 +63,7 @@ export class OAuthService {
     // Find or create user in database
     const user = await this.findOrCreateUser(oauthUserResponse.user);
 
-    // Generate JWT token
+    // Generate JWT token for our application
     const jwtToken = generateToken(
       { userId: String(user._id) },
       config.jwt.secret,

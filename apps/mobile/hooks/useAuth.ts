@@ -8,12 +8,23 @@ import { OAuthCallbackParams } from '@/types/auth';
 
 /**
  * Authentication Configuration
+ * Following standard OAuth 2.0 Authorization Code flow
  */
 const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:4000';
 const REDIRECT_SCHEME = 'bitriel';
+
+// OAuth configuration - mobile app builds the authorization URL directly
 const AUTH_CONFIG = {
-  loginEndpoint: `${BACKEND_URL}/api/oauth/login`,
-  redirectUri: `${REDIRECT_SCHEME}://oauth/callback`,
+  // Koompi OAuth hosted authorize endpoint
+  oauthUrl: 'https://oauth.koompi.org/v1/oauth',
+  // Client ID (public, safe to include in mobile app)
+  clientId: process.env.EXPO_PUBLIC_KOOMPI_CLIENT_ID || 'pk_683db8cd-855b-45f9-a86a-1e207c3efe67',
+  // Backend callback URL (where OAuth server sends the authorization code)
+  backendRedirectUri: `${BACKEND_URL}/api/oauth/callback-mobile`,
+  // Mobile deep link (where backend redirects after processing)
+  mobileRedirectUri: `${REDIRECT_SCHEME}://oauth/callback`,
+  // Scopes to request
+  scope: 'profile.basic profile.contact wallet.read',
 };
 
 /**
@@ -110,7 +121,31 @@ export const useAuth = () => {
   );
 
   /**
+   * Build OAuth authorization URL
+   * Mobile app builds the URL directly following OAuth 2.0 spec
+   */
+  const buildAuthUrl = (): string => {
+    const params = new URLSearchParams({
+      client_id: AUTH_CONFIG.clientId,
+      redirect_uri: AUTH_CONFIG.backendRedirectUri,
+      response_type: 'code',
+      scope: AUTH_CONFIG.scope,
+    });
+
+    return `${AUTH_CONFIG.oauthUrl}?${params.toString()}`;
+  };
+
+  /**
    * Initiate OAuth login flow
+   *
+   * Standard OAuth 2.0 Authorization Code flow:
+   * 1. Build authorization URL with client_id, redirect_uri, scope
+   * 2. Open browser to OAuth server
+   * 3. User authenticates and authorizes
+   * 4. OAuth server redirects to backend with code
+   * 5. Backend exchanges code for token (using client_secret)
+   * 6. Backend redirects to mobile deep link with JWT
+   * 7. Mobile receives JWT and completes login
    */
   const handleOAuthLogin = useCallback(async (): Promise<void> => {
     setIsLoading(true);
@@ -118,13 +153,16 @@ export const useAuth = () => {
     authStore.setAuthenticating(true);
 
     try {
-      // Build auth URL with platform parameter
-      const authUrl = `${AUTH_CONFIG.loginEndpoint}?platform=mobile`;
+      // Build OAuth authorization URL
+      const authUrl = buildAuthUrl();
 
       console.log('[Auth] Opening OAuth URL:', authUrl);
+      console.log('[Auth] Backend will receive code at:', AUTH_CONFIG.backendRedirectUri);
+      console.log('[Auth] Mobile will receive token at:', AUTH_CONFIG.mobileRedirectUri);
 
       // Open OAuth browser session
-      const result = await WebBrowser.openAuthSessionAsync(authUrl, AUTH_CONFIG.redirectUri, {
+      // The OAuth server will redirect to backend, then backend redirects to mobile deep link
+      const result = await WebBrowser.openAuthSessionAsync(authUrl, AUTH_CONFIG.mobileRedirectUri, {
         createTask: false,
         // Android-specific options
         ...(Platform.OS === 'android' && {
