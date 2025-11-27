@@ -52,7 +52,7 @@ MONGODB_URI=mongodb://localhost:27017/bitriel
 KOOMPI_CLIENT_ID=your-koompi-client-id
 KOOMPI_CLIENT_SECRET=your-koompi-client-secret
 KOOMPI_REDIRECT_URI=http://localhost:4000/api/oauth/callback
-KOOMPI_MOBILE_REDIRECT_URI=http://localhost:4000/api/oauth/callback-mobile
+KOOMPI_MOBILE_REDIRECT_URI=http://localhost:4000/api/oauth/callback?platform=mobile
 
 # Frontend
 FRONTEND_URL=http://localhost:3000
@@ -84,8 +84,7 @@ Server will start at `http://localhost:4000`
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/oauth/login` | GET | Initiates OAuth flow (query: `?platform=mobile\|web`) |
-| `/api/oauth/callback` | GET | Web OAuth callback |
-| `/api/oauth/callback-mobile` | GET | Mobile OAuth callback |
+| `/api/oauth/callback` | GET | OAuth callback (handles both web and mobile via `?platform=`) |
 | `/api/auth/me` | GET | Get authenticated user profile (requires JWT) |
 
 ### Testing Endpoints
