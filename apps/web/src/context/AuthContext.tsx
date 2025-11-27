@@ -47,8 +47,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loadUser();
   }, []);
 
-  const login = () => {
-    window.location.href = api.getOAuthLoginUrl();
+  const login = async () => {
+    try {
+      const config = await api.getOAuthConfig();
+      const params = new URLSearchParams({
+        client_id: config.clientId,
+        redirect_uri: config.redirectUri,
+        response_type: 'code',
+        scope: config.scope,
+      });
+      window.location.href = `${config.authUrl}?${params.toString()}`;
+    } catch (error) {
+      console.error('Failed to initialize login:', error);
+    }
   };
 
   const logout = () => {

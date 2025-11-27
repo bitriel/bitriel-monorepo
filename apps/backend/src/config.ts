@@ -25,15 +25,11 @@ export const config = {
     clientId: ensure(process.env.KOOMPI_CLIENT_ID, 'KOOMPI_CLIENT_ID'),
     clientSecret: ensure(process.env.KOOMPI_CLIENT_SECRET, 'KOOMPI_CLIENT_SECRET'),
     redirectUri: process.env.KOOMPI_REDIRECT_URI || 'http://localhost:4000/api/oauth/callback',
-    mobileRedirectUri: process.env.KOOMPI_MOBILE_REDIRECT_URI || 'http://localhost:4000/api/oauth/callback-mobile',
+    mobileRedirectUri: process.env.KOOMPI_MOBILE_REDIRECT_URI || 'http://localhost:4000/api/oauth/callback?platform=mobile',
   },
   frontend: {
     url: process.env.FRONTEND_URL || 'http://localhost:5173',
     callbackPath: process.env.FRONTEND_CALLBACK_PATH || '/oauth/callback',
-  },
-  mobile: {
-    url: process.env.MOBILE_URL || 'http://localhost:5173',
-    callbackPath: process.env.MOBILE_CALLBACK_PATH || '/oauth/callback',
   },
 };
 

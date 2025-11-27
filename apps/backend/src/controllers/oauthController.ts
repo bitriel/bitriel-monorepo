@@ -14,7 +14,7 @@ import { config } from '../config.js';
 
 /**
  * Get OAuth configuration for clients to build authorization URL
- * @route GET /api/oauth/config?platform=mobile|web
+ * @route GET /api/oauth/login?platform=mobile|web
  */
 export const getConfig = (req: Request, res: Response): void => {
   const platform = req.query.platform as string;
@@ -37,16 +37,12 @@ export const getConfig = (req: Request, res: Response): void => {
  * @route GET /api/oauth/callback
  */
 export const callback = async (req: Request, res: Response): Promise<void> => {
-  await handleOAuthCallback(req, res, false);
+  const platform = req.query.platform as string;
+  const isMobile = platform === 'mobile';
+  await handleOAuthCallback(req, res, isMobile);
 };
 
-/**
- * Handles OAuth callback for mobile platform
- * @route GET /api/oauth/callback-mobile
- */
-export const mobileCallback = async (req: Request, res: Response): Promise<void> => {
-  await handleOAuthCallback(req, res, true);
-};
+
 
 /**
  * Shared callback handler for both web and mobile platforms
