@@ -1,6 +1,6 @@
 import { Button } from '@/components/nativewindui/Button';
 import { Text } from '@/components/nativewindui/Text';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth as useAuthHook } from '@/hooks/useAuth';
 import { useColorScheme } from '@/lib/useColorScheme';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,7 +10,7 @@ import {View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function WelcomeScreen() {
-  const { signIn, isLoading } = useAuth();
+  const { handleOAuthLogin, isLoading } = useAuthHook();
   const { colors, isDarkColorScheme } = useColorScheme();
 
   return (
@@ -34,13 +34,13 @@ export default function WelcomeScreen() {
           <Button
             size="lg"
             className="w-full shadow-lg shadow-primary/25"
-            onPress={signIn}
+            onPress={handleOAuthLogin}
             disabled={isLoading}
           >
             <Text className="text-white font-bold text-lg mr-2">
-              Get Started
+              {isLoading ? 'Authenticating...' : 'Login with Koompi'}
             </Text>
-            <ArrowRight size={20} color="white" />
+            {!isLoading && <ArrowRight size={20} color="white" />}
           </Button>
           
           <Text variant="caption1" className="mt-6 text-center text-muted-foreground">

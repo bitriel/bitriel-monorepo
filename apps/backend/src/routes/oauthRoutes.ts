@@ -1,12 +1,14 @@
 import { Router } from "express";
-import { login, callback } from "../controllers/oauthController.js";
+import { getConfig, callback } from "../controllers/oauthController.js";
 
 const router = Router();
 
-// OAuth login - redirects to Koompi OAuth
-router.get("/login", login);
+// OAuth login config - returns OAuth configuration for clients to build authorization URL
+router.get("/login", getConfig);
 
-// OAuth callback - handles code exchange and user creation
+// OAuth callback - handles code exchange and user creation (web)
 router.get("/callback", callback);
+
+
 
 export default router;

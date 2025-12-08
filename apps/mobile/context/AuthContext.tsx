@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter, useSegments } from 'expo-router';
+import React, { createContext, useContext, useEffect } from 'react';
+import { useRouter, useSegments, useRootNavigationState } from 'expo-router';
+import { useAuthStore } from '@/store/authStore';
 
 interface AuthContextType {
   signIn: () => void;
   signOut: () => void;
-  user: string | null;
+  user: any;
   isLoading: boolean;
 }
 
@@ -20,36 +21,45 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const rootSegment = useSegments()[0];
+  const authStore = useAuthStore();
+  const segments = useSegments();
   const router = useRouter();
+  const navigationState = useRootNavigationState();
+
+  const isAuthenticated = authStore.isAuthenticated();
+  const isAuthenticating = authStore.isAuthenticating;
 
   useEffect(() => {
-    // Simulate checking for stored auth token
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    // Don't navigate if router not ready or no segments yet
+    if (!navigationState?.key || !segments.length) return;
 
-  useEffect(() => {
-    if (isLoading) return;
+    // Don't navigate while authenticating
+    if (isAuthenticating) return;
 
-    if (!user && rootSegment !== '(auth)') {
-      // Redirect to the sign-in page.
-      router.replace('/(auth)/welcome');
-    } else if (user && rootSegment === '(auth)') {
-      // Redirect away from the sign-in page.
-      router.replace('/(wallet)');
-    }
-  }, [user, rootSegment, isLoading]);
+    const inAuthGroup = segments[0] === '(auth)';
+
+    // Use setTimeout to ensure navigation happens after render
+    const timeoutId = setTimeout(() => {
+      if (!isAuthenticated && !inAuthGroup) {
+        // Redirect to the sign-in page
+        router.replace('/(auth)/welcome');
+      } else if (isAuthenticated && inAuthGroup) {
+        // Redirect away from the sign-in page
+        router.replace('/(wallet)');
+      }
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [isAuthenticated, segments, isAuthenticating, navigationState?.key]);
 
   const signIn = () => {
-    setUser('user');
+    // OAuth login is handled by useAuth hook
+    // This is kept for compatibility
+    console.warn('Use handleOAuthLogin from useAuth hook instead');
   };
 
   const signOut = () => {
-    setUser(null);
+    authStore.reset();
   };
 
   return (
@@ -57,8 +67,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         signIn,
         signOut,
-        user,
-        isLoading,
+        user: authStore.user,
+        isLoading: isAuthenticating,
       }}>
       {children}
     </AuthContext.Provider>

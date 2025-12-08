@@ -1,41 +1,41 @@
-import { Request, Response } from "express";
-import { User } from "../models/User.js";
+import { Request, Response } from 'express';
+import { UserService } from '../services/userService.js';
 
-export const getProfile = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
-    try {
-        const userId = req.oauthUser?.userId;
+/**
+ * User Controller
+ * Handles HTTP requests for user-related operations
+ */
 
-        if (!userId) {
-            res.status(401).json({ error: "Unauthorized" });
-            return;
-        }
+/**
+ * Get authenticated user's profile
+ * @route GET /api/auth/me
+ * @middleware authenticate
+ */
+export const getProfile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.oauthUser?.userId;
 
-        const user = await User.findById(userId);
-        if (!user) {
-            res.status(404).json({ error: "User not found" });
-            return;
-        }
-
-        res.json({
-            user: {
-                id: String(user._id),
-                userId: user.userId,
-                name: user.name,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                username: user.username,
-                profile: user.profile,
-                email: user.email,
-                phone: user.phone,
-                telegramId: user.telegramId,
-                walletAddress: user.walletAddress,
-            },
-        });
-    } catch (error) {
-        console.error("Get profile error:", error);
-        res.status(500).json({ error: "Internal server error" });
+    if (!userId) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
     }
+
+    const user = await UserService.getUserById(userId);
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    // Return formatted user data
+    res.json({
+      user: UserService.formatUserResponse(user),
+    });
+  } catch (error) {
+    console.error('[User] Get profile error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
 };

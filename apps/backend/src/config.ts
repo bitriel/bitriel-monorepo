@@ -1,14 +1,14 @@
-import type { SignOptions } from 'jsonwebtoken'
+import type { SignOptions } from 'jsonwebtoken';
 
 const ensure = (value: string | undefined, key: string) => {
   if (!value) {
-    throw new Error(`Missing required environment variable: ${key}`)
+    throw new Error(`Missing required environment variable: ${key}`);
   }
-  return value
-}
+  return value;
+};
 
-const jwtSecret = ensure(process.env.JWT_SECRET, 'JWT_SECRET')
-const jwtExpiresIn = (process.env.JWT_EXPIRES_IN ?? '15m') as SignOptions['expiresIn']
+const jwtSecret = ensure(process.env.JWT_SECRET, 'JWT_SECRET');
+const jwtExpiresIn = (process.env.JWT_EXPIRES_IN ?? '15m') as SignOptions['expiresIn'];
 
 export const config = {
   server: {
@@ -25,11 +25,12 @@ export const config = {
     clientId: ensure(process.env.KOOMPI_CLIENT_ID, 'KOOMPI_CLIENT_ID'),
     clientSecret: ensure(process.env.KOOMPI_CLIENT_SECRET, 'KOOMPI_CLIENT_SECRET'),
     redirectUri: process.env.KOOMPI_REDIRECT_URI || 'http://localhost:4000/api/oauth/callback',
+    mobileRedirectUri: process.env.KOOMPI_MOBILE_REDIRECT_URI || 'http://localhost:4000/api/oauth/callback?platform=mobile',
   },
   frontend: {
     url: process.env.FRONTEND_URL || 'http://localhost:5173',
     callbackPath: process.env.FRONTEND_CALLBACK_PATH || '/oauth/callback',
   },
-}
+};
 
-export type JwtConfig = typeof config.jwt
+export type JwtConfig = typeof config.jwt;
