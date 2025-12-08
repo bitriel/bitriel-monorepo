@@ -1,0 +1,65 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: bitriel-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: bitriel
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bitriel-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: bitriel-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      MONGODB_URI: mongodb://mongodb:27017/bitriel
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      KOOMPI_CLIENT_ID: ${KOOMPI_CLIENT_ID:-}
+      KOOMPI_CLIENT_SECRET: ${KOOMPI_CLIENT_SECRET:-}
+      KOOMPI_REDIRECT_URI: ${KOOMPI_REDIRECT_URI:-http://localhost:4000/api/oauth/callback}
+      KOOMPI_MOBILE_REDIRECT_URI: ${KOOMPI_MOBILE_REDIRECT_URI:-http://localhost:4000/api/oauth/callback?platform=mobile}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+      FRONTEND_CALLBACK_PATH: ${FRONTEND_CALLBACK_PATH:-/oauth/callback}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - bitriel-network
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: bitriel-web
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - bitriel-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  bitriel-network:
+    driver: bridge
