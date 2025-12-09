@@ -7,7 +7,8 @@
     "lint": "turbo lint",
     "test": "turbo test",
     "build": "turbo build",
-    "build:mobile": "turbo build --filter=\"...{./apps/mobile}\""
+    "build:mobile": "turbo build --filter=\"...{./apps/mobile}\"",
+    "prod:update": "make buildx"
   },
   "devDependencies": {
     "turbo": "^2.5.6",
