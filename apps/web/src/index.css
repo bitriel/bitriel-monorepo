@@ -1,18 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Light Theme Design System */
 :root {
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  --primary-600: #4F46E5;
+  --primary-500: #6366f1;
+  --primary-400: #818cf8;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-500: #737373;
+  --gray-600: #525252;
+  --gray-800: #262626;
+  --gray-900: #171717;
+}
+
+* {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  @apply bg-slate-950 text-slate-100 antialiased;
+html {
+  scroll-behavior: smooth;
 }
 
-#root {
-  @apply min-h-screen;
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: #ffffff;
+  color: var(--gray-900);
+  min-height: 100vh;
+}
+
+/* Clean Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+::selection {
+  background: rgba(79, 70, 229, 0.15);
+}
+
+/* ============================================
+   CARD COMPONENTS - Clean & Modern
+   ============================================ */
+@layer components {
+  /* Base Card */
+  .card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+
+  /* Feature Card */
+  .feature-card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    padding: 28px;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  }
+
+  .feature-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+    border-color: rgba(59, 91, 246, 0.15);
+  }
+
+  /* Glass Card (for overlays) */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Primary Button */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #4F46E5 0%, #4338ca 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--gray-800);
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(79, 70, 229, 0.08);
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-600);
+  }
+
+  /* Icon Container */
+  .icon-container {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(79, 70, 229, 0.08);
+    border-radius: 14px;
+  }
+
+  /* Nav Link */
+  .nav-link {
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--gray-600);
+    border-radius: 8px;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--gray-900);
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #4F46E5 0%, #4338ca 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* ============================================
+   BACKGROUNDS
+   ============================================ */
+@layer utilities {
+  /* Subtle grid pattern */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Gradient backgrounds */
+  .bg-gradient-subtle {
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  }
+
+  .bg-gradient-hero {
+    background: linear-gradient(180deg, rgba(79, 70, 229, 0.03) 0%, #ffffff 100%);
+  }
+}
+
+/* ============================================
+   SECTION HELPERS
+   ============================================ */
+@layer utilities {
+  .section-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .section-padding {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
