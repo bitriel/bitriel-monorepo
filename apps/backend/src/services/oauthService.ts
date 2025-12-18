@@ -20,9 +20,7 @@ export class OAuthService {
    * Create OAuth client for specific platform
    */
   static createOAuthClient(isMobile: boolean): KoompiAuth {
-    const redirectUri = isMobile
-      ? config.koompi.mobileRedirectUri
-      : config.koompi.redirectUri;
+    const redirectUri = isMobile ? config.koompi.mobileRedirectUri : config.koompi.redirectUri;
 
     return new KoompiAuth({
       clientId: config.koompi.clientId,
@@ -117,7 +115,7 @@ export class OAuthService {
    */
   static generateRedirectUrl(token: string, isMobile: boolean): string {
     if (isMobile) {
-      return `bitriel://oauth/callback?token=${token}`;
+      return `orangewallet://oauth/callback?token=${token}`;
     }
     return `${config.frontend.url}${config.frontend.callbackPath}?token=${token}`;
   }
@@ -129,7 +127,7 @@ export class OAuthService {
     const encodedError = encodeURIComponent(errorMessage);
 
     if (isMobile) {
-      return `bitriel://oauth/callback?error=${encodedError}`;
+      return `orangewallet://oauth/callback?error=${encodedError}`;
     }
     return `${config.frontend.url}${config.frontend.callbackPath}?error=${encodedError}`;
   }
