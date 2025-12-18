@@ -5,7 +5,6 @@ import {
   PlusCircle,
   XCircle,
   Eye,
-  Plus,
   Gift,
   TrendingUp,
   CreditCard,
@@ -18,8 +17,6 @@ import {
   Ticket,
   UtensilsCrossed,
   MapPin,
-  ArrowDownCircle,
-  ArrowUpCircle,
   User,
 } from 'lucide-react-native';
 import { MotiView, MotiImage } from 'moti';
@@ -28,18 +25,11 @@ import {
   ScrollView,
   View,
   Pressable,
-  Modal,
   Dimensions,
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native';
-import Animated, {
-  FadeInDown,
-  FadeIn,
-  SlideInDown,
-  FadeOut,
-  Easing,
-} from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeIn, Easing } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/nativewindui/Button';
@@ -48,10 +38,9 @@ import { usePayment } from '@/context/PaymentContext';
 import { useColorScheme } from '@/lib/useColorScheme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const CARD_WIDTH = SCREEN_WIDTH - 48; // 24px padding on each side
+const CARD_WIDTH = SCREEN_WIDTH - 48;
 const CARD_SPACING = 12;
 
-// Background images for animated card
 const CARD_BACKGROUNDS = [
   'https://images.pexels.com/photos/2887710/pexels-photo-2887710.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=350&w=660',
   'https://images.pexels.com/photos/1561020/pexels-photo-1561020.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=660',
@@ -59,7 +48,6 @@ const CARD_BACKGROUNDS = [
   'https://images.pexels.com/photos/1193743/pexels-photo-1193743.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=660',
 ];
 
-// Promo cards data
 const PROMO_CARDS = [
   {
     id: '1',
@@ -103,12 +91,11 @@ const PROMO_CARDS = [
   },
 ];
 
-export default function WalletScreen() {
+export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { isDarkColorScheme, colors } = useColorScheme();
   const { balance } = usePayment();
-  const [showActionSheet, setShowActionSheet] = React.useState(false);
   const [showPromoCards, setShowPromoCards] = React.useState(true);
   const [activePromoIndex, setActivePromoIndex] = React.useState(0);
 
@@ -120,14 +107,14 @@ export default function WalletScreen() {
     <View className="flex-1" style={{ backgroundColor: isDarkColorScheme ? '#000000' : '#FFFFFF' }}>
       <ScrollView
         className="flex-1"
-        contentContainerClassName="pb-24"
+        contentContainerClassName="pb-32"
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
         <View style={{ paddingTop: insets.top + 16 }} className="px-6 mb-6">
           <View className="flex-row items-center justify-between">
             <Text variant="largeTitle" className="font-bold">
-              Wallet
+              Home
             </Text>
             <Pressable
               onPress={() => {
@@ -157,7 +144,6 @@ export default function WalletScreen() {
                 borderRadius: 24,
               }}
             >
-              {/* Base Gradient Background */}
               <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
                 start={{ x: 0, y: 0 }}
@@ -169,7 +155,6 @@ export default function WalletScreen() {
                 }}
               />
 
-              {/* Animated Background Image */}
               <MotiView
                 from={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -215,7 +200,6 @@ export default function WalletScreen() {
                 />
               </MotiView>
 
-              {/* Gradient Overlay for depth */}
               <LinearGradient
                 colors={['rgba(0, 0, 0, 0.05)', 'rgba(0, 0, 0, 0.15)']}
                 start={{ x: 0, y: 0 }}
@@ -227,9 +211,7 @@ export default function WalletScreen() {
                 }}
               />
 
-              {/* Card Content */}
               <View style={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 28 }}>
-                {/* Header with USD Badge */}
                 <View className="flex-row items-center justify-between mb-4">
                   <Text
                     variant="subhead"
@@ -256,7 +238,6 @@ export default function WalletScreen() {
                   </View>
                 </View>
 
-                {/* Main Balance */}
                 <Text
                   className="font-bold mb-1 text-4xl text-white w-full"
                   adjustsFontSizeToFit
@@ -266,7 +247,6 @@ export default function WalletScreen() {
                   {hasBalance ? balanceKHR.toLocaleString('en-US') : '0'} KHR
                 </Text>
 
-                {/* Currency Label */}
                 <Text
                   variant="callout"
                   style={{
@@ -280,7 +260,6 @@ export default function WalletScreen() {
             </View>
           </Animated.View>
 
-          {/* Empty State or Receive Button */}
           {!hasBalance && (
             <Animated.View
               entering={FadeInDown.delay(200).duration(400)}
@@ -491,7 +470,6 @@ export default function WalletScreen() {
               ))}
             </ScrollView>
 
-            {/* Pagination Dots */}
             <View className="flex-row justify-center gap-2 mt-4">
               {PROMO_CARDS.map((_, index) => (
                 <View
@@ -536,85 +514,10 @@ export default function WalletScreen() {
           </Animated.View>
         )}
       </ScrollView>
-
-      {/* Floating Action Button */}
-      <View style={{ paddingBottom: insets.bottom + 16 }} className="absolute bottom-0 right-6">
-        <Pressable
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            setShowActionSheet(true);
-          }}
-          className="active:scale-95"
-        >
-          <View className="w-16 h-16 rounded-full bg-foreground items-center justify-center shadow-xl">
-            <Plus size={32} color={colors.background} />
-          </View>
-        </Pressable>
-      </View>
-
-      {/* Action Sheet Modal */}
-      <Modal
-        visible={showActionSheet}
-        transparent
-        animationType="none"
-        onRequestClose={() => setShowActionSheet(false)}
-      >
-        <Pressable
-          className="flex-1 bg-black/50"
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setShowActionSheet(false);
-          }}
-        >
-          <View className="flex-1 justify-end">
-            <Animated.View
-              entering={SlideInDown.duration(300)}
-              exiting={FadeOut.duration(200)}
-              className="bg-background rounded-t-3xl"
-              style={{ paddingBottom: insets.bottom + 16 }}
-            >
-              <View className="px-6 pt-6 pb-4">
-                <ActionSheetItem
-                  icon={QrCode}
-                  iconColor="#0385FF"
-                  label="Scan QR"
-                  onPress={() => {
-                    setShowActionSheet(false);
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    router.push('/(wallet)/scan-qr');
-                  }}
-                />
-                <ActionSheetItem
-                  icon={ArrowDownCircle}
-                  iconColor="#00C853"
-                  label="Receive"
-                  onPress={() => {
-                    setShowActionSheet(false);
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    router.push('/(wallet)/receive' as any);
-                  }}
-                />
-                <ActionSheetItem
-                  icon={ArrowUpCircle}
-                  iconColor="#FF9500"
-                  label="Send Money"
-                  onPress={() => {
-                    setShowActionSheet(false);
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    router.push('/(wallet)/send');
-                  }}
-                  isLast
-                />
-              </View>
-            </Animated.View>
-          </View>
-        </Pressable>
-      </Modal>
     </View>
   );
 }
 
-// Promo Card Component
 function PromoCard({
   card,
   isDarkColorScheme,
@@ -641,7 +544,6 @@ function PromoCard({
           elevation: 5,
         }}
       >
-        {/* Gradient Background Overlay */}
         <View
           style={{
             position: 'absolute',
@@ -656,7 +558,6 @@ function PromoCard({
           }}
         />
 
-        {/* Content */}
         <View className="flex-row items-start justify-between mb-4">
           <View className="flex-1">
             <View
@@ -675,7 +576,6 @@ function PromoCard({
           </View>
         </View>
 
-        {/* Action Button */}
         <View className="flex-row items-center justify-between mt-4">
           <View
             className="flex-row items-center gap-2 px-4 py-2.5 rounded-full"
@@ -694,7 +594,6 @@ function PromoCard({
   );
 }
 
-// Feature Card Component (2x2 Grid) with Dashed Border
 function FeatureCard({
   icon,
   iconColor,
@@ -715,7 +614,6 @@ function FeatureCard({
       <View
         className="rounded-3xl p-5 aspect-square justify-between"
         style={{
-          //   backgroundColor: isDarkColorScheme ? '#1C1C1E' : '#F9F9F9',
           borderWidth: 2,
           borderStyle: 'dashed',
           borderColor: isDarkColorScheme ? '#2C2C2E' : '#E5E5EA',
@@ -744,7 +642,6 @@ function FeatureCard({
   );
 }
 
-// Service Card Component (Simpler)
 function ServiceCard({
   icon,
   iconColor,
@@ -791,36 +688,3 @@ function ServiceCard({
   );
 }
 
-// Action Sheet Item
-function ActionSheetItem({
-  icon,
-  iconColor,
-  label,
-  onPress,
-  isLast,
-}: {
-  icon: React.ComponentType<{ size: number; color: string }>;
-  iconColor: string;
-  label: string;
-  onPress: () => void;
-  isLast?: boolean;
-}) {
-  return (
-    <Pressable
-      onPress={onPress}
-      className={`flex-row items-center justify-between py-4 active:opacity-70 ${
-        !isLast ? 'border-b border-border' : ''
-      }`}
-    >
-      <Text variant="title3" className="font-semibold">
-        {label}
-      </Text>
-      <View
-        style={{ backgroundColor: iconColor }}
-        className="w-10 h-10 rounded-full items-center justify-center"
-      >
-        {React.createElement(icon, { size: 20, color: '#FFFFFF' })}
-      </View>
-    </Pressable>
-  );
-}

@@ -91,12 +91,12 @@ export const useAuth = () => {
           console.log('[Auth] Authentication successful');
 
           // Navigate to wallet
-          router.replace('/(wallet)');
+          router.replace('/(wallet)/(tabs)');
         } catch (profileError) {
           console.error('[Auth] Failed to fetch user profile:', profileError);
           // Still navigate even if profile fetch fails
           // User data can be fetched on retry or next app launch
-          router.replace('/(wallet)');
+          router.replace('/(wallet)/(tabs)');
         }
       } catch (error) {
         console.error('[Auth] OAuth response error:', error);

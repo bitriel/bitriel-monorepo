@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.replace('/(auth)/welcome');
       } else if (isAuthenticated && inAuthGroup) {
         // Redirect away from the sign-in page
-        router.replace('/(wallet)');
+        router.replace('/(wallet)/(tabs)');
       }
     }, 0);
 
